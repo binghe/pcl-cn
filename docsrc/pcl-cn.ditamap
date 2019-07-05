@@ -8,8 +8,6 @@
       <toc/>
     </booklists>
   </frontmatter>
-  <part keyref="main">
-    <chapter href="chap01/toc.ditamap" format="ditamap" />
-    <chapter href="chap02/toc.ditamap" format="ditamap" />
-  </part>  
+  <chapter href="chap01/toc.ditamap" format="ditamap" />
+  <chapter href="chap02/toc.ditamap" format="ditamap" />
 </bookmap>
