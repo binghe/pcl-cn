@@ -1,4 +1,4 @@
-# Where It Began （Lisp的诞生）
+# Where It Began（Lisp 的诞生）
 
 Common Lisp is the modern descendant of the Lisp language first
 conceived by John McCarthy in 1956. Lisp circa 1956 was designed for

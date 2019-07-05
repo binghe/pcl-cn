@@ -1,4 +1,4 @@
-# Lather, Rinse, Repeat: A Tour of the REPL （REPL简介）
+# Lather, Rinse, Repeat: A Tour of the REPL（REPL 简介）
 
 In this chapter you'll set up your programming environment and write
 your first Common Lisp programs. We'll use the easy-to-install Lisp in
