@@ -1,4 +1,4 @@
-# Who This Book Is For（本书面向的读者）
+# Who This Book Is For （本书面向的读者）
 
 This book is for you if you're curious about Common Lisp, regardless
 of whether you're already convinced you want to use it or if you just
