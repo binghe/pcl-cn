@@ -1,4 +1,4 @@
-# Introduction: Why Lisp? 绪论：为什么是 Lisp？
+# Introduction: Why Lisp? （绪论：为什么是 Lisp？）
 
 If you think the greatest pleasure in programming comes from getting a
 lot done with code that simply and clearly expresses your intention,

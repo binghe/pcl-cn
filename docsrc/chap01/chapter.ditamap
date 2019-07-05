@@ -4,5 +4,8 @@
 <map>
   <topicref href="main.md" format="markdown">
     <topicref href="why-lisp.md" format="markdown"/>
+    <topicref href="where-it-began.md" format="markdown">
+      <topicref href="but-i-learned.md" format="markdown"/>
+    </topicref>
   </topicref>
 </map>

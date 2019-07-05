@@ -1,4 +1,4 @@
-# Why Lisp? 为什么是 Lisp？
+# Why Lisp? （为什么是 Lisp？）
 
 It's hard, in only a few pages of an introductory chapter, to explain
 why users of a language like it, and it's even harder to make the case
