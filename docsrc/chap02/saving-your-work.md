@@ -145,10 +145,9 @@ Backtrace:
   2: (SWANK:SWANK-DEBUGGER-HOOK #<UNDEFINED-FUNCTION @ #x716b082a> #<Function SWANK-DEBUGGER-HOOK>)
   3: (ERROR #<UNDEFINED-FUNCTION @ #x716b082a>)
   4: (EVAL (HELLO-WORLD))
-  5: (SWANK::EVAL-REGION "(hello-world)
-  " T)
+  5: (SWANK::EVAL-REGION "(hello-world)" T)
 ```
-  
+
 Blammo! What happened? Well, you tried to invoke a function that
 doesn't exist. But despite the burst of output, Lisp is actually
 handling this situation gracefully. Unlike Java or Python, Common
@@ -314,5 +313,5 @@ Lisp code into deep space, but in the next chapter you'll take a crack
 at writing a program a bit more interesting than "hello, world."
 
 你还没有准备好将任何 Lisp
-代码发送到太空，不过在接下来一章里，你就将亲身参与编写一个比“hello,
-world”更有趣一点儿的程序了。
+代码发送到太空，不过在接下来一章里，你就将亲身参与编写一个比
+“hello, world” 更有趣一点儿的程序了。

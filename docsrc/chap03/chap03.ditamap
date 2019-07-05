@@ -3,8 +3,6 @@
 
 <map>
   <topicref href="a-simple-database.md" format="markdown">
-    <!--
-    <topicref href="choosing-a-lisp.md" format="markdown" />
-    -->
+    <topicref href="cds-and-records.md" format="markdown" />
   </topicref>
 </map>

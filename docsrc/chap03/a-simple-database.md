@@ -53,7 +53,7 @@ write a database in Lisp; rather, the point is for you to get an idea
 of what programming in Lisp is like and to see how even a relatively
 simple Lisp program can be quite featureful.
 
-另外请记住我不会在这个继“hello, world”后写的首个程序中亮出所有最专业的
+另外请记住我不会在这个继 “hello, world” 后写的首个程序中亮出所有最专业的
 Common Lisp 技术来。本章的重点和意图也不在于讲解如何用 Lisp
 编写数据库，而在于让你对 Lisp 编程有个大致的印象，并能看到即便相对简单的
 Lisp 程序也可以有着丰富的功能。
