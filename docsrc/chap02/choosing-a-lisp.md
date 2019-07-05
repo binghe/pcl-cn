@@ -1,4 +1,4 @@
-# Choosing a Lisp Implementation（选择一个Lisp实现）
+# Choosing a Lisp Implementation（选择一个 Lisp 实现）
 
 The first thing you have to do is to choose a Lisp
 implementation. This may seem like a strange thing to have to do for
