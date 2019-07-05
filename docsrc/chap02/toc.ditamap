@@ -5,5 +5,7 @@
   <topicref href="tour-of-the-repl.md" format="markdown">
     <topicref href="choosing-a-lisp.md" format="markdown" />
     <topicref href="getting-up-and-running.md" format="markdown" />
+    <topicref href="free-your-mind.md" format="markdown" />
+    <topicref href="experimenting.md" format="markdown" />
   </topicref>
 </map>
