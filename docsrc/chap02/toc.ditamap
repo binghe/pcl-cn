@@ -3,5 +3,6 @@
 
 <map>
   <topicref href="tour-of-the-repl.md" format="markdown">
+    <topicref href="choosing-a-lisp.md" format="markdown" />
   </topicref>
 </map>
