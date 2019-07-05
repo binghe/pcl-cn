@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+
+<map>
+  <topicref href="a-simple-database.md" format="markdown">
+    <!--
+    <topicref href="choosing-a-lisp.md" format="markdown" />
+    -->
+  </topicref>
+</map>

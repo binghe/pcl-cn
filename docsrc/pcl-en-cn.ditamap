@@ -10,4 +10,5 @@
   </frontmatter>
   <chapter href="chap01/toc.ditamap" format="ditamap" />
   <chapter href="chap02/toc.ditamap" format="ditamap" />
+  <chapter href="chap03/toc.ditamap" format="ditamap" />
 </bookmap>
