@@ -2,7 +2,7 @@
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
 
 <map>
-  <topicref href="main.md" format="markdown">
+  <topicref href="introduction.md" format="markdown">
     <topicref href="why-lisp.md" format="markdown"/>
     <topicref href="where-it-began.md" format="markdown">
       <topicref href="but-i-learned.md" format="markdown"/>
