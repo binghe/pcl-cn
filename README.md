@@ -7,7 +7,7 @@
 ## Progress
 
 * [x] Chapter 01
-* [ ] Chapter 02
+* [x] Chapter 02
 * [ ] Chapter 03
 * [ ] Chapter 04
 * [ ] Chapter 05
