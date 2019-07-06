@@ -88,7 +88,7 @@ argument and output it in a human-readable form. This will render
 keywords without the leading `:` and strings without quotation
 marks. For instance:
 
-`~a` 指令是美化指令,它的意图是消耗一个实参，然后将其输出成人类可读的形式。这将使关键字被渲染成不带前导冒号的形式，而字符串也不再有引号了。例如：
+`~a` 指令是一个有审美观的指令，它消耗一个实参，然后将其输出成人类可读的形式。这使得关键字被渲染成不带前导冒号的形式，而字符串也不再有引号了。例如：
 
 
 ```lisp
