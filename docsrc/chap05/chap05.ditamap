@@ -6,5 +6,7 @@
     <topicref href="defining-new-functions.md" format="markdown" />
     <topicref href="function-parameter-lists.md" format="markdown" />
     <topicref href="optional-parameters.md" format="markdown" />
+    <topicref href="rest-parameters.md" format="markdown" />
+    <topicref href="keyword-parameters.md" format="markdown" />
   </topicref>
 </map>

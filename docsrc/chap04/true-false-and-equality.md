@@ -35,14 +35,14 @@ Lisp 对象“等价”的含义。真和假的含义在这里是直截了当的
 Using phrases such as "the same thing" of course begs the question of
 what it means for two values to be "the same." As you'll see in future
 chapters, Common Lisp provides a number of type-specific equality
-predicates: **=** is used to compare numbers, **CHAR=** to compare characters,
+predicates: `=` is used to compare numbers, **CHAR=** to compare characters,
 and so on. In this section I'll discuss the four "generic" equality
 predicates--functions that can be passed any two Lisp objects and will
 return true if they're equivalent and false otherwise. They are, in
 order of discrimination, **EQ**, **EQL**, **EQUAL**, and **EQUALP**.
 
 使用诸如完全相同这样的术语，理所当然会引申出关值“等价”的这个问题上。在后面的章节里将会看到，Common
-Lisp 提供了许多特定于类型的等价谓词：**=** 用来比较数字，**CHAR=**
+Lisp 提供了许多特定于类型的等价谓词：`=` 用来比较数字，**CHAR=**
 用来比较字符，依此类推。本节将讨论四个“通用”等价谓词——这些函数可以被传入任何两个
 Lisp 对象，然后当它们等价时返回真，否则返回假。按照介绍的顺序，它们是
 **EQ**、**EQL**、**EQUAL** 和 **EQUALP**。
