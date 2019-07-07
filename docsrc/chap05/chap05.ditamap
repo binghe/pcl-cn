@@ -8,5 +8,8 @@
     <topicref href="optional-parameters.md" format="markdown" />
     <topicref href="rest-parameters.md" format="markdown" />
     <topicref href="keyword-parameters.md" format="markdown" />
+    <topicref href="mixing-different-parameters.md" format="markdown" />
+    <topicref href="function-return-values.md" format="markdown" />
+    <topicref href="functions-as-data.md" format="markdown" />
   </topicref>
 </map>
