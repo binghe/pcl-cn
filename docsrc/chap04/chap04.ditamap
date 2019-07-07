@@ -3,5 +3,6 @@
 
 <map>
   <topicref href="syntax-and-semantics.md" format="markdown">
+    <topicref href="whats-with-all.md" format="markdown" />
   </topicref>
 </map>
