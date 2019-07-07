@@ -7,5 +7,6 @@
     <topicref href="breaking-open-the-black.md" format="markdown" />
     <topicref href="s-expressions.md" format="markdown" />
     <topicref href="s-expressions-as-lisp-forms.md" format="markdown" />
+    <topicref href="function-calls.md" format="markdown" />
   </topicref>
 </map>
