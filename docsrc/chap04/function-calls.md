@@ -21,7 +21,7 @@ Thus, the following expression is evaluated by first evaluating 1,
 then evaluating 2, and then passing the resulting values to the `+`
 function, which returns 3:
 
-这样下面这个表达式在求值时将首先求值 1，再求值 2，然后将得到的值传给
+这样，下面这个表达式在求值时将首先求值 1，再求值 2，然后将得到的值传给
 `+` 函数，再返回 3:
 
 ```lisp
@@ -33,7 +33,7 @@ similar fashion except that evaluating the arguments `(+ 1 2)` and
 `(- 3 4)` entails first evaluating their arguments and applying the
 appropriate functions to them:
 
-像下面这样更复杂的表达式也采用相似的求值方法,不过在求值参数 `(+ 1 2)`
+像下面这样更复杂的表达式也采用相似的求值方法，不过在求值参数 `(+ 1 2)`
 和 `(- 3 4)` 时需要先对它们的参数求值，然后再对它们应用相应的函数：
 
 ```lisp
