@@ -8,7 +8,7 @@
 
 * [x] Chapter 01
 * [x] Chapter 02
-* [ ] Chapter 03
+* [x] Chapter 03
 * [ ] Chapter 04
 * [ ] Chapter 05
 * [ ] Chapter 06
