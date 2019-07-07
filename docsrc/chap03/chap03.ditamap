@@ -7,5 +7,7 @@
     <topicref href="filling-cds.md" format="markdown" />
     <topicref href="looking-at-database.md" format="markdown" />
     <topicref href="improving-user-interaction.md" format="markdown" />
+    <topicref href="saving-and-loading-database.md" format="markdown" />
+    <topicref href="querying-the-database.md" format="markdown" />
   </topicref>
 </map>
