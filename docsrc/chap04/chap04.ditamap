@@ -11,5 +11,6 @@
     <topicref href="special-operators.md" format="markdown" />
     <topicref href="macros.md" format="markdown" />
     <topicref href="true-false-and-equality.md" format="markdown" />
+    <topicref href="formatting-lisp-code.md" format="markdown" />
   </topicref>
 </map>
