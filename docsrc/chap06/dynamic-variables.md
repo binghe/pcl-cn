@@ -1,0 +1,357 @@
+# Dynamic, a.k.a. Special, Variables（动态（特殊）变量）
+
+Lexically scoped bindings help keep code understandable by limiting
+the scope, literally, in which a given name has meaning. This is why
+most modern languages use lexical scoping for local
+variables. Sometimes, however, you really want a global variable--a
+variable that you can refer to from anywhere in your program. While
+it's true that indiscriminate use of global variables can turn code
+into spaghetti nearly as quickly as unrestrained use of `goto`, global
+variables do have legitimate uses and exist in one form or another in
+almost every programming language. And as you'll see in a moment,
+Lisp's version of global variables, dynamic variables, are both more
+useful and more manageable.
+
+词法作用域的绑定通过限制作用域（其中给定的名字只具有字面含义）使代码易于理解，这就是大多数现代语言将词法作用域用于局部变量的原因。尽管如此，但有时的确需要全局变量——一种可以从程序的任何位置访问到的变量。尽管随意使用全局变量将使代码变得杂乱无章，就像毫无节制地使用
+`goto` 那样,但全局变量确实有其合理的用途，并以某种形式存在于几乎每种编程语言里。 正如你即将看到的，Lisp
+的全局变量和动态变量都更为有用并且更易于管理。
+
+Common Lisp provides two ways to create global variables: **DEFVAR** and
+**DEFPARAMETER**. Both forms take a variable name, an initial value, and
+an optional documentation string. After it has been **DEFVAR**ed or
+**DEFPARAMETER**ed, the name can be used anywhere to refer to the current
+binding of the global variable. As you've seen in previous chapters,
+global variables are conventionally named with names that start and
+end with `*`. You'll see later in this section why it's quite important
+to follow that naming convention. Examples of **DEFVAR** and **DEFPARAMETER**
+look like this:
+
+Common Lisp 提供了两种创建全局变量的方法：**DEFVAR** 和
+**DEFPARAMETER**。两种形式都接受一个变量名、一个初始值以及一个可选的文档字符串。在被
+**DEFVAR** 和 **DEFPARAMETER**
+定义以后，该名字可被用于任何位置来指向全局变量的当前绑定。如同在前面章节里所看到的那样，全局变量习惯上被命名为以
+`*` 开始和结尾的名字。你将在本节的后面看到遵守该命名约定的重要性。**DEFVAR**
+和 **DEFPARAMETER** 的示例如下：
+
+```lisp
+(defvar *count* 0
+  "Count of widgets made so far.")
+
+(defparameter *gap-tolerance* 0.001
+  "Tolerance to be allowed in widget gaps.")
+```
+
+The difference between the two forms is that **DEFPARAMETER** always
+assigns the initial value to the named variable while **DEFVAR** does so
+only if the variable is undefined. A **DEFVAR** form can also be used with
+no initial value to define a global variable without giving it a
+value. Such a variable is said to be _unbound_.
+
+两种形式的区别在于 **DEFPARAMETER** 总是将初始值赋给命名的变量，而
+**DEFVAR** 只有当变量未定义时才这样做。一个 **DEFVAR**
+形式也可以不带初始值来使用，从而在不给定其值的情况下定义一个全局变量。这样一个变量被称为_未绑定的_。
+
+Practically speaking, you should use **DEFVAR** to define variables that
+will contain data you'd want to keep even if you made a change to the
+source code that uses the variable. For instance, suppose the two
+variables defined previously are part of an application for
+controlling a widget factory. It's appropriate to define the `*count*`
+variable with **DEFVAR** because the number of widgets made so far isn't
+invalidated just because you make some changes to the widget-making
+code.
+
+从实践上来讲，应该使用 **DEFVAR**
+来定义某些变量，这些变量所含数据是应持久存在的，即使用到该变量的源码发生改变时也应如此。例如，假设前面定义的两个变量是一个用来控制部件工厂的应用程序的一部分，那么
+**DEFVAR** 来定义 `*count*`
+变量就比较合适，因为目前已生产的部件数量不会因为对部件生产的代码做了某些改变而就此作废。
+
+On the other hand, the variable `*gap-tolerance*` presumably has some
+effect on the behavior of the widget-making code itself. If you decide
+you need a tighter or looser tolerance and change the value in the
+**DEFPARAMETER** form, you'd like the change to take effect when you
+recompile and reload the file.
+
+另一方面，假如变量 `*gap-tolerance*`
+对于部件生产代码本身的行为具有影响。如果你决定使用一个或紧或松的容差值，并且改变了
+**DEFPARAMETER** 形式中的值，那么就要在重新编译和加载文件时让这一改变产生效果。
+
+After defining a variable with **DEFVAR** or **DEFPARAMETER**, you can refer
+to it from anywhere. For instance, you might define this function to
+increment the count of widgets made:
+
+在用 **DEFVAR** 和 **DEFPARAMETER**
+定义了一个变量之后，就可以从任何一个地方引用它。例如，可以定义下面的函数来递增已生产部件的数量：
+
+```lisp
+(defun increment-widget-count () (incf *count*))
+```
+
+The advantage of global variables is that you don't have to pass them
+around. Most languages store the standard input and output streams in
+global variables for exactly this reason--you never know when you're
+going to want to print something to standard out, and you don't want
+every function to have to accept and pass on arguments containing
+those streams just in case someone further down the line needs them.
+
+全局变量的优势在于不必到处传递它们。多数语言将标准输入与输出流保存在全局变量里正是出于这个原因——永远不会知道什么时候会向标准输出流打印东西，并且你也不想仅仅由于日后有人需要，就使每个函数都不得不接受并传递含有这些流的参数。
+
+However, once a value, such as the standard output stream, is stored
+in a global variable and you have written code that references that
+global variable, it's tempting to try to temporarily modify the
+behavior of that code by changing the variable's value.
+
+不过，一旦像标准输出流这样的值被保存在一个全局变量中，并且已经编写了引用那个全局变量的代码，那么试图通过更改变量值来临时改变代码行为的做法就颇为诱人了。
+
+For instance, suppose you're working on a program that contains some
+low-level logging functions that print to the stream in the global
+variable `*standard-output*`. Now suppose that in part of the program
+you want to capture all the output generated by those functions into a
+file. You might open a file and assign the resulting stream to
+`*standard-output*`. Now the low-level functions will send their output
+to the file.
+
+例如，假设正工作的一个程序中含有的某些底层日志函数会将输出打印到位于全局变量
+`*standard-output*`
+中的流上。现在假设在程序的某个部分里，想要将所有这些函数所生成的输出捕捉到一个文件里，那么可以打开一个文件并将得到的流赋予
+`*standard-output*`。现在底层函数们将把它们的输出发往该文件。
+
+This works fine until you forget to set `*standard-output*` back to the
+original stream when you're done. If you forget to reset
+`*standard-output*`, all the other code in the program that uses
+`*standard-output*` will also send its output to the file.
+
+这样工作得很好，但假如完成工作时忘记将 `*standard-output*`
+重新设置回最初的流上，那么程序中所有用到 `*standard-output*`
+的其他代码也会将把它们的输出发往该文件。
+
+What you really want, it seems, is a way to wrap a piece of code in
+something that says, "All code below here--all the functions it calls,
+all the functions they call, and so on, down to the lowest-level
+functions--should use this value for the global variable
+`*standard-output*`." Then when the high-level function returns, the old
+value of `*standard-output*` should be automatically restored.
+
+真正所需的代码包装方式似乎应如下所述：“在从这里以下的所有代码中——所有它调用的函数以及它们进一步调用的函数，诸如此类，直到最底层的函数全局变量
+`*standard-output*` 都应使用该值。”然后当上层的函数返回时，`*standard-output*`
+应该自动恢复到其原来的值。
+
+It turns out that that's exactly what Common Lisp's other kind of
+variable--dynamic variables--let you do. When you bind a dynamic
+variable--for example, with a **LET** variable or a function
+parameter--the binding that's created on entry to the binding form
+replaces the global binding for the duration of the binding
+form. Unlike a lexical binding, which can be referenced by code only
+within the lexical scope of the binding form, a dynamic binding can be
+referenced by any code that's invoked during the execution of the
+binding form. And it turns out that all global variables are, in fact,
+dynamic variables.
+
+这看起来正像是 Common Lisp
+的另一种变量，即动态变量所做的事。当绑定了一个动态变量时，例如通过一个 **LET**
+变量或函数形参，在被绑定项上所创建的绑定替换了在绑定形式期间的对应全局绑定。与一个词法绑定——只能被绑定形式的词法作用域之内的代码所引用——所不同的是，动态绑定可以被任何在绑定形式执行期间所调用到的代码所引用。显然所有全局变量事实上都是动态变量。
+
+Thus, if you want to temporarily redefine `*standard-output*`, the way
+to do it is simply to rebind it, say, with a **LET**.
+
+因此，如果想要临时重定义
+`*standard-output*`，只需重新绑定它即可，比如说可以使用 **LET**。
+
+```lisp
+(let ((*standard-output* *some-other-stream*))
+  (stuff))
+```
+
+In any code that runs as a result of the call to stuff, references to
+`*standard-output*` will use the binding established by the LET. And
+when stuff returns and control leaves the LET, the new binding of
+`*standard-output*` will go away and subsequent references to
+`*standard-output*` will see the binding that was current before the
+LET. At any given time, the most recently established binding shadows
+all other bindings. Conceptually, each new binding for a given dynamic
+variable is pushed onto a stack of bindings for that variable, and
+references to the variable always use the most recent binding. As
+binding forms return, the bindings they created are popped off the
+stack, exposing previous bindings.
+
+在任何由于调用 `stuff` 而运行的代码中，对 `*standard-output*`
+的引用将使用由 **LET** 所建立的绑定，并且当 `stuff`
+返回并且程序控制离开 **LET**
+时，这个对 `*standard-output*` 的新绑定将随之消失，并且接下来对
+`*standard-output*` 的引用将看到 **LET**
+之前的绑定。在任何给定时刻,最近建立的绑定会覆盖所有其他的绑定。从概念上讲，一个给定动态变量的每个新绑定都将被推到一个用于该变量的绑定栈中，而对该变量的引用总是使用最近的绑定。当绑定形式返回时，它们所创建的绑定会被从栈上弹出，从而暴露出前一个绑定。
+
+A simple example shows how this works.
+
+一个简单的例子就能揭示其工作原理。
+
+```lisp
+(defvar *x* 10)
+(defun foo () (format t "X: ~d~%" *x*))
+```
+
+The **DEFVAR** creates a global binding for the variable `*x*` with the
+value 10. The reference to `*x*` in foo will look up the current binding
+dynamically. If you call foo from the top level, the global binding
+created by the **DEFVAR** is the only binding available, so it prints 10.
+
+上面的 **DEFVAR** 为变量 `*x*`
+创建了一个到数值10的全局绑定。函数 `foo` 中，对 `*x*`
+的引用将动态地查找其当前绑定。如果从最上层调用
+`foo`，由 **DEFVAR** 所创建的全局绑定就是唯一可用的绑定，因此它打印出 10：
+
+```lisp
+CL-USER> (foo)
+X: 10
+NIL
+```
+
+But you can use **LET** to create a new binding that temporarily shadows
+the global binding, and `foo` will print a different value.
+
+但你也可以用 **LET**
+创建一个新的绑定来临时覆盖全局绑定，这样 `foo` 将打印一个不同的值：
+
+```lisp
+CL-USER> (let ((*x* 20)) (foo))
+X: 20
+NIL
+```
+
+Now call `foo` again, with no **LET**, and it again sees the global binding.
+
+现在不使用 **LET** 再次调用 `foo`，它将再次看到全局绑定：
+
+```lisp
+CL-USER> (foo)
+X: 10
+NIL
+```
+
+Now define another function.
+
+现在定义另一个函数：
+
+```lisp
+(defun bar ()
+  (foo)
+  (let ((*x* 20)) (foo))
+  (foo))
+```
+
+Note that the middle call to `foo` is wrapped in a **LET** that binds `*x*` to
+the new value 20. When you run `bar`, you get this result:
+
+注意到中间那个对 `foo` 的调用被包装在一个将 `*x*`
+绑定到新值 20 的 **LET** 形式中。运行 `bar` 得到的结果如下所示。
+
+```lisp
+CL-USER> (bar)
+X: 10
+X: 20
+X: 10
+NIL
+```
+
+As you can see, the first call to `foo` sees the global binding, with
+its value of 10. The middle call, however, sees the new binding, with
+the value 20. But after the **LET**, foo once again sees the global
+binding.
+
+正如你所看到的，第一次对 `foo` 的调用看到了全局绑定，其值为
+10。然而，中间的那个调用却看到了新的绑定，其值为 20。但在
+**LET** 之后，`foo` 再次看到了全局绑定。
+
+As with lexical bindings, assigning a new value affects only the
+current binding. To see this, you can redefine foo to include an
+assignment to `*x*`.
+
+和词法绑定一样，赋予新值仅会影响当前绑定。为了理解这点，可以重定义
+`foo` 来包含一个对 `*x*` 的赋值。
+
+```lisp
+(defun foo ()
+  (format t "Before assignment~18tX: ~d~%" *x*)
+  (setf *x* (+ 1 *x*))
+  (format t "After assignment~18tX: ~d~%" *x*))
+```
+
+Now `foo` prints the value of `*x*`, increments it, and prints it
+again. If you just run `foo`, you'll see this:
+
+现在 `foo` 打印 `*x*` 的值，对其递增，然后再次打印它。如果你只运行
+`foo`，你将看到这样的结果：
+
+```lisp
+CL-USER> (foo)
+Before assignment X: 10
+After assignment  X: 11
+NIL
+```
+
+Not too surprising. Now run `bar`.
+
+这看起来很正常，现在运行 `bar`：
+
+```lisp
+CL-USER> (bar)
+Before assignment X: 11
+After assignment  X: 12
+Before assignment X: 20
+After assignment  X: 21
+Before assignment X: 12
+After assignment  X: 13
+NIL
+```
+
+Notice that `*x*` started at 11--the earlier call to foo really did
+change the global value. The first call to foo from bar increments the
+global binding to 12. The middle call doesn't see the global binding
+because of the **LET**. Then the last call can see the global binding
+again and increments it from 12 to 13.
+
+注意到 `*x*` 从 11 开始——之前的 `foo` 调用真的改变了全局的值。来自 `bar`
+的第一次对 `foo` 的调用将全局绑定递增到 12。中间的调用由于 **LET**
+的关系没有看到全局绑定，然后最后一个调用再次看到了全局绑定，并将其从
+12 递增到 13。
+
+So how does this work? How does **LET** know that when it binds `*x*` it's
+supposed to create a dynamic binding rather than a normal lexical
+binding? It knows because the name has been declared special. The
+name of every variable defined with **DEFVAR** and **DEFPARAMETER** is
+automatically declared globally special. This means whenever you use
+such a name in a binding form--in a **LET** or as a function parameter or
+any other construct that creates a new variable binding--the binding
+that's created will be a dynamic binding. This is why the `*naming*`
+`*convention*` is so important--it'd be bad news if you used a name for
+what you thought was a lexical variable and that variable happened to
+be globally special. On the one hand, code you call could change the
+value of the binding out from under you; on the other, you might be
+shadowing a binding established by code higher up on the stack. If you
+always name global variables according to the * naming convention,
+you'll never accidentally use a dynamic binding where you intend to
+establish a lexical binding.
+
+那么它是怎样工作的呢？**LET** 是怎样知道当它绑定 `*x*`
+时，它打算创建一个动态绑定而不是一个词法绑定呢？它知道是因为该名字已经被声明为特殊的（special）。 每一个由
+**DEFVAR** 和 **DEFPARAMETER**
+所定义的变量其名字都将被自动声明为全局特殊的。这意味着无论何时你在绑定形式中使用这样一个名字，无论是在
+**LET** 中，或是作为一个函数形参，又或是在任何创建新变量绑定的构造中，被创建的绑定将成为一个动态绑定。这就是为什么命名约定如此重要——如果你使用了一个变量，以为它是词法变量，而它却刚好是全局特殊的变量，这就很不好。一方面，你所调用的代码可能在你意想之外改变了绑定的值；而另一方面，你可能会覆盖一个由栈的上一级代码所建立的绑定。如果总是按照*命名约定来命名全局变量，就不会在打算建立词法绑定时却意外使用了动态绑定。
+
+It's also possible to declare a name locally special. If, in a binding
+form, you declare a name special, then the binding created for that
+variable will be dynamic rather than lexical. Other code can locally
+declare a name special in order to refer to the dynamic
+binding. However, locally special variables are relatively rare, so
+you needn't worry about them.
+
+也有可能将一个名字声明为局部特殊的，如果在一个绑定形式里将一个名字声明为特殊的，那么为该变量所创建的绑定将是动态的而不是词法的。其他代码可以局部地声明一个名字为特殊的，从而指向该动态绑定。尽管如此，局部特殊变量使用相对较少，所以你不需要担心它们。
+
+Dynamic bindings make global variables much more manageable, but it's
+important to notice they still allow action at a distance. Binding a
+global variable has two at a distance effects--it can change the
+behavior of downstream code, and it also opens the possibility that
+downstream code will assign a new value to a binding established
+higher up on the stack. You should use dynamic variables only when you
+need to take advantage of one or both of these characteristics.
+
+动态绑定使全局变量更易于管理，但重要的是注意到它们将允许超距作用的存在。绑定一个全局变量具有两种超距效果——它可以改变下游代码的行为，并且它也开启了一种可能性，使得下游代码可以为栈的上一级所建立的绑定赋予一个新的值。你应该只有在需要利用这两个特征时才使用动态变量。
