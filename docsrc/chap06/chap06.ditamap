@@ -7,5 +7,6 @@
     <topicref href="lexical-variables-and-closures.md" format="markdown" />
     <topicref href="dynamic-variables.md" format="markdown" />
     <topicref href="constants.md" format="markdown" />
+    <topicref href="assignment.md" format="markdown" />
   </topicref>
 </map>

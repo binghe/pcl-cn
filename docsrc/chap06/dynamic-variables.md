@@ -1,4 +1,4 @@
-# Dynamic, a.k.a. Special, Variables（动态（特殊）变量）
+# Dynamic, a.k.a. Special, Variables（动态（特别）变量）
 
 Lexically scoped bindings help keep code understandable by limiting
 the scope, literally, in which a given name has meaning. This is why
@@ -332,10 +332,10 @@ you'll never accidentally use a dynamic binding where you intend to
 establish a lexical binding.
 
 那么它是怎样工作的呢？**LET** 是怎样知道当它绑定 `*x*`
-时，它打算创建一个动态绑定而不是一个词法绑定呢？它知道是因为该名字已经被声明为特殊的（special）。 每一个由
+时，它打算创建一个动态绑定而不是一个词法绑定呢？它知道是因为该名字已经被声明为特别的（special）。 每一个由
 **DEFVAR** 和 **DEFPARAMETER**
-所定义的变量其名字都将被自动声明为全局特殊的。这意味着无论何时你在绑定形式中使用这样一个名字，无论是在
-**LET** 中，或是作为一个函数形参，又或是在任何创建新变量绑定的构造中，被创建的绑定将成为一个动态绑定。这就是为什么命名约定如此重要——如果你使用了一个变量，以为它是词法变量，而它却刚好是全局特殊的变量，这就很不好。一方面，你所调用的代码可能在你意想之外改变了绑定的值；而另一方面，你可能会覆盖一个由栈的上一级代码所建立的绑定。如果总是按照*命名约定来命名全局变量，就不会在打算建立词法绑定时却意外使用了动态绑定。
+所定义的变量其名字都将被自动声明为全局特别的。这意味着无论何时你在绑定形式中使用这样一个名字，无论是在
+**LET** 中，或是作为一个函数形参，又或是在任何创建新变量绑定的构造中，被创建的绑定将成为一个动态绑定。这就是为什么命名约定如此重要——如果你使用了一个变量，以为它是词法变量，而它却刚好是全局特别的变量，这就很不好。一方面，你所调用的代码可能在你意想之外改变了绑定的值；而另一方面，你可能会覆盖一个由栈的上一级代码所建立的绑定。如果总是按照*命名约定来命名全局变量，就不会在打算建立词法绑定时却意外使用了动态绑定。
 
 It's also possible to declare a name locally special. If, in a binding
 form, you declare a name special, then the binding created for that
@@ -344,7 +344,7 @@ declare a name special in order to refer to the dynamic
 binding. However, locally special variables are relatively rare, so
 you needn't worry about them.
 
-也有可能将一个名字声明为局部特殊的，如果在一个绑定形式里将一个名字声明为特殊的，那么为该变量所创建的绑定将是动态的而不是词法的。其他代码可以局部地声明一个名字为特殊的，从而指向该动态绑定。尽管如此，局部特殊变量使用相对较少，所以你不需要担心它们。
+也有可能将一个名字声明为局部特别的，如果在一个绑定形式里将一个名字声明为特别的，那么为该变量所创建的绑定将是动态的而不是词法的。其他代码可以局部地声明一个名字为特别的，从而指向该动态绑定。尽管如此，局部特别变量使用相对较少，所以你不需要担心它们。
 
 Dynamic bindings make global variables much more manageable, but it's
 important to notice they still allow action at a distance. Binding a
