@@ -3,5 +3,6 @@
 
 <map>
   <topicref href="variables.md" format="markdown">
+    <topicref href="variable-basics.xml" format="dita" />
   </topicref>
 </map>
