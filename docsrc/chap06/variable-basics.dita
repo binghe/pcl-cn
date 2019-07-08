@@ -3,7 +3,6 @@
 
 <concept id="variable-basics">
   <title>Variable Basics（变量的基础知识）</title>
-
   <conbody>
     <p>As in other languages, in Common Lisp variables are named places that
     can hold a value. However, in Common Lisp, variables aren't typed the

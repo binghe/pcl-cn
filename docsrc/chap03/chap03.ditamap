@@ -10,7 +10,7 @@
     <topicref href="saving-and-loading-database.md" format="markdown" />
     <topicref href="querying-the-database.md" format="markdown" />
     <topicref href="updating-existing-records.md" format="markdown" />
-    <topicref href="removing-duplication.md" format="markdown" />
+    <topicref href="removing-duplication.dita" format="dita" />
     <topicref href="wrapping-up.md" format="markdown" />
   </topicref>
 </map>
