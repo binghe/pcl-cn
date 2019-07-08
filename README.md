@@ -38,4 +38,5 @@
 * [ ] Chapter 30
 * [ ] Chapter 31
 * [ ] Chapter 32
-
+* [ ] Fixing cross-references
+* [ ] Adding footnotes

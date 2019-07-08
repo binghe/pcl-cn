@@ -1,4 +1,4 @@
-# But I learned Lisp Once, And IT Wasn't Like what you're describing（但我曾经学过 Lisp，可是跟你所描述的不太一样）
+# But I learned Lisp Once, And IT Wasn't Like What You're Describing（但我曾经学过 Lisp，可是跟你所描述的不太一样）
 
 If you've used Lisp in the past, you may have ideas about what "Lisp"
 is that have little to do with Common Lisp. While Common Lisp
