@@ -2,7 +2,7 @@
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
 
 <concept id="variable-basics">
-  <title>Variable Basics</title>
+  <title>Variable Basics（变量的基础知识）</title>
 
   <conbody>
     <p>As in other languages, in Common Lisp variables are named places that
@@ -184,8 +184,8 @@ NIL
     loop, for example, which prints the numbers from 0 to 9, binds the
     variable <codeph>x</codeph>:</p>
 
-    <p>例如，第 7 章将遇到 <b>DOTIMES</b>
-    循环，这是一种基本的计数循环。它引入了一个变量用来保存每次通过循环时递增的计数器的值。例如下面这个可以打印从 0 到 9
+    <p>例如，你将在第 7 章里遇到 <b>DOTIMES</b>
+    循环，一种基本的计数循环。它引入了一个变量用来保存每次通过循环时递增的计数器的值。例如下面这个可以打印从 0 到 9
     的数字循环，它绑定了变量 <codeph>x</codeph>：
 <codeblock>(dotimes (x 10) (format t "~d " x))
 </codeblock></p>
