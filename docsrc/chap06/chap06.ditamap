@@ -3,6 +3,10 @@
 
 <map>
   <topicref href="variables.md" format="markdown">
+
+    <!-- I used DITA format here because of "LET*" -->
     <topicref href="variable-basics.xml" format="dita" />
+
+    <topicref href="lexical-variables-and-closures.md" format="markdown" />
   </topicref>
 </map>
