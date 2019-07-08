@@ -34,7 +34,7 @@ M-表达式。尽管如此，他却从未实现这一点。他在自己的文章
 > or at least translating them into S-expressions was neither
 > finalized nor explicitly abandoned. It just receded into the
 > indefinite future, and a new generation of programmers appeared who
-> preferred [S-expressions] to any FORTRAN-like or ALGOL-like notation
+> preferred S-expressions to any FORTRAN-like or ALGOL-like notation
 > that could be devised.
 
 > 这个精确定义 M-表达式以及将其编译或至少转译成
