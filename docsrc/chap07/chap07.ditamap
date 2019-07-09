@@ -9,5 +9,6 @@
     <topicref href="looping.md" format="markdown" />
     <topicref href="dolist-and-dotimes.md" format="markdown" />
     <topicref href="do.md" format="markdown" />
+    <topicref href="the-mighty-loop.md" format="markdown" />
   </topicref>
 </map>
