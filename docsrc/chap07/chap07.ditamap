@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+
+<map>
+  <topicref href="macros-standard-control-constructs.md" format="markdown">
+    <topicref href="when-and-useless.md" format="markdown" />
+  </topicref>
+</map>
