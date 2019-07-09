@@ -8,5 +8,7 @@
     <topicref href="dynamic-variables.md" format="markdown" />
     <topicref href="constants.md" format="markdown" />
     <topicref href="assignment.md" format="markdown" />
+    <topicref href="generalized-assignment.md" format="markdown" />
+    <topicref href="other-ways-to-modify-places.md" format="markdown" />
   </topicref>
 </map>
