@@ -3,6 +3,7 @@
 
 <map>
   <topicref href="macros-standard-control-constructs.md" format="markdown">
-    <topicref href="when-and-useless.md" format="markdown" />
+    <topicref href="when-and-unless.md" format="markdown" />
+    <topicref href="cond.md" format="markdown" />
   </topicref>
 </map>
