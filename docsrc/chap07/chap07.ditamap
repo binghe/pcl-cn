@@ -8,5 +8,6 @@
     <topicref href="and-or-and-not.md" format="markdown" />
     <topicref href="looping.md" format="markdown" />
     <topicref href="dolist-and-dotimes.md" format="markdown" />
+    <topicref href="do.md" format="markdown" />
   </topicref>
 </map>
