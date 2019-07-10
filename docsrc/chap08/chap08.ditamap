@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+
+<map>
+  <topicref href="macros-defining-your-own.md" format="markdown">
+    <topicref href="the-story-of-mac.md" format="markdown" />
+  </topicref>
+</map>
