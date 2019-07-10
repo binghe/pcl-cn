@@ -6,5 +6,6 @@
     <topicref href="the-story-of-mac.md" format="markdown" />
     <topicref href="macro-expansion-time.md" format="markdown" />
     <topicref href="defmacro.md" format="markdown" />
+    <topicref href="a-sample-macro.md" format="markdown" />
   </topicref>
 </map>
