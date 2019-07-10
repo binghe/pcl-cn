@@ -4,5 +4,6 @@
 <map>
   <topicref href="macros-defining-your-own.md" format="markdown">
     <topicref href="the-story-of-mac.md" format="markdown" />
+    <topicref href="macro-expansion-time.md" format="markdown" />
   </topicref>
 </map>

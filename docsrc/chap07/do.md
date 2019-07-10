@@ -1,4 +1,4 @@
-# DO
+# DO（DO 宏）
 
 While **DOLIST** and **DOTIMES** are convenient and easy to use, they aren't
 flexible enough to use for all loops. For instance, what if you want

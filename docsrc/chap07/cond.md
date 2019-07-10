@@ -1,4 +1,4 @@
-# **COND**
+# COND（COND 宏）
 
 Another time raw **IF** expressions can get ugly is when you have a
 multibranch conditional: if `a` do x, else if `b` do y; else do z. There's

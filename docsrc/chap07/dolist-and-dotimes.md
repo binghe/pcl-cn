@@ -1,4 +1,4 @@
-# **DOLIST** and **DOTIMES**（**DOLIST** 和 **DOTIMES**）
+# DOLIST and DOTIMES（DOLIST 和 DOTIMES 宏）
 
 I'll start with the easy-to-use **DOLIST** and **DOTIMES** macros.
 
