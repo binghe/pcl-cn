@@ -9,5 +9,6 @@
     <topicref href="a-sample-macro.md" format="markdown" />
     <topicref href="macro-parameters.md" format="markdown" />
     <topicref href="generating-the-expansion.dita" format="dita" />
+    <topicref href="plugging-the-leaks.md" format="markdown" />
   </topicref>
 </map>
