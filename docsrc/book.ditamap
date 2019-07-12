@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
-
-<bookmap>
+<bookmap xml:lang="zh-CN">
   <title>Practical Common Lisp</title>
   <frontmatter>
     <booklists>

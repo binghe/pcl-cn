@@ -8,5 +8,6 @@
     <topicref href="defmacro.md" format="markdown" />
     <topicref href="a-sample-macro.md" format="markdown" />
     <topicref href="macro-parameters.md" format="markdown" />
+    <topicref href="generating-the-expansion.dita" format="dita" />
   </topicref>
 </map>
