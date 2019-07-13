@@ -10,5 +10,8 @@
     <topicref href="macro-parameters.md" format="markdown" />
     <topicref href="generating-the-expansion.dita" format="dita" />
     <topicref href="plugging-the-leaks.md" format="markdown" />
+    <topicref href="macro-writing-macros.md" format="markdown">
+      <topicref href="once-only.md" format="markdown" />
+    </topicref>
   </topicref>
 </map>
