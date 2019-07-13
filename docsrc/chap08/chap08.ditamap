@@ -13,5 +13,6 @@
     <topicref href="macro-writing-macros.md" format="markdown">
       <topicref href="once-only.md" format="markdown" />
     </topicref>
+    <topicref href="beyond-simple-macros.md" format="markdown" />
   </topicref>
 </map>

@@ -13,7 +13,7 @@
 * [x] Chapter 05
 * [x] Chapter 06
 * [x] Chapter 07
-* [ ] Chapter 08
+* [x] Chapter 08
 * [ ] Chapter 09
 * [ ] Chapter 10
 * [ ] Chapter 11
