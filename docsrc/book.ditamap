@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
-<bookmap xml:lang="zh-CN">
+<bookmap xml:lang="en-US">
   <title>Practical Common Lisp</title>
   <frontmatter>
     <booklists>
@@ -15,4 +15,5 @@
   <chapter href="chap06/chap06.ditamap" format="ditamap" />
   <chapter href="chap07/chap07.ditamap" format="ditamap" />
   <chapter href="chap08/chap08.ditamap" format="ditamap" />
+  <chapter href="chap09/chap09.ditamap" format="ditamap" />
 </bookmap>
