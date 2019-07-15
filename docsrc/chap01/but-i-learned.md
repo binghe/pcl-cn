@@ -81,7 +81,7 @@ application, and both are quite old-fashioned Lisps compared to either
 Scheme or Common Lisp. If you've used one of these dialects, prepare
 to hop in the Lisp time machine and jump forward several decades.
 
-另外两种仍然广泛使用的 Lisp 方言是 Elisp 和 Autolisp。Emacs 是 Emacs
+另外两种仍然广泛使用的 Lisp 方言是 Elisp 和 Autolisp。Elisp 是 Emacs
 编辑器的扩展语言，而 Autolisp 是 Autodesk 的 AutoCAD
 计算机辅助设计工具的扩展语言。尽管用 Elisp 和 Autolisp
 可能已经写出了超过任何其他方言的代码行数，但它们都不能用在各自的宿主应用程序之外，而且它们无论与
