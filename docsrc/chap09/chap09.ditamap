@@ -6,5 +6,6 @@
     <topicref href="two-first-tries.md" format="markdown" />
     <topicref href="refactoring.md" format="markdown" />
     <topicref href="fixing-the-return-value.md" format="markdown" />
+    <topicref href="better-result-reporting.md" format="markdown" />
   </topicref>
 </map>
