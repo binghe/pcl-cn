@@ -7,5 +7,8 @@
     <topicref href="refactoring.md" format="markdown" />
     <topicref href="fixing-the-return-value.md" format="markdown" />
     <topicref href="better-result-reporting.md" format="markdown" />
+    <topicref href="abstraction-emerges.md" format="markdown" />
+    <topicref href="hierarchy-of-tests.md" format="markdown" />
+    <topicref href="wrapping-up.md" format="markdown" />
   </topicref>
 </map>
