@@ -4,5 +4,6 @@
 <map>
   <topicref href="building-a-unit-test-framework.md" format="markdown">
     <topicref href="two-first-tries.md" format="markdown" />
+    <topicref href="refactoring.md" format="markdown" />
   </topicref>
 </map>
