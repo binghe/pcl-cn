@@ -6,5 +6,6 @@
     <topicref href="numbers.md" format="markdown" />
     <topicref href="numeric-literals.md" format="markdown" />
     <topicref href="basic-math.md" format="markdown" />
+    <topicref href="numeric-comparisons.md" format="markdown" />
   </topicref>
 </map>
