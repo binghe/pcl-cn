@@ -3,5 +3,6 @@
 
 <map>
   <topicref href="numbers-characters-strings.md" format="markdown">
+    <topicref href="numbers.md" format="markdown" />
   </topicref>
 </map>
