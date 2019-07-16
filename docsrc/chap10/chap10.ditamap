@@ -8,5 +8,6 @@
     <topicref href="basic-math.md" format="markdown" />
     <topicref href="numeric-comparisons.md" format="markdown" />
     <topicref href="higher-math.md" format="markdown" />
+    <topicref href="characters.md" format="markdown" />
   </topicref>
 </map>
