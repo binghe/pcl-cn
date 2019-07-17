@@ -40,3 +40,7 @@
 * [ ] Chapter 32
 * [ ] Fixing cross-references
 * [ ] Adding footnotes
+
+## References
+
+- Source Code for _Practical Common Lisp_ [https://github.com/Apress/practical-common-lisp]
