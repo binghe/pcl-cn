@@ -43,4 +43,5 @@
 
 ## References
 
-- Source Code for _Practical Common Lisp_ [https://github.com/Apress/practical-common-lisp]
+- Source Code for _Practical Common Lisp_ (2005) [https://github.com/Apress/practical-common-lisp]
+- Source Code for _Practical Common Lisp_ (2011) [https://github.com/Apress/practical-common-lisp-11]
