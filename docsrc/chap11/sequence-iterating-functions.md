@@ -1,4 +1,4 @@
-# Sequence Iterating Functions
+# Sequence Iterating Functions（序列迭代函数）
 
 While in theory all operations on sequences boil down to some
 combination of **LENGTH**, **ELT**, and **SETF** of **ELT** operations, Common Lisp
