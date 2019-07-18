@@ -152,7 +152,6 @@ Table 11-2 summarizes these arguments.
 | `:start` | Starting index (inclusive) of subsequence.	| 0 |
 | `:end` | Ending index (exclusive) of subsequence. **NIL** indicates end of sequence. | **NIL** |
 | `:from-end` | If true, the sequence will be traversed in reverse order, from end to start. | **NIL** |
-| `:count` | Number indicating the number of elements to remove or
-| substitute or **NIL** to indicate all (**REMOVE** and **SUBSTITUTE** only). | **NIL** |
+| `:count` | Number indicating the number of elements to remove or substitute or **NIL** to indicate all (**REMOVE** and **SUBSTITUTE** only). | **NIL** |
 
 
