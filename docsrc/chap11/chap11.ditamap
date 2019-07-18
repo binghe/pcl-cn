@@ -4,6 +4,7 @@
 <map>
   <topicref href="collections.md" format="markdown">
     <topicref href="vectors.md" format="markdown" />
+    <topicref href="subtypes-of-vector.md" format="markdown" />
     <!-- <topicref href="" format="markdown" /> -->
   </topicref>
 </map>
