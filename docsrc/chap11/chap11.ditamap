@@ -7,6 +7,9 @@
     <topicref href="subtypes-of-vector.md" format="markdown" />
     <topicref href="vector-as-sequences.md" format="markdown" />
     <topicref href="sequence-iterating-functions.md" format="markdown" />
+    <topicref href="higher-order-function-variants.md" format="markdown" />
+    <topicref href="whole-sequence-manipulations.md" format="markdown" />
+    <topicref href="sorting-and-merging.md" format="markdown" />
     <!-- <topicref href="" format="markdown" /> -->
   </topicref>
 </map>
