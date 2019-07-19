@@ -13,6 +13,7 @@
     <topicref href="subsequence-manipulations.md" format="markdown" />
     <topicref href="sequence-predicates.md" format="markdown" />
     <topicref href="sequence-mapping-functions.md" format="markdown" />
+    <topicref href="hash-tables.md" format="markdown" />
     <!-- <topicref href="" format="markdown" /> -->
   </topicref>
 </map>
