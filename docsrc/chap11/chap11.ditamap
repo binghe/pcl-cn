@@ -10,6 +10,9 @@
     <topicref href="higher-order-function-variants.md" format="markdown" />
     <topicref href="whole-sequence-manipulations.md" format="markdown" />
     <topicref href="sorting-and-merging.md" format="markdown" />
+    <topicref href="subsequence-manipulations.md" format="markdown" />
+    <topicref href="sequence-predicates.md" format="markdown" />
+    <topicref href="sequence-mapping-functions.md" format="markdown" />
     <!-- <topicref href="" format="markdown" /> -->
   </topicref>
 </map>
