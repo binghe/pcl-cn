@@ -8,5 +8,7 @@
     <topicref href="destructive-operations.md" format="markdown" />
     <topicref href="combining-recycling-with-shared-structure.md" format="markdown" />
     <topicref href="list-manipulation-functions.md" format="markdown" />
+    <topicref href="mapping.md" format="markdown" />
+    <topicref href="other-structures.md" format="markdown" />
   </topicref>
 </map>
