@@ -6,6 +6,7 @@
     <topicref href="trees.md" format="markdown" />
     <topicref href="sets.md" format="markdown" />
     <topicref href="lookup-tables.md" format="markdown" />
+    <topicref href="destructuring-bind.md" format="markdown" />
   </topicref>
 </map>
 
