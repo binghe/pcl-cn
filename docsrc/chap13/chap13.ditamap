@@ -3,5 +3,6 @@
 
 <map>
   <topicref href="beyond-lists.md" format="markdown">
+    <topicref href="trees.md" format="markdown" />
   </topicref>
 </map>
