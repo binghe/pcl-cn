@@ -3,6 +3,9 @@
 
 <map>
   <topicref href="files-and-file-io.md" format="markdown">
+    <topicref href="reading-file-data.md" format="markdown" />
+    <topicref href="reading-binary-data.md" format="markdown" />
+    <topicref href="bulk-reads.md" format="markdown" />
   </topicref>
 </map>
 
