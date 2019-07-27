@@ -1,5 +1,7 @@
 # Practical Common Lisp (中英文对照版)
 
+预编译的 HTML 版在这里：[https://binghe.github.io/pcl-cn/]
+
 ## Requirements for building ebooks from (textual) sources
 
 - DITA-OT (3.3.2 or later) [https://www.dita-ot.org]
