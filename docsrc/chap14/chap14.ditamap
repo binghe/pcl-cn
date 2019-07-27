@@ -11,6 +11,6 @@
     <topicref href="filenames.md" format="markdown">
       <topicref href="how-we-got-here.md" format="markdown" />
     </topicref>
+    <topicref href="how-pathnames-represent-filenames.md" format="markdown" />
   </topicref>
 </map>
-
