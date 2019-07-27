@@ -7,6 +7,7 @@
     <topicref href="reading-binary-data.md" format="markdown" />
     <topicref href="bulk-reads.md" format="markdown" />
     <topicref href="file-output.md" format="markdown" />
+    <topicref href="closing-files.md" format="markdown" />
   </topicref>
 </map>
 
