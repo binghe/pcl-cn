@@ -1,0 +1,45 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="numeric-comparisons数值比较"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Numeric Comparisons（数值比较）</title></head><body id="numeric-comparisons数值比较"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Numeric Comparisons（数值比较）</h1><div class="body"><p class="p">The function <code class="ph codeph">=</code> is the numeric equality predicate. It compares numbers
+by mathematical value, ignoring differences in type. Thus, <code class="ph codeph">=</code> will
+consider mathematically equivalent values of different types
+equivalent while the generic equality predicate <strong class="ph b">EQL</strong> would consider
+them inequivalent because of the difference in type. (The generic
+equality predicate <strong class="ph b">EQUALP</strong>, however, uses = to compare numbers.) If
+it's called with more than two arguments, it returns true only if they
+all have the same value. Thus:</p><p class="p">函数 <code class="ph codeph">=</code>
+是数值等价谓词。它用数学意义上的值来比较数字，而忽略类型上的区别。这样，<code class="ph codeph">=</code>
+将把不同类型在数学意义上等价的值视为等价，而通用等价谓词 <strong class="ph b">EQL</strong>
+将由于其类型差异而视其不等价。（但通用等价谓词 <strong class="ph b">EQUALP</strong>
+使用 <code class="ph codeph">=</code> 来比较数字。）如果它以超过两个参数被调用，它将只有当所有参数具有相同值时才返回真。如下所示：</p><pre class="pre codeblock lisp"><code>(= 1 1)                        ==&gt; T
+(= 10 20/2)                    ==&gt; T
+(= 1 1.0 #c(1.0 0.0) #c(1 0))  ==&gt; T</code></pre><p class="p">The <code class="ph codeph">/=</code> function, conversely, returns true only if all its arguments
+are different values.</p><p class="p">相反，函数 <code class="ph codeph">/=</code> 只有当它的全部参数都是不同值才返回真。</p><pre class="pre codeblock lisp"><code>(/= 1 1)        ==&gt; NIL
+(/= 1 2)        ==&gt; T
+(/= 1 2 3)      ==&gt; T
+(/= 1 2 3 1)    ==&gt; NIL
+(/= 1 2 3 1.0)  ==&gt; NIL</code></pre><p class="p">The functions <code class="ph codeph">&lt;</code>, <code class="ph codeph">&gt;</code>, <code class="ph codeph">&lt;=</code>, and <code class="ph codeph">&gt;=</code> order rationals and floating-point
+numbers (in other words, the real numbers.) Like <code class="ph codeph">=</code> and <code class="ph codeph">/=</code>, these
+functions can be called with more than two arguments, in which case
+each argument is compared to the argument to its right.</p><p class="p">函数 <code class="ph codeph">&lt;</code>、<code class="ph codeph">&gt;</code>、<code class="ph codeph">&lt;=</code> 和 <code class="ph codeph">&gt;=</code> 检查有理数和浮点数（也就是实数）的次序。跟 <code class="ph codeph">=</code>
+和 <code class="ph codeph">/=</code> 相似，这些函数也可以用超过两个参数来调用，这时每个参数都跟其右边的那个参数相比较。</p><pre class="pre codeblock lisp"><code>(&lt; 2 3)       ==&gt; T
+(&gt; 2 3)       ==&gt; NIL
+(&gt; 3 2)       ==&gt; T
+(&lt; 2 3 4)     ==&gt; T
+(&lt; 2 3 3)     ==&gt; NIL
+(&lt;= 2 3 3)    ==&gt; T
+(&lt;= 2 3 3 4)  ==&gt; T
+(&lt;= 2 3 4 3)  ==&gt; NIL</code></pre><p class="p">To pick out the smallest or largest of several numbers, you can use
+the function <strong class="ph b">MIN</strong> or <strong class="ph b">MAX</strong>, which takes any number of real number
+arguments and returns the minimum or maximum value.</p><p class="p">要想选出几个数字中最小或最大的那个，你可以使用函数 <strong class="ph b">MIN</strong> 或
+<strong class="ph b">MAX</strong>，其接受任意数量的实数参数并返回最小或最大值。</p><pre class="pre codeblock lisp"><code>(max 10 11)    ==&gt; 11
+(min -12 -10)  ==&gt; -12
+(max -1 2 -3)  ==&gt; 2</code></pre><p class="p">Some other handy functions are <strong class="ph b">ZEROP</strong>, <strong class="ph b">MINUSP</strong>, and <strong class="ph b">PLUSP</strong>, which test
+whether a single real number is equal to, less than, or greater than
+zero. Two other predicates, <strong class="ph b">EVENP</strong> and <strong class="ph b">ODDP</strong>, test whether a single
+integer argument is even or odd. The <code class="ph codeph">P</code> suffix on the names of these
+functions is a standard naming convention for predicate functions,
+functions that test some condition and return a boolean.</p><p class="p">其他一些常用函数包括 <strong class="ph b">ZEROP</strong>、<strong class="ph b">MINUSP</strong> 和
+<strong class="ph b">PLUSP</strong>，用来测试单一实数是否等于、小于或大于零。另外两个谓词
+<strong class="ph b">EVENP</strong>
+和 <strong class="ph b">ODDP</strong>，测试单一整数参数是否是偶数或奇数。这些函数名称中的P后缀是一种谓词函数的标准命名约定，这些函数能够测试某些条件并返回一个布尔值。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

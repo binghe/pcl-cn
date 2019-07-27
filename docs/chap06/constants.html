@@ -1,0 +1,33 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap06/variables.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="constants常量"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Constants（常量）</title></head><body id="constants常量"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Constants（常量）</h1><div class="body"><p class="p">One other kind of variable I haven't mentioned at all is the
+oxymoronic "constant variable." All constants are global and are
+defined with <strong class="ph b">DEFCONSTANT</strong>. The basic form of <strong class="ph b">DEFCONSTANT</strong>
+is like <strong class="ph b">DEFPARAMETER</strong>.</p><p class="p">我尚未提到的另一种类型的变量是所谓的
+“常值变量”。所有的常量都是全局的，并且使用 <strong class="ph b">DEFCONSTANT</strong>
+的定义，<strong class="ph b">DEFCONSTANT</strong> 的基本形式与 <strong class="ph b">DEFPARAMETER</strong> 相似。</p><pre class="pre codeblock lisp"><code>(defconstant name initial-value-form [ documentation-string ])</code></pre><p class="p">As with <strong class="ph b">DEFVAR</strong> and <strong class="ph b">DEFPARAMETER</strong>, <strong class="ph b">DEFCONSTANT</strong> has a global effect on
+the name used--thereafter the name can be used only to refer to the
+constant; it can't be used as a function parameter or rebound with any
+other binding form. Thus, many Lisp programmers follow a naming
+convention of using names starting and ending with <code class="ph codeph">+</code> for
+constants. This convention is somewhat less universally followed than
+the <code class="ph codeph">*</code>-naming convention for globally special names but is a good idea
+for the same reason.</p><p class="p">与 <strong class="ph b">DEFVAR</strong> 和 <strong class="ph b">DEFPARAMETER</strong> 相似，<strong class="ph b">DEFCONSTANT</strong>
+在其使用的名字上产生了一个全局效果——从此该名字仅被用于指向常量；它不能被用作函数形参或是用任何其他的绑定形式进行重绑定。因此，许多
+Lisp 程序员遵循了一个命名约定，用以 <code class="ph codeph">+</code>
+开始或结尾的名字来表示常量，这一约定在某种程度上不像全局特殊名字的 <code class="ph codeph">*</code>
+命名约定那样流行，但同样也不错。</p><p class="p">Another thing to note about <strong class="ph b">DEFCONSTANT</strong> is that while the language
+allows you to redefine a constant by reevaluating a <strong class="ph b">DEFCONSTANT</strong> with a
+different <code class="ph codeph">initial-value-form</code>, what exactly happens after the
+redefinition isn't defined. In practice, most implementations will
+require you to reevaluate any code that refers to the constant in
+order to see the new value since the old value may well have been
+inlined. Consequently, it's a good idea to use <strong class="ph b">DEFCONSTANT</strong> only to
+define things that are really constant, such as the value of NIL. For
+things you might ever want to change, you should use <strong class="ph b">DEFPARAMETER</strong>
+instead.</p><p class="p">关于 <strong class="ph b">DEFCONSTANT</strong>，需要注意的另一点是，尽管语言允许通过重新求值一个带有一个初始值形式的
+<strong class="ph b">DEFCONSTANT</strong>
+来重定义一个常量，但在重定义之后究竟发生什么是没有定义的。在实践上，多数实现将要求任何对引用了该常量的代码进行求值以便它们能看到新值，因为老的值可能已经被内联到代码中了。因此最好只用
+<strong class="ph b">DEFCONSTANT</strong>
+来定义那些真正是常量的东西，例如π的值。而对于那些可能想改变的东西，则应转而使用
+<strong class="ph b">DEFPARAMETER</strong>。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap06/variables.html">Variables（变量）</a></div></div></nav></article></main></body></html>

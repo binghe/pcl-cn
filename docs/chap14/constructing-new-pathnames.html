@@ -1,0 +1,64 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap14/files-and-file-io.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="constructing-new-pathnames"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Constructing New Pathnames</title></head><body id="constructing-new-pathnames"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Constructing New Pathnames</h1><div class="body"><p class="p">You can construct arbitrary pathnames using the MAKE-PATHNAME
+function. It takes one keyword argument for each pathname component
+and returns a pathname with any supplied components filled in and the
+rest NIL.</p><pre class="pre codeblock lisp"><code>(make-pathname
+  :directory '(:absolute "foo" "bar")
+  :name "baz"
+  :type "txt") ==&gt; #p"/foo/bar/baz.txt"</code></pre><p class="p">However, if you want your programs to be portable, you probably don't
+want to make pathnames completely from scratch: even though the
+pathname abstraction protects you from unportable filename syntax,
+filenames can be unportable in other ways. For instance, the filename
+<code class="ph codeph">/home/peter/foo.txt</code> is no good on an OS X box where <code class="ph codeph">/home/</code> is called
+<code class="ph codeph">/Users/</code>.</p><p class="p">Another reason not to make pathnames completely from scratch is that
+different implementations use the pathname components slightly
+differently. For instance, as mentioned previously, some Windows-based
+Lisp implementations store the drive letter in the device component
+while others store it in the host component. If you write code like
+this:</p><pre class="pre codeblock lisp"><code>(make-pathname :device "c" :directory '(:absolute "foo" "bar") :name "baz")</code></pre><p class="p">it will be correct on some implementations but not on others.</p><p class="p">Rather than making names from scratch, you can build a new pathname
+based on an existing pathname with <strong class="ph b">MAKE-PATHNAME</strong>'s keyword parameter
+<code class="ph codeph">:defaults</code>. With this parameter you can provide a pathname designator,
+which will supply the values for any components not specified by other
+arguments. For example, the following expression creates a pathname
+with an <code class="ph codeph">.html</code> extension and all other components the same as the
+pathname in the variable input-file:</p><pre class="pre codeblock lisp"><code>(make-pathname :type "html" :defaults input-file)</code></pre><p class="p">Assuming the value in input-file was a user-provided name, this code
+will be robust in the face of operating system and implementation
+differences such as whether filenames have drive letters in them and
+where they're stored in a pathname if they do.</p><p class="p">You can use the same technique to create a pathname with a different
+directory component.</p><pre class="pre codeblock lisp"><code>(make-pathname :directory '(:relative "backups") :defaults input-file)</code></pre><p class="p">However, this will create a pathname whose whole directory component
+is the relative directory backups/, regardless of any directory
+component input-file may have had. For example:</p><pre class="pre codeblock lisp"><code>(make-pathname :directory '(:relative "backups")
+               :defaults #p"/foo/bar/baz.txt") ==&gt; #p"backups/baz.txt"</code></pre><p class="p">Sometimes, though, you want to combine two pathnames, at least one of
+which has a relative directory component, by combining their directory
+components. For instance, suppose you have a relative pathname such as
+<code class="ph codeph">#p"foo/bar.html"</code> that you want to combine with an absolute pathname
+such as <code class="ph codeph">#p"/www/html/"</code> to get <code class="ph codeph">#p"/www/html/foo/bar.html"</code>. In that
+case, <strong class="ph b">MAKE-PATHNAME</strong> won't do; instead, you want <strong class="ph b">MERGE-PATHNAMES</strong>.</p><p class="p"><strong class="ph b">MERGE-PATHNAMES</strong> takes two pathnames and merges them, filling in any
+<strong class="ph b">NIL</strong> components in the first pathname with the corresponding value from
+the second pathname, much like <strong class="ph b">MAKE-PATHNAME</strong> fills in any unspecified
+components with components from the <code class="ph codeph">:defaults</code> argument. However,
+<strong class="ph b">MERGE-PATHNAMES</strong> treats the directory component specially: if the first
+pathname's directory is relative, the directory component of the
+resulting pathname will be the first pathname's directory relative to
+the second pathname's directory. Thus:</p><pre class="pre codeblock lisp"><code>(merge-pathnames #p"foo/bar.html" #p"/www/html/") ==&gt; #p"/www/html/foo/bar.html"</code></pre><p class="p">The second pathname can also be relative, in which case the resulting
+pathname will also be relative.</p><pre class="pre codeblock lisp"><code>(merge-pathnames #p"foo/bar.html" #p"html/") ==&gt; #p"html/foo/bar.html"</code></pre><p class="p">To reverse this process and obtain a filename relative to a particular
+root directory, you can use the handy function <strong class="ph b">ENOUGH-NAMESTRING</strong>.</p><pre class="pre codeblock lisp"><code>(enough-namestring #p"/www/html/foo/bar.html" #p"/www/") ==&gt; "html/foo/bar.html"</code></pre><p class="p">You can then combine <strong class="ph b">ENOUGH-NAMESTRING</strong> with <strong class="ph b">MERGE-PATHNAMES</strong> to create
+a pathname representing the same name but in a different root.</p><pre class="pre codeblock lisp"><code>(merge-pathnames
+  (enough-namestring #p"/www/html/foo/bar/baz.html" #p"/www/")
+  #p"/www-backups/") ==&gt; #p"/www-backups/html/foo/bar/baz.html"</code></pre><p class="p"><strong class="ph b">MERGE-PATHNAMES</strong> is also used internally by the standard functions that
+actually access files in the file system to fill in incomplete
+pathnames. For instance, suppose you make a pathname with just a name
+and a type.</p><pre class="pre codeblock lisp"><code>(make-pathname :name "foo" :type "txt") ==&gt; #p"foo.txt"</code></pre><p class="p">If you try to use this pathname as an argument to <strong class="ph b">OPEN</strong>, the missing
+components, such as the directory, must be filled in before Lisp will
+be able to translate the pathname to an actual filename. Common Lisp
+will obtain values for the missing components by merging the given
+pathname with the value of the variable
+<code class="ph codeph">*DEFAULT-PATHNAME-DEFAULTS*</code>. The initial value of this variable is
+determined by the implementation but is usually a pathname with a
+directory component representing the directory where Lisp was started
+and appropriate values for the host and device components, if
+needed. If invoked with just one argument, <strong class="ph b">MERGE-PATHNAMES</strong> will merge
+the argument with the value of <code class="ph codeph">*DEFAULT-PATHNAME-DEFAULTS*</code>. For
+instance, if <code class="ph codeph">*DEFAULT-PATHNAME-DEFAULTS*</code> is <code class="ph codeph">#p"/home/peter/"</code>, then
+you'd get the following:</p><pre class="pre codeblock lisp"><code>(merge-pathnames #p"foo.txt") ==&gt; #p"/home/peter/foo.txt"</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap14/files-and-file-io.html">Files and File I/O（文件和文件 I/O）</a></div></div></nav></article></main></body></html>

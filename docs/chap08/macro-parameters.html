@@ -1,0 +1,74 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap08/macros-defining-your-own.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="macro-parameters宏的形参"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Macro Parameters（宏的形参）</title></head><body id="macro-parameters宏的形参"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Macro Parameters（宏的形参）</h1><div class="body"><p class="p">Since the arguments passed to a macro are Lisp objects representing
+the source code of the macro call, the first step in any macro is to
+extract whatever parts of those objects are needed to compute the
+expansion. For macros that simply interpolate their arguments directly
+into a template, this step is trivial: simply defining the right
+parameters to hold the different arguments is sufficient.</p><p class="p">由于传递给宏的实参是代表宏调用源代码的 Lisp
+对象，因此任何宏的第一步工作都是提取出那些对象中用于计算展开式的部分。对于那些简单地将其实参直接插入到模板中的宏而言，这一步骤相当简单：只需定义正确的形参来保存不同的实参就可以了。</p><p class="p">But this approach, it seems, will not suffice for <code class="ph codeph">do-primes</code>. The first
+argument to the <code class="ph codeph">do-primes</code> call is a list containing the name of the
+loop variable, <code class="ph codeph">p</code>; the lower bound, 0; and the upper bound, 19. But if
+you look at the expansion, the list as a whole doesn't appear in the
+expansion; the three element are split up and put in different places.</p><p class="p">但是这一方法似乎并不适用于 <code class="ph codeph">do-primes</code>。<code class="ph codeph">do-primes</code>
+调用的第一个参数是一个列表，其含有循环变量名 <code class="ph codeph">p</code> 及其下界 0
+和上界 19。但如果查看展开式就会发现，该列表作为整体并没有出现在展开式中，三个元素被拆分开并分别放在不同的位置上。</p><p class="p">You could define <code class="ph codeph">do-primes</code> with two parameters, one to hold the list
+and a <code class="ph codeph">&amp;rest</code> parameter to hold the body forms, and then take apart the
+list by hand, something like this:</p><p class="p">你可以定义带有两个形参的宏 <code class="ph codeph">do-primes</code>：一个用来保存该列表，另一个
+<code class="ph codeph">&amp;rest</code> 形参保存整个形式的主体，然后手工分拆该列表，类似下面这样：</p><pre class="pre codeblock lisp"><code>(defmacro do-primes (var-and-range &amp;rest body)
+  (let ((var (first var-and-range))
+        (start (second var-and-range))
+        (end (third var-and-range)))
+    `(do ((,var (next-prime ,start) (next-prime (1+ ,var))))
+         ((&gt; ,var ,end))
+       ,@body)))</code></pre><p class="p">In a moment I'll explain how the body generates the correct expansion;
+for now you can just note that the variables <code class="ph codeph">var</code>, <code class="ph codeph">start</code>, and <code class="ph codeph">end</code> each
+hold a value, extracted from <code class="ph codeph">var-and-range</code>, that's then interpolated
+into the backquote expression that generates <code class="ph codeph">do-primes</code>'s expansion.</p><p class="p">很快我们将解释上述宏形式体是怎样生成正确的展开式的。目前只需注意到变量
+<code class="ph codeph">var</code>、<code class="ph codeph">start</code> 和 <code class="ph codeph">end</code> 都持有一个从 <code class="ph codeph">var-and-range</code>
+中提取出的值，它们随后被插入到反引用表达式中以生成 <code class="ph codeph">do-primes</code> 的展开式。</p><p class="p">However, you don't need to take apart <code class="ph codeph">var-and-range</code> "by hand" because
+macro parameter lists are what are called destructuring parameter
+lists. Destructuring, as the name suggests, involves taking apart a
+structure--in this case the list structure of the forms passed to a
+macro.</p><p class="p">尽管如此，你并不需要 “手工” 分拆
+<code class="ph codeph">var-and-range</code>，因为宏形参列表是所谓的解构（destructuring）形参列表。顾名思义，“解构”
+的意思就是分解一个结构体，在本例中是传递给一个宏的列表结构。</p><p class="p">Within a destructuring parameter list, a simple parameter name can be
+replaced with a nested parameter list. The parameters in the nested
+parameter list will take their values from the elements of the
+expression that would have been bound to the parameter the list
+replaced. For instance, you can replace <code class="ph codeph">var-and-range</code> with a list
+<code class="ph codeph">(var start end)</code>, and the three elements of the list will automatically be
+destructured into those three parameters.</p><p class="p">在解构形参列表中，简单的形参名将被替换成嵌套的形参列表。嵌套形参列表中的形参将从绑定到该形参列表的表达式的元素中获得其值。例如可以将
+<code class="ph codeph">var-and-range</code> 替换成一个列表 <code class="ph codeph">(var start end)</code>，然后这个列表的三个元素将被自动解构到三个形参上。</p><p class="p">Another special feature of macro parameter lists is that you can use
+<code class="ph codeph">&amp;body</code> as a synonym for <code class="ph codeph">&amp;rest</code>. Semantically <code class="ph codeph">&amp;body</code> and <code class="ph codeph">&amp;rest</code> are
+equivalent, but many development environments will use the presence of
+a <code class="ph codeph">&amp;body</code> parameter to modify how they indent uses of the
+macro--typically <code class="ph codeph">&amp;body</code> parameters are used to hold a list of forms
+that make up the body of the macro.</p><p class="p">宏形参列表的另一个特性是可以使用 <code class="ph codeph">&amp;body</code> 作为 <code class="ph codeph">&amp;rest</code>
+的同义词。<code class="ph codeph">&amp;body</code> 和 <code class="ph codeph">&amp;rest</code>
+在语义上是等价的，但许多开发环境根据一个 <code class="ph codeph">&amp;body</code>
+形参的存在来修改它们缩进那些使用该宏的代码的方式。通常 <code class="ph codeph">&amp;body</code>
+被用来保存一个构成该宏主体的形式的列表。</p><p class="p">So you can streamline the definition of <code class="ph codeph">do-primes</code> and give a hint to
+both human readers and your development tools about its intended use
+by defining it like this:</p><p class="p">因此你可以通过将 <code class="ph codeph">do-primes</code> 定义成下面这样来完成其定义，并同时向读者和你的开发工具说明它的用途：</p><pre class="pre codeblock lisp"><code>(defmacro do-primes ((var start end) &amp;body body)
+  `(do ((,var (next-prime ,start) (next-prime (1+ ,var))))
+       ((&gt; ,var ,end))
+     ,@body))</code></pre><p class="p">In addition to being more concise, destructuring parameter lists also
+give you automatic error checking--with <code class="ph codeph">do-primes</code> defined this way,
+Lisp will be able to detect a call whose first argument isn't a
+three-element list and will give you a meaningful error message just
+as if you had called a function with too few or too many
+arguments. Also, in development environments such as SLIME that
+indicate what arguments are expected as soon as you type the name of a
+function or macro, if you use a destructuring parameter list, the
+environment will be able to tell you more specifically the syntax of
+the macro call. With the original definition, SLIME would tell you
+<code class="ph codeph">do-primes</code> is called like this:</p><p class="p">除了更加简洁以外，解构形参列表还可以给你自动检查错误。通过以这种方式定义
+<code class="ph codeph">do-primes</code>，Lisp
+可以检测到那些起始参数不是三元素列表的调用并给你一个有意义的错误信息，就好像你用太多或太少的参数调用了一个函数那样。同样，在诸如
+SLIME 这样的开发环境中，只要输入一个函数或宏的名字就可以指示它所期待的参数。如果你使用了一个解构形参列表，那么环境将可以更明确地告诉你宏调用的语法。使用最初的定义，SLIME
+将告诉你 <code class="ph codeph">do-primes</code> 可以像这样来调用：</p><pre class="pre codeblock lisp"><code>(do-primes var-and-range &amp;rest body)</code></pre><p class="p">But with the new definition, it can tell you that a call should look like this:</p><p class="p">但在新定义下，它可以告诉你一个调用应当看起来像这样：</p><pre class="pre codeblock lisp"><code>(do-primes (var start end) &amp;body body)</code></pre><p class="p">Destructuring parameter lists can contain <code class="ph codeph">&amp;optional</code>, <code class="ph codeph">&amp;key</code>, and <code class="ph codeph">&amp;rest</code>
+parameters and can contain nested destructuring lists. However, you
+don't need any of those options to write <code class="ph codeph">do-primes</code>.</p><p class="p">解构形参列表可以含有 <code class="ph codeph">&amp;optional</code>、<code class="ph codeph">&amp;key</code> 和 <code class="ph codeph">&amp;rest</code>
+形参，并且可以含有嵌套的解构列表。不过你在编写 <code class="ph codeph">do-primes</code>
+的过程中不需要任何这些选项。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap08/macros-defining-your-own.html">Macros: Defining Your Own（定义你自己的宏）</a></div></div></nav></article></main></body></html>

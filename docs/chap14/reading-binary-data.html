@@ -1,0 +1,21 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap14/files-and-file-io.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="reading-binary-data读取二进制数据"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Reading Binary Data（读取二进制数据）</title></head><body id="reading-binary-data读取二进制数据"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Reading Binary Data（读取二进制数据）</h1><div class="body"><p class="p">By default <strong class="ph b">OPEN</strong> returns character streams, which translate the
+underlying bytes to characters according to a particular
+character-encoding scheme. To read the raw bytes, you need to pass
+<strong class="ph b">OPEN</strong> an <code class="ph codeph">:element-type</code> argument of <code class="ph codeph">'(unsigned-byte 8)</code>. You can pass
+the resulting stream to the function <strong class="ph b">READ-BYTE</strong>, which will return an
+integer between 0 and 255 each time it's called. <strong class="ph b">READ-BYTE</strong>, like the
+character-reading functions, also accepts optional arguments to
+specify whether it should signal an error if called at the end of the
+file and what value to return if not. In Chapter 24 you'll build a
+library that allows you to conveniently read structured binary data
+using <strong class="ph b">READ-BYTE</strong>.</p><p class="p">默认情况下，<strong class="ph b">OPEN</strong>
+返回字符流，它根据特定的字符编码方案将底层字节转化成字符。 为了读取原
+始字节，你需要向
+<strong class="ph b">OPEN</strong> 传递一个值为 <code class="ph codeph">'(unsigned-byte 8)</code> 的 <code class="ph codeph">:element-type</code>
+参数。 你可以将得到的流传给
+<strong class="ph b">READ-BYTE</strong>，它将在每次被调用时返回一个从 0 到 255 之间的整数。与字符读取函数一样，<strong class="ph b">READ-BYTE</strong>
+也支持可选的参数此便指定当其被调用在文件结尾时是否应该报错，以及在遇到结尾时返回何值。在第
+24 章里你将构建一个库，它允许使用 <strong class="ph b">READ-BYTE</strong>
+来便利地读取结构化的二进制数据。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap14/files-and-file-io.html">Files and File I/O（文件和文件 I/O）</a></div></div></nav></article></main></body></html>

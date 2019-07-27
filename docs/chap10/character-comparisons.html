@@ -1,0 +1,37 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="character-comparisons字符比较"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Character Comparisons（字符比较）</title></head><body id="character-comparisons字符比较"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Character Comparisons（字符比较）</h1><div class="body"><p class="p">The main thing you can do with characters, other than putting them
+into strings (which I'll get to later in this chapter), is to compare
+them with other characters. Since characters aren't numbers, you can't
+use the numeric comparison functions, such as <code class="ph codeph">&lt;</code> and <code class="ph codeph">&gt;</code>. Instead, two
+sets of functions provide character-specific analogs to the numeric
+comparators; one set is case-sensitive and the other case-insensitive.</p><p class="p">可以对字符做的主要操作除了将它们放进字符串（我将在本章后面讨论这点）之外，还可将它们与其他字符相比较。由于字符不是数字，所以不能使用诸如
+<code class="ph codeph">&lt;</code> 和<code class="ph codeph">&gt;</code>
+这样的数值比较函数。作用替代，有两类函数提供了数值比较符的特定于字符的相似物：一类是大小写相关的，而另一类是大小写无关的。</p><p class="p">The case-sensitive analog to the numeric <code class="ph codeph">=</code> is the function <strong class="ph b">CHAR=</strong>. Like
+<code class="ph codeph">=</code>, <strong class="ph b">CHAR=</strong> can take any number of arguments and returns true only if
+they're all the same character. The case- insensitive version is
+<strong class="ph b">CHAR-EQUAL</strong>.</p><p class="p">数值 <code class="ph codeph">=</code> 的大小写相关相似物是函数 <strong class="ph b">CHAR=</strong>。像
+<code class="ph codeph">=</code> 那样，<strong class="ph b">CHAR=</strong>
+可以接受任意数量的实参并只在它们全是相同字符时才返回真。大小写无关版本是
+<strong class="ph b">CHAR-EQUAL</strong>。</p><p class="p">The rest of the character comparators follow this same naming scheme:
+the case-sensitive comparators are named by prepending the analogous
+numeric comparator with CHAR; the case-insensitive versions spell out
+the comparator name, separated from the <strong class="ph b">CHAR</strong> with a hyphen. Note,
+however, that <code class="ph codeph">&lt;=</code> and <code class="ph codeph">&gt;=</code> are "spelled out" with the logical equivalents
+<strong class="ph b">NOT-GREATERP</strong> and <strong class="ph b">NOT-LESSP</strong> rather than the more verbose
+<strong class="ph b">LESSP-OR-EQUALP</strong> and <strong class="ph b">GREATERP-OR-EQUALP</strong>. Like their numeric
+counterparts, all these functions can take one or more
+arguments. Table 10-1 summarizes the relation between the numeric and
+character comparison functions.</p><p class="p">其余的字符比较函数遵循了相同的命名模式：大小写相关的比较符通过在其对应的数值比较符前面加上
+<strong class="ph b">CHAR</strong> 来命名：大小写无关的版本拼出比较符的名字，前面加上 <strong class="ph b">CHAR</strong>
+和一个连字符。不过，注意 <code class="ph codeph">&lt;=</code> 和 <code class="ph codeph">&gt;=</code> 被拼写成其逻辑等价形式
+<strong class="ph b">NOT-GREATERP</strong> 和 <strong class="ph b">NOT-LESSP</strong>，而不是更确切的 <strong class="ph b">LESSP-OR-EQUALP</strong>
+和 <strong class="ph b">GREATERP-OR-EQUALP</strong>。和它们的数值等价物一样，所有这些函数都接受一个或更多参数。表
+10-1 总结了数值和字符比较函数之间的关系。</p><blockquote class="lq"><p class="p">Table 10-1. Character Comparison Functions</p></blockquote><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead"><tr class="row"><th class="entry align-left" id="character-comparisons字符比较__entry__1">Numeric Analog</th><th class="entry align-left" id="character-comparisons字符比较__entry__2">Case-Sensitive</th><th class="entry align-left" id="character-comparisons字符比较__entry__3">Case-Insensitive</th></tr></thead><tbody class="tbody"><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">=</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR=</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-EQUAL</strong></td></tr><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">/=</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR/=</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-NOT-EQUAL</strong></td></tr><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">&lt;</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR&lt;</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-LESSP</strong></td></tr><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">&gt;</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR&gt;</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-GREATERP</strong></td></tr><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">&lt;=</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR&lt;=</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-NOT-GREATERP</strong></td></tr><tr class="row"><td class="entry align-left" headers="character-comparisons字符比较__entry__1 "><code class="ph codeph">&gt;=</code></td><td class="entry align-left" headers="character-comparisons字符比较__entry__2 "><strong class="ph b">CHAR&gt;=</strong></td><td class="entry align-left" headers="character-comparisons字符比较__entry__3 "><strong class="ph b">CHAR-NOT-LESSP</strong></td></tr></tbody></table><p class="p">Other functions that deal with characters provide functions for, among
+other things, testing whether a given character is alphabetic or a
+digit character, testing the case of a character, obtaining a
+corresponding character in a different case, and translating between
+numeric values representing character codes and actual character
+objects. Again, for complete details, see your favorite Common Lisp
+reference.</p><p class="p">其他处理字符的函数包括测试一个给定字符是否是字母或者数字字符，测试一个字符的大小写，获取不同大小写的对应字符，以及在代表字符编码的数值和实际字符对象之间转化。对于完整的细节，请参见你喜爱的
+Common Lisp 参考。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

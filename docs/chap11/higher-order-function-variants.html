@@ -1,0 +1,51 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="higher-order-function-variants高阶函数变体"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Higher-Order Function Variants（高阶函数变体）</title></head><body id="higher-order-function-variants高阶函数变体"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Higher-Order Function Variants（高阶函数变体）</h1><div class="body"><p class="p">For each of the functions just discussed, Common Lisp provides two
+higher-order function variants that, in the place of the item
+argument, take a function to be called on each element of the
+sequence. One set of variants are named the same as the basic function
+with an <strong class="ph b">-IF</strong> appended. These functions count, find, remove, and
+substitute elements of the sequence for which the function argument
+returns true. The other set of variants are named with an <strong class="ph b">-IF-NOT</strong>
+suffix and count, find, remove, and substitute elements for which the
+function argument does not return true.</p><p class="p">对于每个刚刚讨论过的函数，Common Lisp
+都提供了两种高阶函数变体，它们接受一个将在每个序列元素上调用的函数，以此来代替项参数。一组变体被命名为与基本函数相同的名字并带有一个追加的
+<strong class="ph b">-IF</strong>。这些函数用于计数、查找、移除以及替换序列中那些函数参数返回真的元素。另一类变体以
+<strong class="ph b">-IF-NOT</strong> 后缀命名并计数、查找、移除以及替换函数参数不返回真的元素。</p><pre class="pre codeblock lisp"><code>(count-if #'evenp #(1 2 3 4 5))         ==&gt; 2
+
+(count-if-not #'evenp #(1 2 3 4 5))     ==&gt; 3
+
+(position-if #'digit-char-p "abcd0001") ==&gt; 4
+
+(remove-if-not #'(lambda (x) (char= (elt x 0) #\f))
+  #("foo" "bar" "baz" "foom")) ==&gt; #("foo" "foom")</code></pre><p class="p">According to the language standard, the <strong class="ph b">-IF-NOT</strong> variants are
+deprecated. However, that deprecation is generally considered to have
+itself been ill-advised. If the standard is ever revised, it's more
+likely the deprecation will be removed than the <strong class="ph b">-IF-NOT</strong>
+functions. For one thing, the <strong class="ph b">REMOVE-IF-NOT</strong> variant is probably used
+more often than <strong class="ph b">REMOVE-IF</strong>. Despite its negative-sounding name,
+<strong class="ph b">REMOVE-IF-NOT</strong> is actually the positive variant--it returns the
+elements that do satisfy the predicate.</p><p class="p">根据语言标准，这些 <strong class="ph b">-IF-NOT</strong>
+变体已经过时了。但这种过时通常被认为是由于标准本身欠考虑。不过，如果标准被再次修订的话，更有可能被去掉的是
+<strong class="ph b">-IF</strong> 而非 <strong class="ph b">-IF-NOT</strong> 系列。比如说，有个叫 <strong class="ph b">REMOVE-IF-NOT</strong>
+变体就比 <strong class="ph b">REMOVE-IF</strong> 更经常被使用。尽管它有一个听起来具有否定意义的名字，但
+<strong class="ph b">REMOVE-IF-NOT</strong> 实际上是一个具有肯定意义的变体——它返回满足谓词的那些元素。</p><p class="p">The <strong class="ph b">-IF</strong> and <strong class="ph b">-IF-NOT</strong> variants accept all the same keyword arguments as
+their vanilla counterparts except for <code class="ph codeph">:test</code>, which isn't needed since
+the main argument is already a function. With a <code class="ph codeph">:key</code> argument, the
+value extracted by the <code class="ph codeph">:key</code> function is passed to the function instead
+of the actual element.</p><p class="p">除了 <code class="ph codeph">:test</code>，这些 <strong class="ph b">-IF</strong> 和 <strong class="ph b">-IF-NOT</strong>
+变体都接受和它们的原始版本相同的关键字参数，<code class="ph codeph">:test</code>
+不再被需要是因为主参数已经是一个函数了。 通过使用 <code class="ph codeph">:key</code>
+参数，由 <code class="ph codeph">:key</code> 函数所抽取出的值将代替实际元素传递给该函数。</p><pre class="pre codeblock lisp"><code>(count-if #'evenp #((1 a) (2 b) (3 c) (4 d) (5 e)) :key #'first)     ==&gt; 2
+
+(count-if-not #'evenp #((1 a) (2 b) (3 c) (4 d) (5 e)) :key #'first) ==&gt; 3
+
+(remove-if-not #'alpha-char-p
+  #("foo" "bar" "1baz") :key #'(lambda (x) (elt x 0))) ==&gt; #("foo" "bar")</code></pre><p class="p">The <strong class="ph b">REMOVE</strong> family of functions also support a fourth variant,
+<strong class="ph b">REMOVE-DUPLICATES</strong>, that has only one required argument, a sequence,
+from which it removes all but one instance of each duplicated
+element. It takes the same keyword arguments as <strong class="ph b">REMOVE</strong>, except for
+<code class="ph codeph">:count</code>, since it always removes all duplicates.</p><p class="p"><strong class="ph b">REMOVE</strong> 函数家族还支持第四个变体
+<strong class="ph b">REMOVE-DUPLICATES</strong>，其接受一个序列作为唯一的必要参数，并将其中每个重复的元素移除到只剩下一个实例。它和
+<strong class="ph b">REMOVE</strong> 接受相同的关键字参数，除了
+<code class="ph codeph">:count</code>，因为它总是删除所有的重复。</p><pre class="pre codeblock lisp"><code>(remove-duplicates #(1 2 1 2 3 1 2 3 4)) ==&gt; #(1 2 3 4)</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

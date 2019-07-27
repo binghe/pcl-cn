@@ -1,0 +1,24 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap12/there-is-no-list.html"><meta name="DC.relation" scheme="URI" content="../chap12/functional-programming-and-lists.html"><meta name="DC.relation" scheme="URI" content="../chap12/destructive-operations.html"><meta name="DC.relation" scheme="URI" content="../chap12/combining-recycling-with-shared-structure.html"><meta name="DC.relation" scheme="URI" content="../chap12/list-manipulation-functions.html"><meta name="DC.relation" scheme="URI" content="../chap12/mapping.html"><meta name="DC.relation" scheme="URI" content="../chap12/other-structures.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="they-called-it-lisp-for-a-reason-list-processinglisp-名字的由来列表处理"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>They Called It LISP for a Reason: List Processing（LISP 名字的由来：列表处理）</title></head><body id="they-called-it-lisp-for-a-reason-list-processinglisp-名字的由来列表处理"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">They Called It LISP for a Reason: List Processing（LISP 名字的由来：列表处理）</h1><div class="body"><p class="p">Lists play an important role in Lisp--for reasons both historical and
+practical. Historically, lists were Lisp's original composite data
+type, though it has been decades since they were its only such data
+type. These days, a Common Lisp programmer is as likely to use a
+vector, a hash table, or a user-defined class or structure as to use a
+list.</p><p class="p">无论是出于历史还是实践的的原因，列表在 Lisp
+中都扮演着重要的角色。在历史上，列表曾经是 Lisp
+最初的复合数据类型，尽管很多年从实践上来它是这方面唯一的数据类型。现在，Lisp
+程序员可能会使用向量、哈希表、用户自定义的类或者结构体来代替列表。</p><p class="p">Practically speaking, lists remain in the language because they're an
+excellent solution to certain problems. One such problem--how to
+represent code as data in order to support code-transforming and
+code-generating macros--is particular to Lisp, which may explain why
+other languages don't feel the lack of Lisp-style lists. More
+generally, lists are an excellent data structure for representing any
+kind of heterogeneous and/or hierarchical data. They're also quite
+lightweight and support a functional style of programming that's
+another important part of Lisp's heritage.</p><p class="p">从实践上来讲，由于列表对特定问题提供了极佳的解决方案，因此它们仍然能留在语言之中。其中有这样一个问题——如何将代码表示成数据从而支持代码转换和生成代码的宏，它就是特定于
+Lisp 的，这就可以解释为什么其他语言没有感觉到因缺少 Lisp
+式列表所带来的不便。更一般地讲，列表是用于表达任何异构和（或）层次数据的极佳数据结构。它们相当轻量并且支持函数式的编程风格，而这种编程风格也是
+Lisp 传统的另一个重要方面。</p><p class="p">Thus, you need to understand lists on their own terms; as you gain a
+better understanding of how lists work, you'll be in a better position
+to appreciate when you should and shouldn't use them.</p><p class="p">因此，你需要更加深入地理解列表。一旦对列表的工作方式有了更加深刻的理解，你将会对如何适时地使用它们有更好的认识。</p></div><nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="../chap12/there-is-no-list.html">"There Is No List"（“没有列表”）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/functional-programming-and-lists.html">Functional Programming and Lists（函数式编程和列表）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/destructive-operations.html">"Destructive" Operations（“破坏性”操作）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/combining-recycling-with-shared-structure.html">Combining Recycling with Shared Structure（组合回收性函数和共享结构）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/list-manipulation-functions.html">List-Manipulation Functions（列表处理函数）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/mapping.html">Mapping（映射）</a></strong><br></li><li class="link ulchildlink"><strong><a href="../chap12/other-structures.html">Other Structures（其他结构）</a></strong><br></li></ul></nav></article></main></body></html>

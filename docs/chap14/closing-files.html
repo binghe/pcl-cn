@@ -1,0 +1,57 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap14/files-and-file-io.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="closing-files关闭文件"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Closing Files（关闭文件）</title></head><body id="closing-files关闭文件"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Closing Files（关闭文件）</h1><div class="body"><p class="p">As anyone who has written code that deals with lots of files knows,
+it's important to close files when you're done with them, because file
+handles tend to be a scarce resource. If you open files and don't
+close them, you'll soon discover you can't open any more files. It
+might seem straightforward enough to just be sure every <strong class="ph b">OPEN</strong> has a
+matching <strong class="ph b">CLOSE</strong>. For instance, you could always structure your file
+using code like this:</p><p class="p">任何编写过处理大量文件代码的人都知道，当处理完文件之后，关闭它们是多么重要。因为文件句柄往往是稀缺资源，如果打开一些文件却不关闭它们，你将很快发现不能再打开更多文件了。确保每一个
+<strong class="ph b">OPEN</strong> 都有一个匹配的 <strong class="ph b">CLOSE</strong>
+可能是非常显而易见的。例如，完全可以像下面这样来组织文件使用代码：</p><pre class="pre codeblock lisp"><code>(let ((stream (open "/some/file/name.txt")))
+  ;; do stuff with stream
+  (close stream))</code></pre><p class="p">However, this approach suffers from two problems. One is simply that
+it's error prone--if you forget the <strong class="ph b">CLOSE</strong>, the code will leak a file
+handle every time it runs. The other--and more significant--problem is
+that there's no guarantee you'll get to the <strong class="ph b">CLOSE</strong>. For instance, if
+the code prior to the <strong class="ph b">CLOSE</strong> contains a <strong class="ph b">RETURN</strong> or <strong class="ph b">RETURN-FROM</strong>, you
+could leave the <strong class="ph b">LET</strong> without closing the stream. Or, as you'll see in
+Chapter 19, if any of the code before the <strong class="ph b">CLOSE</strong> signals an error,
+control may jump out of the <strong class="ph b">LET</strong> to an error handler and never come
+back to close the stream.</p><p class="p">但这一方法还是有两方面的问题。一是容易出现错误──如果忘记使用
+<strong class="ph b">CLOSE</strong>，那么代码将在每次运行时泄漏一个文件句柄。而更重要的一点是，于该代码并不保证你能够到达
+<strong class="ph b">CLOSE</strong> 那里。例如，如果 <strong class="ph b">CLOSE</strong> 之前的代码含有一个 <strong class="ph b">RETURN</strong>
+或 <strong class="ph b">RETURN-FROM</strong>，那就会在没有关闭流的情况下离开
+<strong class="ph b">LET</strong> 语句块。或者如同将第 19 章里将要介绍的，如果任何
+<strong class="ph b">CLOSE</strong> 之前的代码产生了一个错误，那么控制流可能就会跳出
+<strong class="ph b">LET</strong> 语句块而转到一个错误处理器中，然后不再回来关闭那个流。</p><p class="p">Common Lisp provides a general solution to the problem of how to
+ensure that certain code always runs: the special operator
+<strong class="ph b">UNWIND-PROTECT</strong>, which I'll discuss in Chapter 20. However, because the
+pattern of opening a file, doing something with the resulting stream,
+and then closing the stream is so common, Common Lisp provides a
+macro, <strong class="ph b">WITH-OPEN-FILE</strong>, built on top of <strong class="ph b">UNWIND-PROTECT</strong>, to encapsulate
+this pattern. This is the basic form:</p><p class="p">Common Lisp
+对于如何确保一直运行特定代码这一问题提供了一个通用的解决方案：特别操作符
+<strong class="ph b">UNWIND-PROTECT</strong>，第 20
+章将予以讨论。不过因为这种打开文件、对产生的流做一些事情、然后再关闭流的模式是如此普遍，Common
+Lisp 提供了一个构建在 <strong class="ph b">UNWIND-PROTECT</strong>
+之上的宏 <strong class="ph b">WITH-OPEN-FILE</strong> 来封装这一模式。下面是它的基本形式：</p><pre class="pre codeblock lisp"><code>(with-open-file (stream-var open-argument*)
+  body-form*)</code></pre><p class="p">The forms in <code class="ph codeph">body-form</code>s are evaluated with stream-var bound to a file
+stream opened by a call to <strong class="ph b">OPEN</strong> with <code class="ph codeph">open-argument</code>s as its
+arguments. <strong class="ph b">WITH-OPEN-FILE</strong> then ensures the stream in <code class="ph codeph">stream-var</code> is
+closed before the <strong class="ph b">WITH-OPEN-FILE</strong> form returns. Thus, you can write
+this to read a line from a file:</p><p class="p">其中 <code class="ph codeph">body-form</code> 中的形式将在
+<code class="ph codeph">stream-var</code> 被绑定到一个文件流的情况下进行求值，该流由一个对以
+<code class="ph codeph">open-argument</code> 为实参的 <strong class="ph b">OPEN</strong>
+调用而打开。<strong class="ph b">WITH-OPEN-FILE</strong> 会确保 <code class="ph codeph">stream-var</code>
+中的流在 <strong class="ph b">WITH-OPEN-FILE</strong>
+返回之前被关闭。因为，从一个文件中读取一行的代码应如下所示：</p><pre class="pre codeblock lisp"><code>(with-open-file (stream "/some/file/name.txt")
+  (format t "~a~%" (read-line stream)))</code></pre><p class="p">To create a new file, you can write something like this:</p><p class="p">为了创建一个新文件，你可以写成像下面这样：</p><pre class="pre codeblock lisp"><code>(with-open-file (stream "/some/file/name.txt" :direction :output)
+  (format stream "Some text."))</code></pre><p class="p">You'll probably use <strong class="ph b">WITH-OPEN-FILE</strong> for 90-99 percent of the file I/O
+you do--the only time you need to use raw <strong class="ph b">OPEN</strong> and <strong class="ph b">CLOSE</strong> calls is if
+you need to open a file in a function and keep the stream around after
+the function returns. In that case, you must take care to eventually
+close the stream yourself, or you'll leak file descriptors and may
+eventually end up unable to open any more files.</p><p class="p">在你所使用的 90-99% 的文件 I/O 中都可能会用到
+<strong class="ph b">WITH-OPEN-FILE</strong>──需要使用原始 <strong class="ph b">OPEN</strong> 和 <strong class="ph b">CLOSE</strong>
+调用的唯一情况是，当需要在一个函数中打开一个文件并在函数返回之后仍然保持所产生的流时。在那种情况下必须注意一点最终要由你自己来关闭这个流，否则你将会泄漏文件描述符并可能最终无法打开更多文件。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap14/files-and-file-io.html">Files and File I/O（文件和文件 I/O）</a></div></div></nav></article></main></body></html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap07/macros-standard-control-constructs.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="condcond-宏"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>COND（COND 宏）</title></head><body id="condcond-宏"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">COND（COND 宏）</h1><div class="body"><p class="p">Another time raw <strong class="ph b">IF</strong> expressions can get ugly is when you have a
+multibranch conditional: if <code class="ph codeph">a</code> do x, else if <code class="ph codeph">b</code> do y; else do z. There's
+no logical problem writing such a chain of conditional expressions
+with just <strong class="ph b">IF</strong>, but it's not pretty.</p><p class="p">当遇到多重分支的条件语句时，原始的 <strong class="ph b">IF</strong>
+表达式再一次变得丑陋不堪：如果 <code class="ph codeph">a</code> 成立那么执行 x，否则如果 <code class="ph codeph">b</code>
+成立那么执行 y；否则执行 z。只用 <strong class="ph b">IF</strong>
+来写这样的条件表达式链并没有逻辑问题，只是不太好看。</p><pre class="pre codeblock lisp"><code>(if a
+    (do-x)
+    (if b
+       (do-y)
+       (do-z)))</code></pre><p class="p">And it would be even worse if you needed to include multiple forms in
+the then clauses, requiring <strong class="ph b">PROGN</strong>s. So, not surprisingly, Common Lisp
+provides a macro for expressing multibranch conditionals: <strong class="ph b">COND</strong>. This
+is the basic skeleton:</p><p class="p">并且如果需要在 then 子句中包括多个形式，那就需要用到
+<strong class="ph b">PROGN</strong>，而那样事情就会变得更糟。因此毫不奇怪地，Common Lisp
+提供了一个用于表达多重分支条件的宏 <strong class="ph b">COND</strong>。下面是它的基本结构：</p><pre class="pre codeblock lisp"><code>(cond
+  (test-1 form*)
+      .
+      .
+      .
+  (test-N form*))</code></pre><p class="p">Each element of the body represents one branch of the conditional and
+consists of a list containing a condition form and zero or more forms
+to be evaluated if that branch is chosen. The conditions are evaluated
+in the order the branches appear in the body until one of them
+evaluates to true. At that point, the remaining forms in that branch
+are evaluated, and the value of the last form in the branch is
+returned as the value of the <strong class="ph b">COND</strong> as a whole. If the branch contains
+no forms after the condition, the value of the condition is returned
+instead. By convention, the branch representing the final else clause
+in an if/else-if chain is written with a condition of <strong class="ph b">T</strong>. Any non-<strong class="ph b">NIL</strong>
+value will work, but a <strong class="ph b">T</strong> serves as a useful landmark when reading the
+code. Thus, you can write the previous nested IF expression using <strong class="ph b">COND</strong>
+like this:</p><p class="p">主体中的每个元素都代表一个条件分支，并由一个列表所构成，列表中含有一个条件形式，以及零或多个当该分支被选择时将被求值的形式。这些条件形式按照分支在主体中出现的顺序被依次求值，直到它们中的一个求值为真。这时，该分支中的其余形式将被求值，且分支中最后一个形式的值将被作为整个
+<strong class="ph b">COND</strong> 的返回值。如果该分支在条件形式之后不再含有其他形式，那么就将
+返回该条件形式的值。习惯上，那个用来表示
+if/else-if 链中最后一个 else
+子句的分支将被写成带有条件 <strong class="ph b">T</strong>。虽然任何非 <strong class="ph b">NIL</strong>
+的值都可以使用，但在阅读代码时，<strong class="ph b">T</strong>
+标记确实有用。这样就可以像下面这样用 <strong class="ph b">COND</strong>
+来写出前面的嵌套 <strong class="ph b">IF</strong> 表达式：</p><pre class="pre codeblock lisp"><code>(cond (a (do-x))
+      (b (do-y))
+      (t (do-z)))</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap07/macros-standard-control-constructs.html">Macros: Standard Control Constructs（宏：标准控制结构）</a></div></div></nav></article></main></body></html>

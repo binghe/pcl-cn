@@ -1,0 +1,154 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="concept"><meta name="DC.relation" scheme="URI" content="../chap08/macros-defining-your-own.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="variable-basics"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Generating the Expansion（生成展开式）</title></head><body id="variable-basics"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1">Generating the Expansion（生成展开式）</h1>
+  <div class="body conbody">
+    <p class="p">Because <code class="ph codeph">do-primes</code> is a fairly simple macro,
+    after you've destructured the arguments, all that's left is to
+    interpolate them into a template to get the expansion.</p>
+
+    <p class="p">由于 <code class="ph codeph">do-primes</code>
+    是一个相当简单的宏，在解构了参数以后，剩下的就是将它们插入到一个模板中来得到展开式。</p>
+    
+    <p class="p">For simple macros like <code class="ph codeph">do-primes</code>, the special
+    backquote syntax is perfect. To review, a backquoted expression is
+    similar to a quoted expression except you can "unquote" particular
+    subexpressions by preceding them with a comma, possibly followed
+    by an at (@) sign. Without an at sign, the comma causes the value
+    of the subexpression to be included as is. With an at sign, the
+    value--which must be a list--is "spliced" into the enclosing list.</p>
+
+    <p class="p">对于像 <code class="ph codeph">do-primes</code>
+    这样简单的宏，特别的反引用语法刚好合适。回顾一下，反引用表达式与引用表达式很相似，除了可以
+    “解引用”（unquote）特定的值表达式，即在其前面加上逗号，可能再加一个
+    “@”。没有这个 “@”，逗号会导致子表达式的值被原样包含。有了
+    “@”，它作为列表的值可被 “拼接” 到它所在的列表中。</p>
+    
+    <p class="p">Another useful way to think about the backquote syntax is as a
+    particularly concise way of writing code that generates
+    lists. This way of thinking about it has the benefit of being
+    pretty much exactly what's happening under the covers--when the
+    reader reads a backquoted expression, it translates it into code
+    that generates the appropriate list structure. For instance,
+    <code class="ph codeph">`(,a b)</code> might be read as <code class="ph codeph">(list a 'b)</code>.
+    The language standard doesn't specify exactly what code the reader
+    must produce as long as it generates the right list structure.</p>
+
+    <p class="p">采用另一种方式也会有助于理解反引用语法，这就是将其视为编写生成列表的代码的一种特别简洁的方式。这种理解方式的优点是可以相当明确地看到其表象之下实际发生的事——当读取器读到一个反引用表达式时，它将其翻译成生成适当列表结构的代码。例如，<code class="ph codeph">`(,a b)</code>
+    可以被读取成 <code class="ph codeph">(list a 'b)</code>。语言标准并未明确指定读取器必须产生怎样的代码，只要它能生成正确的列表结构就可以了。</p>
+    
+    <p class="p">Table 8-1 (Backquote Examples) shows some examples of backquoted expressions along
+    with equivalent list-building code and the result you'd get if you
+    evaluated either the backquoted expression or the equivalent code.</p>
+
+    <p class="p">表 8-1 给出了一些反引用表达式的范例，同时带有与之等价的列表构造代码以及其中任意一种形式的求值结果。</p>
+    <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+          <tr class="row">
+            <th class="entry" id="variable-basics__entry__1">Backquote Syntax</th>
+            <th class="entry" id="variable-basics__entry__2">Equivalent List-Building Code</th>
+            <th class="entry" id="variable-basics__entry__3">Result</th>
+          </tr>
+        </thead><tbody class="tbody">
+          <tr class="row">
+            <td class="entry" headers="variable-basics__entry__1 "><code class="ph codeph">`(a (+ 1 2) c)</code></td>
+            <td class="entry" headers="variable-basics__entry__2 "><code class="ph codeph">(list 'a '(+ 1 2) 'c)</code></td>
+            <td class="entry" headers="variable-basics__entry__3 "><code class="ph codeph">(a (+ 1 2) c)</code></td>
+          </tr>
+          <tr class="row">
+            <td class="entry" headers="variable-basics__entry__1 "><code class="ph codeph">`(a ,(+ 1 2) c)</code></td>
+            <td class="entry" headers="variable-basics__entry__2 "><code class="ph codeph">(list 'a (+ 1 2) 'c)</code></td>
+            <td class="entry" headers="variable-basics__entry__3 "><code class="ph codeph">(a 3 c)</code></td>
+          </tr>
+          <tr class="row">
+            <td class="entry" headers="variable-basics__entry__1 "><code class="ph codeph">`(a (list 1 2) c)</code></td>
+            <td class="entry" headers="variable-basics__entry__2 "><code class="ph codeph">(list 'a '(list 1 2) 'c)</code></td>
+            <td class="entry" headers="variable-basics__entry__3 "><code class="ph codeph">(a (list 1 2) c)</code></td>
+          </tr>
+          <tr class="row">
+            <td class="entry" headers="variable-basics__entry__1 "><code class="ph codeph">`(a ,(list 1 2) c)</code></td>
+            <td class="entry" headers="variable-basics__entry__2 "><code class="ph codeph">(list 'a (list 1 2) 'c)</code></td>
+            <td class="entry" headers="variable-basics__entry__3 "><code class="ph codeph">(a (1 2) c)</code></td>
+          </tr>
+          <tr class="row">
+            <td class="entry" headers="variable-basics__entry__1 "><code class="ph codeph">`(a ,@(list 1 2) c)</code></td>
+            <td class="entry" headers="variable-basics__entry__2 "><code class="ph codeph">(append (list 'a) (list 1 2) (list 'c))</code></td>
+            <td class="entry" headers="variable-basics__entry__3 "><code class="ph codeph">(a 1 2 c)</code></td>
+          </tr>
+        </tbody></table>
+
+    <p class="p">It's important to note that backquote is just a
+    convenience. But it's a big convenience. To appreciate how big,
+    compare the backquoted version of <code class="ph codeph">do-primes</code> to the following
+    version, which uses explicit list-building code:</p>
+
+    <p class="p">重要的是要注意反引用只是一种便利措施，但确实相当便利 。为了说明其便利程度，我们可以将 <code class="ph codeph">do-primes</code>
+    的反引用版本和下面的版本作比较，后者使用了显式的列表构造代码：</p>
+
+<pre class="pre codeblock"><code>(defmacro do-primes-a ((var start end) &amp;body body)
+  (append '(do)
+          (list  (list (list var
+                             (list 'next-prime start)
+                             (list 'next-prime (list '1+ var)))))
+          (list (list (list '&gt; var end)))
+          body))
+</code></pre>
+
+    <p class="p">As you'll see in a moment, the current implementation of
+    <code class="ph codeph">do-primes</code> doesn't handle certain edge cases correctly. But first
+    you should verify that it at least works for the original
+    example. You can test it in two ways. You can test it indirectly
+    by simply using it--presumably, if the resulting behavior is
+    correct, the expansion is correct. For instance, you can type the
+    original example's use of <code class="ph codeph">do-primes</code> to the REPL and see that it
+    indeed prints the right series of prime numbers.</p>
+
+    <p class="p">稍后即将看到，<code class="ph codeph">do-primes</code>
+    的当前实现并不能正确地处理特定的临界情况，但首先应当确认它至少应能适用于最初的例子。可以用两种方式来测试它。可以简单地通过使用它来间接地测试，也就是说，如果结果的行为是正确的那么展开式很可能就是正确的。例如，可以将
+    <code class="ph codeph">do-primes</code>
+    最初的用例键入到 REPL中，你会看到它确实打印出了正确的素数序列。</p>
+
+<pre class="pre codeblock"><code>CL-USER&gt; (do-primes (p 0 19) (format t "~d " p))
+2 3 5 7 11 13 17 19
+NIL
+</code></pre>
+
+    <p class="p">Or you can check the macro directly by looking at the expansion
+    of a particular call. The function <strong class="ph b">MACROEXPAND-1</strong> takes any Lisp
+    expression as an argument and returns the result of doing one
+    level of macro expansion. Because <strong class="ph b">MACROEXPAND-1</strong> is a function, to
+    pass it a literal macro form you must quote it. You can use it to
+    see the expansion of the previous call.</p>
+
+    <p class="p">或者也可以通过查看特定调用的展开式来直接检查该宏。函数
+    <strong class="ph b">MACROEXPAND-1</strong> 接受任何 Lisp
+    表达式作为参数并返回做宏展开一层的结果。由于 <strong class="ph b">MACROEXPAND-1</strong>
+    是一个函数，所以为了传给它一个字面的宏形式，就必须引用它。可以用它来查看前面调用的展开式。</p>
+    
+<pre class="pre codeblock"><code>CL-USER&gt; (macroexpand-1 '(do-primes (p 0 19) (format t "~d " p)))
+(DO ((P (NEXT-PRIME 0) (NEXT-PRIME (1+ P))))
+    ((&gt; P 19))
+  (FORMAT T "~d " P))
+T
+</code></pre>
+
+    <p class="p">Or, more conveniently, in SLIME you can check a macro's
+    expansion by placing the cursor on the opening parenthesis of a
+    macro form in your source code and typing <code class="ph codeph">C-c RET</code> to invoke the
+    Emacs function <code class="ph codeph">slime-macroexpand-1</code>, which will pass the macro form
+    to <strong class="ph b">MACROEXPAND-1</strong> and "pretty print" the result in a temporary
+    buffer.</p>
+
+    <p class="p">或者，在 SLIME
+    中也可以更方便地检查一个宏的展开式：将光标放置在源代码中一个宏形式的开放括号上并输入
+    <code class="ph codeph">C-c RET</code> 来调用 Emacs 函数
+    <code class="ph codeph">slime-macroexpand-1</code>，后者将把宏调用传递到
+    <strong class="ph b">MACROEXPAND-1</strong> 上并将结果 “美化输出” 到一个临时缓冲区上。</p>
+    
+    <p class="p">However you get to it, you can see that the result of macro
+    expansion is the same as the original handwritten expansion, so it
+    seems that <code class="ph codeph">do-primes</code> works.</p>
+
+    <p class="p">无论怎样得到展开式，你都可以看到宏展开的结果和最初的手写展开式是一样的，因此看起来
+    <code class="ph codeph">do-primes</code> 是有效的。</p>
+  </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap08/macros-defining-your-own.html">Macros: Defining Your Own（定义你自己的宏）</a></div></div></nav></article></main></body></html>

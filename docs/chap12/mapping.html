@@ -1,0 +1,52 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap12/list-processing.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="mapping映射"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Mapping（映射）</title></head><body id="mapping映射"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Mapping（映射）</h1><div class="body"><p class="p">Another important aspect of the functional style is the use of
+higher-order functions, functions that take other functions as
+arguments or return functions as values. You saw several examples of
+higher-order functions, such as <strong class="ph b">MAP</strong>, in the previous chapter. Although
+<strong class="ph b">MAP</strong> can be used with both lists and vectors (that is, with any kind of
+sequence), Common Lisp also provides six mapping functions
+specifically for lists. The differences between the six functions have
+to do with how they build up their result and whether they apply the
+function to the elements of the list or to the cons cells of the list
+structure.</p><p class="p">函数式风格的另一个重要方面是对高阶函数的使用，即那些接受其他函数作为参数或将函数作为返回值的函数。前面章节里出现过几个高阶函数，例如
+<strong class="ph b">MAP</strong>。尽管MAP可被同时用于列表和向量（也就是说，任何类型的序列），但
+Common Lisp 另外还提供了 6 个特定用于列表的映射函数。这 6
+个函数之间的区别在于它们构造结果的方式，以及它们究竟会将函数应用到列表的元素还是列表结构的点对单元上。</p><p class="p"><strong class="ph b">MAPCAR</strong> is the function most like <strong class="ph b">MAP</strong>. Because it always returns a
+list, it doesn't require the result-type argument <strong class="ph b">MAP</strong> does. Instead,
+its first argument is the function to apply, and subsequent arguments
+are the lists whose elements will provide the arguments to the
+function. Otherwise, it behaves like <strong class="ph b">MAP</strong>: the function is applied to
+successive elements of the list arguments, taking one element from
+each list per application of the function. The results of each
+function call are collected into a new list. For example:</p><p class="p"><strong class="ph b">MAPCAR</strong> 是最接近 <strong class="ph b">MAP</strong>
+的函数。因为它总是返回一个列表，所以它并不要求 <strong class="ph b">MAP</strong>
+所要求的结果类型实参。替代，它的第一个参数是想要应用的函数，而后续参数是其元素将为该函数提供实参的列表。除此之外，它和
+<strong class="ph b">MAP</strong> 的行为相同：函数被应用在列表实参的相继元素上，每次函数的应用会从每个列表中各接受一个元素。每次函数调用的结果都被收集到一个新列表中。例如：</p><pre class="pre codeblock lisp"><code>(mapcar #'(lambda (x) (* 2 x)) (list 1 2 3)) ==&gt; (2 4 6)
+(mapcar #'+ (list 1 2 3) (list 10 20 30)) ==&gt; (11 22 33)</code></pre><p class="p"><strong class="ph b">MAPLIST</strong> is just like <strong class="ph b">MAPCAR</strong> except instead of passing the elements of
+the list to the function, it passes the actual cons cells. Thus, the
+function has access not only to the value of each element of the list
+(via the <strong class="ph b">CAR</strong> of the cons cell) but also to the rest of the list (via
+the <strong class="ph b">CDR</strong>).</p><p class="p">他们之间的区别在于 <strong class="ph b">MAPLIST</strong>
+传递给函数的不是列表元素而是实际的点对单元。这样，该函数不仅可以访问到列表中每个元素的值（通过点对单元的
+<strong class="ph b">CAR</strong>），还可以访问到列表的其余部分（通过 <strong class="ph b">CDR</strong>）。</p><p class="p"><strong class="ph b">MAPCAN</strong> and <strong class="ph b">MAPCON</strong> work like <strong class="ph b">MAPCAR</strong> and <strong class="ph b">MAPLIST</strong> except for the way they
+build up their result. While <strong class="ph b">MAPCAR</strong> and <strong class="ph b">MAPLIST</strong> build a completely new
+list to hold the results of the function calls, <strong class="ph b">MAPCAN</strong> and <strong class="ph b">MAPCON</strong>
+build their result by splicing together the results--which must be
+lists--as if by <strong class="ph b">NCONC</strong>. Thus, each function invocation can provide any
+number of elements to be included in the result. <strong class="ph b">MAPCAN</strong>, like
+<strong class="ph b">MAPCAR</strong>, passes the elements of the list to the mapped function while
+<strong class="ph b">MAPCON</strong>, like <strong class="ph b">MAPLIST</strong>, passes the cons cells.</p><p class="p">除了构造结果的方式不同之外，<strong class="ph b">MAPCAN</strong> 和 <strong class="ph b">MAPCON</strong> 与 <strong class="ph b">MAPCAR</strong> 和
+<strong class="ph b">MAPLIST</strong> 的工作方式也很相似。<strong class="ph b">MAPCAR</strong> 和 <strong class="ph b">MAPLIST</strong>
+会构造一个全新的列表来保存函数调用的结果，而 <strong class="ph b">MAPCAN</strong> 和 <strong class="ph b">MAPCON</strong>
+则通过将结果（必须是列表）用 <strong class="ph b">NCONC</strong>
+拼接在一起来产生它们的结果。这样，每次函数调用都可以向结果中提供任意数量的元素。<strong class="ph b">MAPCAN</strong>
+像 <strong class="ph b">MAPCAR</strong> 那样把列表的元素传递到映射函数中，而 <strong class="ph b">MAPCON</strong> 则像 <strong class="ph b">MAPLIST</strong>
+那样来传递点对单元。</p><p class="p">Finally, the functions <strong class="ph b">MAPC</strong> and <strong class="ph b">MAPL</strong> are control constructs disguised
+as functions--they simply return their first list argument, so they're
+useful only when the side effects of the mapped function do something
+interesting. <strong class="ph b">MAPC</strong> is the cousin of <strong class="ph b">MAPCAR</strong> and <strong class="ph b">MAPCAN</strong> while <strong class="ph b">MAPL</strong> is in
+the <strong class="ph b">MAPLIST</strong>/<strong class="ph b">MAPCON</strong> family.</p><p class="p">最后，函数 <strong class="ph b">MAPC</strong> 和 <strong class="ph b">MAPL</strong>
+是伪装成函数的控制构造，它们只返回第一个列表实参，因此只有当映射函数的副作用有用时，它们才是有用的。<strong class="ph b">MAPC</strong>
+是 <strong class="ph b">MAPCAR</strong> 和 <strong class="ph b">MAPCAN</strong> 的近亲，而 <strong class="ph b">MAPL</strong> 属于
+<strong class="ph b">MAPLIST</strong>/<strong class="ph b">MAPCON</strong> 家族。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap12/list-processing.html">They Called It LISP for a Reason: List Processing（LISP 名字的由来：列表处理）</a></div></div></nav></article></main></body></html>

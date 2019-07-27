@@ -1,0 +1,75 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap07/macros-standard-control-constructs.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="the-mighty-loop强大的-loop"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>The Mighty LOOP（强大的 LOOP）</title></head><body id="the-mighty-loop强大的-loop"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">The Mighty <strong class="ph b">LOOP</strong>（强大的 <strong class="ph b">LOOP</strong>）</h1><div class="body"><p class="p">For the simple cases you have <strong class="ph b">DOLIST</strong> and <strong class="ph b">DOTIMES</strong>. And if they don't
+suit your needs, you can fall back on the completely general DO. What
+more could you want?</p><p class="p">简单的情形可以使用 <strong class="ph b">DOLIST</strong> 和
+<strong class="ph b">DOTIMES</strong>。但如果它们不符合需要，就需要退而使用完全通用的
+<strong class="ph b">DO</strong>。不然还能怎样？</p><p class="p">Well, it turns out a handful of looping idioms come up over and over
+again, such as looping over various data structures: lists, vectors,
+hash tables, and packages. Or accumulating values in various ways
+while looping: collecting, counting, summing, minimizing, or
+maximizing. If you need a loop to do one of these things (or several
+at the same time), the <strong class="ph b">LOOP</strong> macro may give you an easier way to
+express it.</p><p class="p">然而，结果是有少量的循环用法一次又一次地产生出来，例如在多种数据结构上的循环：列表、向量、哈希表和包，或是在循环时以多种方式来集聚值：收集、计数、求和、最小化和最大化。如果需要用宏来做其中的一件事（或同时几件），那么
+<strong class="ph b">LOOP</strong> 宏可以提供一种更容易表达的方式。</p><p class="p">The <strong class="ph b">LOOP</strong> macro actually comes in two flavors--simple and extended. The
+simple version is as simple as can be--an infinite loop that doesn't
+bind any variables. The skeleton looks like this:</p><p class="p"><strong class="ph b">LOOP</strong> 宏事实上有两大类——简化的和扩展的。简化的版本极其简单，就是一个不绑定任何变量的无限循环。其框架看起来像这样：</p><pre class="pre codeblock lisp"><code>(loop
+  body-form*)</code></pre><p class="p">The forms in body are evaluated each time through the loop, which will
+iterate forever unless you use <strong class="ph b">RETURN</strong> to break out. For example, you
+could write the previous <strong class="ph b">DO</strong> loop with a simple <strong class="ph b">LOOP</strong>.</p><p class="p">主体形式在每次通过循环时都将被求值，整个循环将不停地迭代，直到使用
+<strong class="ph b">RETURN</strong> 来进行中止。例如，可以使用一个简化的 <strong class="ph b">LOOP</strong> 来写出前面的
+<strong class="ph b">DO</strong> 循环：</p><pre class="pre codeblock lisp"><code>(loop
+  (when (&gt; (get-universal-time) *some-future-date*)
+    (return))
+  (format t "Waiting~%")
+  (sleep 60))</code></pre><p class="p">The extended <strong class="ph b">LOOP</strong> is quite a different beast. It's distinguished by
+the use of certain loop keywords that implement a special-purpose
+language for expressing looping idioms. It's worth noting that not all
+Lispers love the extended <strong class="ph b">LOOP</strong> language. At least one of Common Lisp's
+original designers hated it. <strong class="ph b">LOOP</strong>'s detractors complain that its
+syntax is totally un-Lispy (in other words, not enough
+parentheses). <strong class="ph b">LOOP</strong>'s fans counter that that's the point: complicated
+looping constructs are hard enough to understand without wrapping them
+up in <strong class="ph b">DO</strong>'s cryptic syntax. It's better, they say, to have a slightly
+more verbose syntax that gives you some clues what the heck is going
+on.</p><p class="p">而扩展的 <strong class="ph b">LOOP</strong>
+则是一个完全不同的庞然大物。它以使用某些循环关键字来实现一种用于表达循环用法的通用。值得注意的是，并非所有的
+Lisp 程序员都喜爱扩展的 <strong class="ph b">LOOP</strong> 语言。至少一位 Common Lisp
+的最初设计者就很讨厌它。<strong class="ph b">LOOP</strong> 的贬低者们抱怨它的语法是完全非
+Lisp 化的（换句话说，没有足够的括号）。<strong class="ph b">LOOP</strong>
+的爱好者们则反驳说，问题在于复杂的循环构造，如果不将它们用 <strong class="ph b">DO</strong>
+那晦涩语法包装起来，它们将难于被人理解。所以他们认为最好用一种稍显冗长的语法来提供某些关于你正在做的事情的线索。</p><p class="p">For instance, here's an idiomatic DO loop that collects the numbers from 1 to 10 into a list:</p><p class="p">例如，下面是一个地道的 <strong class="ph b">DO</strong> 循环，它将把从 1 到 10 的数字收集到一个列表中：</p><pre class="pre codeblock lisp"><code>(do ((nums nil) (i 1 (1+ i)))
+    ((&gt; i 10) (nreverse nums))
+  (push i nums)) ==&gt; (1 2 3 4 5 6 7 8 9 10)</code></pre><p class="p">A seasoned Lisper won't have any trouble understanding that code--it's
+just a matter of understanding the basic form of a DO loop and
+recognizing the <strong class="ph b">PUSH</strong>/<strong class="ph b">NREVERSE</strong> idiom for building up a list. But it's
+not exactly transparent. The <strong class="ph b">LOOP</strong> version, on the other hand, is
+almost understandable as an English sentence.</p><p class="p">一个经验丰富的 Lisp 程序员将毫不费力地理解这些代码——只要理解一个 <strong class="ph b">DO</strong>
+循环的基本形式并且认识用于构建列表的 <strong class="ph b">PUSH</strong>/<strong class="ph b">NREVERSE</strong>
+用法就可以了。但它并不是很直观。而它的 <strong class="ph b">LOOP</strong>
+版本理解起来就几乎可以像一个英语句子那样简单。</p><pre class="pre codeblock lisp"><code>(loop for i from 1 to 10 collecting i) ==&gt; (1 2 3 4 5 6 7 8 9 10)</code></pre><p class="p">The following are some more examples of simple uses of <strong class="ph b">LOOP</strong>. This sums
+the first ten squares:</p><p class="p">接下来是一些关于 <strong class="ph b">LOOP</strong> 简单用法的例子。下例可以对前十个平方数求和：</p><pre class="pre codeblock lisp"><code>(loop for x from 1 to 10 summing (expt x 2)) ==&gt; 385</code></pre><p class="p">This counts the number of vowels in a string:</p><p class="p">这个用来统计一个字符串中元音字母的个数：</p><pre class="pre codeblock lisp"><code>(loop for x across "the quick brown fox jumps over the lazy dog"
+      counting (find x "aeiou")) ==&gt; 11</code></pre><p class="p">This computes the eleventh Fibonacci number, similar to the <strong class="ph b">DO</strong> loop
+used earlier:</p><p class="p">下面这个例子用来计算第 11 个斐婆那契数，它类似于前面使用 <strong class="ph b">DO</strong> 循环的版本：</p><pre class="pre codeblock lisp"><code>(loop for i below 10
+      and a = 0 then b
+      and b = 1 then (+ b a)
+      finally (return  a))</code></pre><p class="p">The symbols <code class="ph codeph">across</code>, <code class="ph codeph">and</code>, <code class="ph codeph">below</code>, <code class="ph codeph">collecting</code>, <code class="ph codeph">counting</code>, <code class="ph codeph">finally</code>, <code class="ph codeph">for</code>,
+<code class="ph codeph">from</code>, <code class="ph codeph">summing</code>, <code class="ph codeph">then</code>, and <code class="ph codeph">to</code> are some of the loop keywords whose
+presence identifies these as instances of the extended <strong class="ph b">LOOP</strong>.</p><p class="p">符号 <code class="ph codeph">across</code>、<code class="ph codeph">and</code>、<code class="ph codeph">below</code>、<code class="ph codeph">collecting</code>、<code class="ph codeph">counting</code>、<code class="ph codeph">finally</code>、<code class="ph codeph">for</code>、<code class="ph codeph">from</code>、<code class="ph codeph">summing</code>、<code class="ph codeph">then</code>
+和 <code class="ph codeph">to</code> 都是一些循环关键字，它们的存在表明当前正在使用扩展的 <strong class="ph b">LOOP</strong>。</p><p class="p">I'll save the details of <strong class="ph b">LOOP</strong> for Chapter 22, but it's worth noting
+here as another example of the way macros can be used to extend the
+base language. While <strong class="ph b">LOOP</strong> provides its own language for expressing
+looping constructs, it doesn't cut you off from the rest of Lisp. The
+loop keywords are parsed according to loop's grammar, but the rest of
+the code in a <strong class="ph b">LOOP</strong> is regular Lisp code.</p><p class="p">第 22 章将介绍 <strong class="ph b">LOOP</strong>
+的细节，但目前值得注意的是，我们通过它可以再次看到，宏是如何被用于扩展基本语言的。尽管
+<strong class="ph b">LOOP</strong> 提供了它自己的语言用来表达循环构造，但它并没有抹杀
+Lisp 的其他优势。虽然循环关键字是按照循环的语法来解析的，但一个
+<strong class="ph b">LOOP</strong> 中的其余代码都是正常的 Lisp 代码。</p><p class="p">And it's worth pointing out one more time that while the <strong class="ph b">LOOP</strong> macro is
+quite a bit more complicated than macros such as <strong class="ph b">WHEN</strong> or <strong class="ph b">UNLESS</strong>, it is
+just another macro. If it hadn't been included in the standard
+library, you could implement it yourself or get a third-party library
+that does.</p><p class="p">另外，值得再次指出的是，尽管 <strong class="ph b">LOOP</strong> 宏相比诸如 <strong class="ph b">WHEN</strong> 或者 <strong class="ph b">UNLESS</strong>
+这样的宏复杂了许多，但它也只是另外一个宏而已。如果它没有被包括在标准库之中，你也可以自己实现它或是借助一个第三方库来实现它。</p><p class="p">With that I'll conclude our tour of the basic control-construct
+macros. Now you're ready to take a closer look at how to define your
+own macros.</p><p class="p">以上就是我们对基本控制构造宏的介绍。现在可以进一步了解如何定义自己的宏了。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap07/macros-standard-control-constructs.html">Macros: Standard Control Constructs（宏：标准控制结构）</a></div></div></nav></article></main></body></html>

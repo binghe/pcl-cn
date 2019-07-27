@@ -1,0 +1,31 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="vectors-as-sequences作为序列的向量"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Vectors As Sequences（作为序列的向量）</title></head><body id="vectors-as-sequences作为序列的向量"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Vectors As Sequences（作为序列的向量）</h1><div class="body"><p class="p">As mentioned earlier, vectors and lists are the two concrete subtypes
+of the abstract type sequence. All the functions I'll discuss in the
+next few sections are sequence functions; in addition to being
+applicable to vectors--both general and specialized--they can also be
+used with lists.</p><p class="p">正如早先所提到的，向量和列表是抽象类型序列的两种具体子类型。接下来几节里讨论的所有函数都是序列函数：除了可以应用于向量（无论是通用还是特化的）之外，它们还可应用于列表。</p><p class="p">The two most basic sequence functions are <strong class="ph b">LENGTH</strong>, which returns the
+length of a sequence, and <strong class="ph b">ELT</strong>, which allows you to access individual
+elements via an integer index. <strong class="ph b">LENGTH</strong> takes a sequence as its only
+argument and returns the number of elements it contains. For vectors
+with a fill pointer, this will be the value of the fill pointer. <strong class="ph b">ELT</strong>,
+short for element, takes a sequence and an integer index between zero
+(inclusive) and the length of the sequence (exclusive) and returns the
+corresponding element. <strong class="ph b">ELT</strong> will signal an error if the index is out of
+bounds. Like <strong class="ph b">LENGTH</strong>, <strong class="ph b">ELT</strong> treats a vector with a fill pointer as having
+the length specified by the fill pointer.</p><p class="p">两个最基本的序列函数是
+<strong class="ph b">LENGTH</strong>，其返回一个序列的长度；<strong class="ph b">ELT</strong>，其允许通过一个整数索引来访问个别元素。<strong class="ph b">LENGTH</strong>
+接受序列作为其唯一的参数并返回它含有的元素数量。对于带有填充指针的向量，这些是填充指针的值。<strong class="ph b">ELT</strong>
+是元素（element）的简称，它接受序列和从 0
+到序列长度（左闭右开区间）的整数索引并返回对应的元素。<strong class="ph b">ELT</strong>
+将在索引超出边界时报错。和 <strong class="ph b">LENGTH</strong> 一样，<strong class="ph b">ELT</strong>
+也将把一个带有填充指针的向量视为其具有该填充指针所指定的长度。</p><pre class="pre codeblock lisp"><code>(defparameter *x* (vector 1 2 3))
+
+(length *x*) ==&gt; 3
+(elt *x* 0)  ==&gt; 1
+(elt *x* 1)  ==&gt; 2
+(elt *x* 2)  ==&gt; 3
+(elt *x* 3)  ==&gt; error</code></pre><p class="p"><strong class="ph b">ELT</strong> is also a <strong class="ph b">SETF</strong>able place, so you can set the value of a
+particular element like this:</p><p class="p"><strong class="ph b">ELT</strong> 也是一个支持 <strong class="ph b">SETF</strong> 的位置，因此可以像这样来设置一个特定元素的值：</p><pre class="pre codeblock lisp"><code>(setf (elt *x* 0) 10)
+
+*x* ==&gt; #(10 2 3)</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

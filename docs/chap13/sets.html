@@ -1,0 +1,83 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap13/beyond-lists.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="sets集合"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Sets（集合）</title></head><body id="sets集合"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Sets（集合）</h1><div class="body"><p class="p">Sets can also be implemented in terms of cons cells. In fact, you can
+treat any list as a set--Common Lisp provides several functions for
+performing set-theoretic operations on lists. However, you should bear
+in mind that because of the way lists are structured, these operations
+get less and less efficient the bigger the sets get.</p><p class="p">集合也可以用点对单元来实现。事实上，你可以将任何列表都看作是集合──Common
+Lisp
+提供的几个函数可用于对列表进行集合论意义上的操作。但你应当在头脑中牢记，由于列表结构的组织方式，当集合变得更大时，这些操作将会越来越低效。</p><p class="p">That said, using the built-in set functions makes it easy to write
+set-manipulation code. And for small sets they may well be more
+efficient than the alternatives. If profiling shows you that these
+functions are a performance bottleneck in your code, you can always
+replace the lists with sets built on top of hash tables or bit
+vectors.</p><p class="p">也就是说，使用内置的集合函数可以轻松地写出集合操作的代码，并且对于小型的集合而言，它们可能会比其他替代实现更为高效。如果性能评估显示这些函数成为代码的性能瓶颈，那么你也总能将列表替换成构建在哈希表或位向量之上的集合。</p><p class="p">To build up a set, you can use the function <strong class="ph b">ADJOIN</strong>. <strong class="ph b">ADJOIN</strong> takes an
+item and a list representing a set and returns a list representing the
+set containing the item and all the items in the original set. To
+determine whether the item is present, it must scan the list; if the
+item isn't found, <strong class="ph b">ADJOIN</strong> creates a new cons cell holding the item and
+pointing to the original list and returns it. Otherwise, it returns
+the original list.</p><p class="p">可以使用函数 <strong class="ph b">ADJOIN</strong> 来构造集合。<strong class="ph b">ADJOIN</strong>
+接受一个项和一个代表集合的列表并返回另一个代表集合的列表，其中含有该项和原先集合中的所有项。为了检测该项是否存在，它必须扫描该列表。如果该项没有被找到，那么
+<strong class="ph b">ADJOIN</strong>
+就会创建一个保存该项的新点对单元，并让其指向原先的列表并返回它。否则，它返回原先的列表。</p><p class="p"><strong class="ph b">ADJOIN</strong> also takes <code class="ph codeph">:key</code> and <code class="ph codeph">:test</code> keyword arguments, which are used
+when determining whether the item is present in the original
+list. Like <strong class="ph b">CONS</strong>, <strong class="ph b">ADJOIN</strong> has no effect on the original list--if you
+want to modify a particular list, you need to assign the value
+returned by <strong class="ph b">ADJOIN</strong> to the place where the list came from. The modify
+macro <strong class="ph b">PUSHNEW</strong> does this for you automatically.</p><p class="p"><strong class="ph b">ADJOIN</strong> 也接受 <code class="ph codeph">:key</code> 和 <code class="ph codeph">:test</code>
+关键字参数，它们被用于检测该项是否存在于原先的列表中。和
+<strong class="ph b">CONS</strong> 一样，<strong class="ph b">ADJOIN</strong>
+不会影响原先的列表──如果打算修改一个特定的列表，则需要将 <strong class="ph b">ADJOIN</strong>
+返回的值赋值到该列表所来自的位置上。<strong class="ph b">PUSHNEW</strong> 修改宏可以自动做到这点。</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (defparameter *set* ())
+*SET*
+CL-USER&gt; (adjoin 1 *set*)
+(1)
+CL-USER&gt; *set*
+NIL
+CL-USER&gt; (setf *set* (adjoin 1 *set*))
+(1)
+CL-USER&gt; (pushnew 2 *set*)
+(2 1)
+CL-USER&gt; *set*
+(2 1)
+CL-USER&gt; (pushnew 2 *set*)
+(2 1)</code></pre><p class="p">You can test whether a given item is in a set with <strong class="ph b">MEMBER</strong> and the
+related functions <strong class="ph b">MEMBER-IF</strong> and <strong class="ph b">MEMBER-IF-NOT</strong>. These functions are
+similar to the sequence functions <strong class="ph b">FIND</strong>, <strong class="ph b">FIND-IF</strong>, and <strong class="ph b">FIND-IF-NOT</strong>
+except they can be used only with lists. And instead of returning the
+item when it's present, they return the cons cell containing the
+item--in other words, the sublist starting with the desired item. When
+the desired item isn't present in the list, all three functions return
+<strong class="ph b">NIL</strong>.</p><p class="p">你可以使用 <strong class="ph b">MEMBER</strong> 和相关的函数 <strong class="ph b">MEMBER-IF</strong> 以及 <strong class="ph b">MEMBER-IF-NOT</strong>
+来测试一个给定项是否在一个集合中。这些函数与序列函数 <strong class="ph b">FIND</strong>、<strong class="ph b">FIND-IF</strong>
+以及 <strong class="ph b">FIND-IF-NOT</strong>
+相似，不过它们只能用于列表。当指定项存在时，它们并不返回该项，而是返回含有该项的那个点对单元，即以指定项开始的子列表。当指定项不在列表中时，所有三个函数均返回 <strong class="ph b">NIL</strong>。</p><p class="p">The remaining set-theoretic functions provide bulk operations:
+<strong class="ph b">INTERSECTION</strong>, <strong class="ph b">UNION</strong>, <strong class="ph b">SET-DIFFERENCE</strong>, and <strong class="ph b">SET-EXCLUSIVE-OR</strong>. Each of
+these functions takes two lists and <code class="ph codeph">:key</code> and <code class="ph codeph">:test</code> keyword arguments
+and returns a new list representing the set resulting from performing
+the appropriate set-theoretic operation on the two lists: <strong class="ph b">INTERSECTION</strong>
+returns a list containing all the elements found in both
+arguments. <strong class="ph b">UNION</strong> returns a list containing one instance of each unique
+element from the two arguments. <strong class="ph b">SET-DIFFERENCE</strong> returns a list
+containing all the elements from the first argument that don't appear
+in the second argument. And <strong class="ph b">SET-EXCLUSIVE-OR</strong> returns a list containing
+those elements appearing in only one or the other of the two argument
+lists but not in both. Each of these functions also has a recycling
+counterpart whose name is the same except with an <code class="ph codeph">N</code> prefix.</p><p class="p">其余的集合论函数提供了批量操作：<strong class="ph b">INTERSECTION</strong>、<strong class="ph b">UNION</strong>、<strong class="ph b">SET-DIFFERENCE</strong>
+以及 <strong class="ph b">SET-EXCLUSIVE-OR</strong>。这些函数中的每一个都接受两个列表以及 <code class="ph codeph">:key</code>
+和 <code class="ph codeph">:test</code>
+关键字参数，并返回一个新列表，其代表了在两个列表上进行适当的集合论操作所得到的结果：<strong class="ph b">INTERSECTION</strong>
+返回一个由两个参数中可找到的所有元素组成的列表。<strong class="ph b">UNION</strong>
+返回一个列表，其含有来自两个参数的每个唯一元素的一个实例。<strong class="ph b">SET-DIFFERENCE</strong>
+返回一个列表，其含有来自第一个参数但并不出现在第二个参数中的所有元素。而
+<strong class="ph b">SET-EXCLUSIVE-OR</strong>
+则返回一个列表，其含有仅来自两个参数列表中的一个而不是两者的那些元素。这些函数中的每一个也都有一个相应的回收性函数，唯一区别在于后者的名字带有一个前缀 <code class="ph codeph">N</code>。</p><p class="p">Finally, the function <strong class="ph b">SUBSETP</strong> takes two lists and the usual <code class="ph codeph">:key</code> and
+<code class="ph codeph">:test</code> keyword arguments and returns true if the first list is a subset
+of the second--if every element in the first list is also present in
+the second list. The order of the elements in the lists doesn't
+matter.</p><p class="p">最后，函数 <strong class="ph b">SUBSETP</strong> 接受两个列表以及通常的 <code class="ph codeph">:key</code> 和 <code class="ph codeph">:test</code>
+关键字参数，并在第一个列表是第二个列表的一个子集时返回真，也就是说，第一个列表中的每一个元素也都存在于第二个列表中。列表中元素的顺序无关紧要。</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (subsetp '(3 2 1) '(1 2 3 4))
+T
+CL-USER&gt; (subsetp '(1 2 3 4) '(3 2 1))
+NIL</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap13/beyond-lists.html">Beyond Lists: Other Uses for Cons Cells（超越列表：点对单元的其他用法）</a></div></div></nav></article></main></body></html>

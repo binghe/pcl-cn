@@ -1,0 +1,34 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="characters字符"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Characters（字符）</title></head><body id="characters字符"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Characters（字符）</h1><div class="body"><p class="p">Common Lisp characters are a distinct type of object from
+numbers. That's as it should be--characters are not numbers, and
+languages that treat them as if they are tend to run into problems
+when character encodings change, say, from 8-bit ASCII to 21-bit
+Unicode.11 Because the Common Lisp standard didn't mandate a
+particular representation for characters, today several Lisp
+implementations use Unicode as their "native" character encoding
+despite Unicode being only a gleam in a standards body's eye at the
+time Common Lisp's own standardization was being wrapped up.</p><p class="p">Common Lisp
+字符和数字是不同类型的对象。其本该如此——字符不是数字，而将其同等对待的语言当字符编码改变时（比如说从
+8 位 ASCII 到 21 位 Unicode）可能会出现问题。由于 Common Lisp
+标准并未规定字符的内部表示方法，当今几种 Lisp 实现都使用 Unicode
+作为其原生字符编码，尽管从标准化组织的观点来看 Unicode 在 Common
+Lisp 自身的标准化成型时期只是昙花一现。</p><p class="p">The read syntax for characters objects is simple: <code class="ph codeph">#\</code> followed by the
+desired character. Thus, <code class="ph codeph">#\x</code> is the character <code class="ph codeph">x</code>. Any character can be
+used after the <code class="ph codeph">#\</code>, including otherwise special characters such as <code class="ph codeph">"</code>,
+<code class="ph codeph">(</code>, and whitespace. However, writing whitespace characters this way
+isn't very (human) readable; an alternative syntax for certain
+characters is <code class="ph codeph">#\</code> followed by the character's name. Exactly what names
+are supported depends on the character set and on the Lisp
+implementation, but all implementations support the names <code class="ph codeph">Space</code> and
+<code class="ph codeph">Newline</code>. Thus, you should write <code class="ph codeph">#\Space</code> instead of <code class="ph codeph">#\ </code>, though the
+latter is technically legal. Other semistandard names (that
+implementations must use if the character set has the appropriate
+characters) are <code class="ph codeph">Tab</code>, <code class="ph codeph">Page</code>, <code class="ph codeph">Rubout</code>, <code class="ph codeph">Linefeed</code>, <code class="ph codeph">Return</code>, and <code class="ph codeph">Backspace</code>.</p><p class="p">字符的读取语法很简单：<code class="ph codeph">#\</code> 后跟想要的字符。这样，<code class="ph codeph">#\x</code> 就是字符
+<code class="ph codeph">x</code>。任何字符都可以用在 <code class="ph codeph">#\</code> 之后，包括那些诸如 <code class="ph codeph">"</code>、<code class="ph codeph">(</code>
+和空格这样的特殊字符。但以这种方式来写空格字符却并不是十分的人类可读，特定字符的替代语法是
+<code class="ph codeph">#\</code> 后跟该字符的名字。具体支持的名字取决于字符集和所在的
+Lisp 实现，但所有实现都支持名字 <code class="ph codeph">Space</code> 和
+<code class="ph codeph">Newline</code>。这样就应该写成用 <code class="ph codeph">#\Space</code> 来代替
+<code class="ph codeph">#\</code>，尽管后者在技术上是合法的。其他半标准化的名字（如果字符集包含相应的字符实现就必须采用的名字）是
+<code class="ph codeph">Tab</code>、<code class="ph codeph">Page</code>、<code class="ph codeph">Rubout</code>、<code class="ph codeph">Linefeed</code>、<code class="ph codeph">Return</code> 和 <code class="ph codeph">Backspace</code>。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

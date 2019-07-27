@@ -1,0 +1,76 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="basic-math初等数学"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Basic Math（初等数学）</title></head><body id="basic-math初等数学"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Basic Math（初等数学）</h1><div class="body"><p class="p">The basic arithmetic operations--addition, subtraction,
+multiplication, and division--are supported for all the different
+kinds of Lisp numbers with the functions <code class="ph codeph">+</code>, <code class="ph codeph">-</code>, <code class="ph codeph">*</code>, and <code class="ph codeph">/</code>. Calling any
+of these functions with more than two arguments is equivalent to
+calling the same function on the first two arguments and then calling
+it again on the resulting value and the rest of the arguments. For
+example, <code class="ph codeph">(+ 1 2 3)</code> is equivalent to <code class="ph codeph">(+ (+ 1 2) 3)</code>. With only one
+argument, <code class="ph codeph">+</code> and <code class="ph codeph">*</code> return the value; <code class="ph codeph">-</code> returns its negation and <code class="ph codeph">/</code> its
+reciprocal.</p><p class="p">基本的算术操作即加法、减法、乘法和除法，通过函数 <code class="ph codeph">+</code>、<code class="ph codeph">-</code>、<code class="ph codeph">*</code>、<code class="ph codeph">/</code>
+支持所有不同类型的 Lisp
+数字。使用超过两个参数来调用这其中任何一个函数等价于在前两个参数上调用相同的函数而后再在所得结果和其余参数上再次调用。例如，<code class="ph codeph">(+ 1 2 3)</code>
+等价于 <code class="ph codeph">(+ (+ 1 2) 3)</code>。 当只有一个参数时，<code class="ph codeph">+</code> 和 <code class="ph codeph">*</code> 直接返回其值，
+<code class="ph codeph">-</code> 返回其相反值，而 <code class="ph codeph">/</code> 返回其倒数。</p><pre class="pre codeblock lisp"><code>(+ 1 2)              ==&gt; 3
+(+ 1 2 3)            ==&gt; 6
+(+ 10.0 3.0)         ==&gt; 13.0
+(+ #c(1 2) #c(3 4))  ==&gt; #c(4 6)
+(- 5 4)              ==&gt; 1
+(- 2)                ==&gt; -2
+(- 10 3 5)           ==&gt; 2
+(* 2 3)              ==&gt; 6
+(* 2 3 4)            ==&gt; 24
+(/ 10 5)             ==&gt; 2
+(/ 10 5 2)           ==&gt; 1
+(/ 2 3)              ==&gt; 2/3
+(/ 4)                ==&gt; 1/4</code></pre><p class="p">If all the arguments are the same type of number (rational, floating
+point, or complex), the result will be the same type except in the
+case where the result of an operation on complex numbers with rational
+components yields a number with a zero imaginary part, in which case
+the result will be a rational. However, floating-point and complex
+numbers are contagious--if all the arguments are reals but one or more
+are floating-point numbers, the other arguments are converted to the
+nearest floating-point value in a "largest" floating-point
+representation of the actual floating-point arguments. Floating-point
+numbers in a "smaller" representation are also converted to the larger
+representation. Similarly, if any of the arguments are complex, any
+real arguments are converted to the complex equivalents.</p><p class="p">如果所有实参都是相同类型的数（有理数、浮点数或复数），则结果也将是同类型的，除非带有有理部分的复数操作的结果产生了一个零虚部的数，此时结果将是一个有理数。尽管如此，浮点数和复数是有传播性的。如果所有实参都是实数但其中有一个或更多是浮点数，那么其他实参将被转化成以实际浮点参数的
+“最大” 浮点表示而成的最接近浮点值。那些“较小”表示的浮点数也将被转化成更大的表示。同样，如果实参中的任何一个是复数，则任何实参数会被转化成等价的复数。</p><pre class="pre codeblock lisp"><code>(+ 1 2.0)             ==&gt; 3.0
+(/ 2 3.0)             ==&gt; 0.6666667
+(+ #c(1 2) 3)         ==&gt; #c(4 2)
+(+ #c(1 2) 3/2)       ==&gt; #c(5/2 2)
+(+ #c(1 1) #c(2 -1))  ==&gt; 3</code></pre><p class="p">Because <code class="ph codeph">/</code> doesn't truncate, Common Lisp provides four flavors of
+truncating and rounding for converting a real number (rational or
+floating point) to an integer: <strong class="ph b">FLOOR</strong> truncates toward negative
+infinity, returning the largest integer less than or equal to the
+argument. <strong class="ph b">CEILING</strong> truncates toward positive infinity, returning the
+smallest integer greater than or equal to the argument. <strong class="ph b">TRUNCATE</strong>
+truncates toward zero, making it equivalent to <strong class="ph b">FLOOR</strong> for positive
+arguments and to <strong class="ph b">CEILING</strong> for negative arguments. And <strong class="ph b">ROUND</strong> rounds to
+the nearest integer. If the argument is exactly halfway between two
+integers, it rounds to the nearest even integer.</p><p class="p">因为 <code class="ph codeph">/</code> 不作截断处理，所以 Common Lisp 提供了 4
+种类型的截断和舍入用于将一个实数（有理数或浮点数）转化成整数：<strong class="ph b">FLOOR</strong>
+向负无穷方向截断，返回小于或等于实参的最大整数；<strong class="ph b">CEILING</strong>
+向正无穷方向截断，返回大于或等于参数的最小整数；<strong class="ph b">TRUNCATE</strong>
+向零截断，对于正实参而言，它等价于 <strong class="ph b">FLOOR</strong>，而对于负实参则等价于
+<strong class="ph b">CEILING</strong>；而 <strong class="ph b">ROUND</strong>
+舍入到最接近的整数上，如果参数刚好位于两个整数之间，它舍入到最接近的偶数上。</p><p class="p">Two related functions are <strong class="ph b">MOD</strong> and <strong class="ph b">REM</strong>, which return the modulus and
+remainder of a truncating division on real numbers. These two
+functions are related to the <strong class="ph b">FLOOR</strong> and <strong class="ph b">TRUNCATE</strong> functions as follows:</p><p class="p">两个相关的函数是 <strong class="ph b">MOD</strong> 和
+<strong class="ph b">REM</strong>，它返回两个实数截断相除得到的模和余数。这两个函数与 <strong class="ph b">FLOOR</strong>
+和 <strong class="ph b">TRUNCATE</strong> 函数之间的关系如下所示：</p><pre class="pre codeblock lisp"><code>(+ (* (floor    (/ x y)) y) (mod x y)) === x
+(+ (* (truncate (/ x y)) y) (rem x y)) === x</code></pre><p class="p">Thus, for positive quotients they're equivalent, but for negative
+quotients they produce different results.</p><p class="p">因此，对于正的商它们是等价的，而对于负的商它们产生不同的结果。</p><p class="p">The functions <code class="ph codeph">1+</code> and <code class="ph codeph">1-</code> provide a shorthand way to express adding and
+subtracting one from a number. Note that these are different from the
+macros <strong class="ph b">INCF</strong> and <strong class="ph b">DECF</strong>. <code class="ph codeph">1+</code> and <code class="ph codeph">1-</code> are just functions that return a new
+value, but <strong class="ph b">INCF</strong> and <strong class="ph b">DECF</strong> modify a place. The following equivalences
+show the relation between <strong class="ph b">INCF</strong>/<strong class="ph b">DECF</strong>, <code class="ph codeph">1+</code>/<code class="ph codeph">1-</code>, and <code class="ph codeph">+</code>/<code class="ph codeph">-</code>:</p><p class="p">函数 <code class="ph codeph">1+</code> 和 <code class="ph codeph">1-</code>
+提供了表示从一个数字增加或减少一个的简化方式。注意它们与宏
+<strong class="ph b">INCF</strong> 和 <strong class="ph b">DECF</strong> 有所不同。<code class="ph codeph">1+</code> 和 <code class="ph codeph">1-</code>
+只是返回一个新值的函数，而 <strong class="ph b">INCF</strong> 和 <strong class="ph b">DECF</strong>
+会修改一个位置。下面的恒等式显示了 <strong class="ph b">INCF</strong>/<strong class="ph b">DECF</strong>、<code class="ph codeph">1+</code>/<code class="ph codeph">1-</code>，和
+<code class="ph codeph">+</code>/<code class="ph codeph">-</code> 之间的关系：</p><pre class="pre codeblock lisp"><code>(incf x)    === (setf x (1+ x)) === (setf x (+ x 1))
+(decf x)    === (setf x (1- x)) === (setf x (- x 1))
+(incf x 10) === (setf x (+ x 10))
+(decf x 10) === (setf x (- x 10))</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

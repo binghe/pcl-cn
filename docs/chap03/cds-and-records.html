@@ -1,0 +1,65 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap03/a-simple-database.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="cds-and-recordscd-和记录"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>CDs and Records（CD 和记录）</title></head><body id="cds-and-recordscd-和记录"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">CDs and Records（CD 和记录）</h1><div class="body"><p class="p">To keep track of CDs that need to be ripped to MP3s and which CDs
+should be ripped first, each record in the database will contain the
+title and artist of the CD, a rating of how much the user likes it,
+and a flag saying whether it has been ripped. So, to start with,
+you'll need a way to represent a single database record (in other
+words, one CD). Common Lisp gives you lots of choices of data
+structures from a simple four-item list to a user-defined class, using
+the Common Lisp Object System (CLOS).</p><p class="p">为了记录那些需要转换成 MP3 的 CD，以及哪些 CD
+应该先进行转换，数据库里的每条记录都将包含 CD
+的标题和艺术家信息，一个关于有多少用户喜欢它的评级，以及一个表示其是否已经被转换过的标记。因此，首先需要一种方式来表示一条单一的数据库记录（也就是一张
+CD）。Common Lisp 提供了大量的数据结构可供选择——从简单的四元素列表到基于
+Common Lisp 对象系统（CLOS）的用户自定义类。</p><p class="p">For now you can stay at the simple end of the spectrum and use a
+list. You can make a list with the <strong class="ph b">LIST</strong> function, which, appropriately
+enough, returns a list of its arguments.</p><p class="p">眼下你只能选择该系列里最简单的方法－使用列表。你可以使用 <strong class="ph b">LIST</strong>
+函数来生成一个列表，如果正常执行的话，它将返回一个由其参数所组成的列表。</p><pre class="pre codeblock"><code>CL-USER&gt; (list 1 2 3)
+(1 2 3)</code></pre><p class="p">You could use a four-item list, mapping a given position in the list
+to a given field in the record. However, another flavor of
+list--called a property list, or plist for short--is even more
+convenient. A plist is a list where every other element, starting with
+the first, is a symbol that describes what the next element in the
+list is. I won't get into all the details of exactly what a symbol is
+right now; basically it's a name. For the symbols that name the fields
+in the CD database, you can use a particular kind of symbol, called a
+keyword symbol. A keyword is any name that starts with a colon (<code class="ph codeph">:</code>),
+for instance, <code class="ph codeph">:foo</code>. Here's an example of a plist using the keyword
+symbols <code class="ph codeph">:a</code>, <code class="ph codeph">:b</code>, and <code class="ph codeph">:c</code> as property names:</p><p class="p">还可以使用一个四元素列表，将列表中的给定位置映射到记录中的给定字段。然
+而，使用另一类被称为属性表（property list）或简称 plist
+的列表甚至更方便。属性表是这样一种列表：从第一个元素开始的所有相间元素都是一个用来描述接下来的那个元素的符号。目前我不会深入讨论关于符号的所有细节，基本上它就是一个名字。对于用来命名
+CD 数据库字段的名字，你可以使用一种特殊类型的符号——关键字（keyword）符号。关键字符号是任何以冒号开始的名字，例如
+<code class="ph codeph">:foo</code>。下面是一个使用了关键字符号 <code class="ph codeph">:a</code>、<code class="ph codeph">:b</code> 和 <code class="ph codeph">:c</code>作为属性名的示例 plist：</p><pre class="pre codeblock"><code>CL-USER&gt; (list :a 1 :b 2 :c 3)
+(:A 1 :B 2 :C 3)</code></pre><p class="p">Note that you can create a property list with the same <strong class="ph b">LIST</strong> function
+as you use to create other lists; it's the contents that make it a
+plist.</p><p class="p">注意，你可以使用和创建其他列表时同样的 <strong class="ph b">LIST</strong>
+函数来创建一个属性表，只是特殊的内容使其成为了属性表。</p><p class="p">The thing that makes plists a convenient way to represent the records
+in a database is the function <strong class="ph b">GETF</strong>, which takes a plist and a symbol
+and returns the value in the plist following the symbol, making a
+plist a sort of poor man's hash table. Lisp has real hash tables too,
+but plists are sufficient for your needs here and can more easily be
+saved to a file, which will come in handy later.</p><p class="p">真正令属性表便于表达数据库记录的原则是在于函数 <strong class="ph b">GETF</strong>，其接受一个
+plist 和一个符号，并返回 plist 中跟在那个符号后面的值，这使得 plist
+成为了穷人的哈希表。当然 Lisp 有真正的哈希表，但 plist
+足以满足当前需要，并且可以更容易地保存在文件里——后面将谈及这点。</p><pre class="pre codeblock"><code>CL-USER&gt; (getf (list :a 1 :b 2 :c 3) :a)
+1
+CL-USER&gt; (getf (list :a 1 :b 2 :c 3) :c)
+3</code></pre><p class="p">Given all that, you can easily enough write a function <code class="ph codeph">make-cd</code> that
+will take the four fields as arguments and return a plist representing
+that CD.</p><p class="p">理解了所有这些知识，你就可以轻易写出一个 <code class="ph codeph">make-cd</code> 函数了，它以参数的形式接受
+4 个字段，然后返回一个代表该 CD 的 plist。</p><pre class="pre codeblock"><code>(defun make-cd (title artist rating ripped)
+  (list :title title :artist artist :rating rating :ripped ripped))</code></pre><p class="p">The word <strong class="ph b">DEFUN</strong> tells us that this form is defining a new function. The
+name of the function is <code class="ph codeph">make-cd</code>. After the name comes the parameter
+list. This function has four parameters: <code class="ph codeph">title</code>, <code class="ph codeph">artist</code>, <code class="ph codeph">rating</code>, and
+<code class="ph codeph">ripped</code>. Everything after the parameter list is the body of the
+function. In this case the body is just one form, a call to
+<strong class="ph b">LIST</strong>. When <code class="ph codeph">make-cd</code> is called, the arguments passed to the call will
+be bound to the variables in the parameter list. For instance, to
+make a record for the CD Roses by Kathy Mattea, you might call
+<code class="ph codeph">make-cd</code> like this:</p><p class="p">单词 <strong class="ph b">DEFUN</strong> 告诉我们上述形式正在定义一个新函数，函数名是
+<code class="ph codeph">make-cd</code>。跟在名字后面的是形参列表，这个函数拥有四个形参：<code class="ph codeph">title</code>、<code class="ph codeph">artist</code>、<code class="ph codeph">rating</code>
+和 <code class="ph codeph">ripped</code>。形参列表后面的都是函数体。本例中的函数体只有一个形式，即对
+<strong class="ph b">LIST</strong> 的调用。当 <code class="ph codeph">make-cd</code>
+被调用时，传递给该调用的参数将被绑定到形参列表中的变量上。例如，为了建立一个关于
+Kathy Mattea 的名为 Roses 的 CD 的记录，你可以这样调用 <code class="ph codeph">make-cd</code>：</p><pre class="pre codeblock"><code>CL-USER&gt; (make-cd "Roses" "Kathy Mattea" 7 t)
+(:TITLE "Roses" :ARTIST "Kathy Mattea" :RATING 7 :RIPPED T)</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap03/a-simple-database.html">Practical: A Simple Database（实践：一个简单的数据库）</a></div></div></nav></article></main></body></html>

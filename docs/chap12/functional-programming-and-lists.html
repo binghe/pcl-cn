@@ -1,0 +1,79 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap12/list-processing.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="functional-programming-and-lists函数式编程和列表"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Functional Programming and Lists（函数式编程和列表）</title></head><body id="functional-programming-and-lists函数式编程和列表"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Functional Programming and Lists（函数式编程和列表）</h1><div class="body"><p class="p">The essence of functional programming is that programs are built
+entirely of functions with no side effects that compute their results
+based solely on the values of their arguments. The advantage of the
+functional style is that it makes programs easier to
+understand. Eliminating side effects eliminates almost all
+possibilities for action at a distance. And since the result of a
+function is determined only by the values of its arguments, its
+behavior is easier to understand and test. For instance, when you see
+an expression such as <code class="ph codeph">(+ 3 4)</code>, you know the result is uniquely
+determined by the definition of the + function and the values 3
+and 4. You don't have to worry about what may have happened earlier in
+the execution of the program since there's nothing that can change the
+result of evaluating that expression.</p><p class="p">函数式编程的本质在于，程序完全由没有副作用的函数组成，也就是说，函数完全基于其参数的值来计算结果。函数式风格的好处在于它使得程序更易于理解。在消除副作用的同时也消除了所有超距作用的可能。并且由于一个函数的结果仅取决于其参数的值，因此它的行为更容易被理解和测试。例如，当看到像
+<code class="ph codeph">(+ 3 4)</code>
+这样的表达式时，你知道其结果完全取决于 <code class="ph codeph">+</code>
+函数的定义以及值 3 和
+4。你不需要担心程序执行以前发生的事，因为没有什么可以改变该表达式的求值结果。</p><p class="p">Functions that deal with numbers are naturally functional since
+numbers are immutable. A list, on the other hand, can be mutated, as
+you've just seen, by <strong class="ph b">SETF</strong>ing the <strong class="ph b">CAR</strong>s and <strong class="ph b">CDR</strong>s of the cons cells that
+make up its backbone. However, lists can be treated as a functional
+data type if you consider their value to be determined by the elements
+they contain. Thus, any list of the form <code class="ph codeph">(1 2 3 4)</code> is functionally
+equivalent to any other list containing those four values, regardless
+of what cons cells are actually used to represent the list. And any
+function that takes a list as an argument and returns a value based
+solely on the contents of the list can likewise be considered
+functional. For instance, the <strong class="ph b">REVERSE</strong> sequence function, given the
+list <code class="ph codeph">(1 2 3 4)</code>, always returns a list <code class="ph codeph">(4 3 2 1)</code>. Different calls to
+<strong class="ph b">REVERSE</strong> with functionally equivalent lists as the argument will return
+functionally equivalent result lists. Another aspect of functional
+programming, which I'll discuss in the section "Mapping," is the use
+of higher-order functions: functions that treat other functions as
+data, taking them as arguments or returning them as results.</p><p class="p">处理数字的函数天生是函数式的，因为数字都是不可改变的对象。另一方面，如同刚刚看到的那样，通过
+<strong class="ph b">SETF</strong> 构成点对单元的 <strong class="ph b">CAR</strong> 和
+<strong class="ph b">CDR</strong>，列表是可改变的。但列表可以被当作函数式数据类型来对待，只要将其值视为是由它们包含的元素所决定的即可。这样，形式
+<code class="ph codeph">(1 2 3 4)</code> 所表示的任何列表在函数式意义上就将等价于任何其他含有这四个值的列表，无论实际表示该列表的是什么点对单元。并且任何接受一个列表作为实参且其返回值完全依赖于列表内容的函数也可以同样被认为是函数式的。例如，当给定列表
+<code class="ph codeph">(1 2 3 4)</code> 时，序列函数 <strong class="ph b">REVERSE</strong> 总是返回列表
+<code class="ph codeph">(4 3 2 1)</code>。但由函数式等价的列表作为参数的不同 <strong class="ph b">REVERSE</strong>
+调用将返回函数式等价的结果列表。我将在第 12.6
+节里讨论的函数式编程的另一个方面，即对高阶函数的使用：函数将其他函数作为数据来对待，接受它们作为实参或是返回它们作为
+结果。</p><p class="p">Most of Common Lisp's list-manipulation functions are written in a
+functional style. I'll discuss later how to mix functional and other
+coding styles, but first you should understand a few subtleties of the
+functional style as applied to lists.</p><p class="p">多数 Common Lisp
+的列表操作函数都以函数式风格写成的。我将在后面讨论如何将函数式风格和其他编码风格混合在一起使用，但首先应当理解函数式风格应用在列表上的一些微妙之处。</p><p class="p">The reason most list functions are written functionally is it allows
+them to return results that share cons cells with their arguments. To
+take a concrete example, the function <strong class="ph b">APPEND</strong> takes any number of list
+arguments and returns a new list containing the elements of all its
+arguments. For instance:</p><p class="p">多数列表函数之所以会用函数式编写，是因为这能使它们返回与其实参共享点对单元的结果。举一个具体的例子，函数
+<strong class="ph b">APPEND</strong> 可接受任意数量的列表实参并返回一个含有其参数列表的所有元素的新列表。例如：</p><pre class="pre codeblock lisp"><code>(append (list 1 2) (list 3 4)) ==&gt; (1 2 3 4)</code></pre><p class="p">From a functional point of view, <strong class="ph b">APPEND</strong>'s job is to return the
+list
+<code class="ph codeph">(1 2 3 4)</code> without modifying any of the cons cells in the lists
+<code class="ph codeph">(1 2)</code> and
+<code class="ph codeph">(3 4)</code>. One obvious way to achieve that goal is to create a completely
+new list consisting of four new cons cells. However, that's more work
+than is necessary. Instead, <strong class="ph b">APPEND</strong> actually makes only two new cons
+cells to hold the values 1 and 2, linking them together and pointing
+the <strong class="ph b">CDR</strong> of the second cons cell at the head of the last argument, the
+list <code class="ph codeph">(3 4)</code>. It then returns the cons cell containing the 1. None of
+the original cons cells has been modified, and the result is indeed
+the list <code class="ph codeph">(1 2 3 4)</code>. The only wrinkle is that the list returned by
+APPEND shares some cons cells with the list <code class="ph codeph">(3 4)</code>. The resulting
+structure looks like this:</p><p class="p">从函数式观点来看，<strong class="ph b">APPEND</strong> 的工作是返回列表 <code class="ph codeph">(1 2 3 4)</code>
+而无需修改列表 <code class="ph codeph">(1 2)</code> 和 <code class="ph codeph">(3 4)</code>
+中的任何点对单元。显然，为了实现该目标可以创建由四个新的点对单元组成的新列表。但这样做并无必要。相反，<strong class="ph b">APPEND</strong>
+实际上只用两个新的点对单元来持有值 1 或
+2，然后将它们连接在一起，并把第 2 个点对单元的 <strong class="ph b">CDR</strong> 指向最后一个实参—列表
+<code class="ph codeph">(3 4)</code> 的头部。然后它返回含有 1
+的那个新生成的点对单元。没有原先的点对单元被修改过，并且结果确实是列表
+<code class="ph codeph">(1 2 3 4)</code>。唯一美中不足的是 <strong class="ph b">APPEND</strong>
+返回的列表与列表 <code class="ph codeph">(3 4)</code> 共享了一些点对单元。产生的结构如下所示：</p><br><img class="image" src="after-append.png" alt="after append"><br><p class="p">In general, <strong class="ph b">APPEND</strong> must copy all but its last argument, but it can
+always return a result that shares structure with the last argument.</p><p class="p">一般而言，<strong class="ph b">APPEND</strong>
+必须复制除最后一个实参以外的所有其他实参，但它的返回结果却总是会与其最后一个实参共享结构。</p><p class="p">Other functions take similar advantage of lists' ability to share
+structure. Some, like <strong class="ph b">APPEND</strong>, are specified to always return results
+that share structure in a particular way. Others are simply allowed to
+return shared structure at the discretion of the implementation.</p><p class="p">其他一些函数也相似地利用了列表共享结构的能力。一些像 <strong class="ph b">APPEND</strong>
+这样的函数被指定总是返回以特定方式共享结构的结果。其他函数则被简单地允许根据具体实现而定来返回共享的结构。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap12/list-processing.html">They Called It LISP for a Reason: List Processing（LISP 名字的由来：列表处理）</a></div></div></nav></article></main></body></html>

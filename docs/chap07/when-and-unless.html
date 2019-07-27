@@ -1,0 +1,69 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap07/macros-standard-control-constructs.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="when-and-unlesswhen-和-unless"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>WHEN and UNLESS（WHEN 和 UNLESS）</title></head><body id="when-and-unlesswhen-和-unless"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1"><strong class="ph b">WHEN</strong> and <strong class="ph b">UNLESS</strong>（<strong class="ph b">WHEN</strong> 和 <strong class="ph b">UNLESS</strong>）</h1><div class="body"><p class="p">As you've already seen, the most basic form of conditional
+execution--if <code class="ph codeph">x</code>, do <code class="ph codeph">y</code>; otherwise do <code class="ph codeph">z</code>--is provided by the <strong class="ph b">IF</strong> special
+operator, which has this basic form:</p><p class="p">如前所述，最基本的条件执行形式是由 <strong class="ph b">IF</strong>
+特殊操作符提供的，其基本形式是：如果 <code class="ph codeph">x</code> 成立，那么执行 <code class="ph codeph">y</code>；否则执行 <code class="ph codeph">z</code>。</p><pre class="pre codeblock lisp"><code>(if condition then-form [else-form])</code></pre><p class="p">The <code class="ph codeph">condition</code> is evaluated and, if its value is non-<strong class="ph b">NIL</strong>, the <code class="ph codeph">then-form</code>
+is evaluated and the resulting value returned. Otherwise, the
+<code class="ph codeph">else-form</code>, if any, is evaluated and its value returned. If <code class="ph codeph">condition</code>
+is <strong class="ph b">NIL</strong> and there's no <code class="ph codeph">else-form</code>, then the <strong class="ph b">IF</strong> returns <strong class="ph b">NIL</strong>.</p><p class="p"><code class="ph codeph">condition</code> 被求值，如果其值非 <strong class="ph b">NIL</strong>，那么 <code class="ph codeph">then-form</code>
+会被求值并返回其结果。否则，如果有 <code class="ph codeph">else-form</code>
+的话，它将被求值并返回其结果。如果 <code class="ph codeph">condition</code>是 <strong class="ph b">NIL</strong>
+并且没有 <code class="ph codeph">else-form</code>，那么IF返回 <strong class="ph b">NIL</strong>。</p><pre class="pre codeblock lisp"><code>(if (&gt; 2 3) "Yup" "Nope") ==&gt; "Nope"
+(if (&gt; 2 3) "Yup")        ==&gt; NIL
+(if (&gt; 3 2) "Yup" "Nope") ==&gt; "Yup"</code></pre><p class="p">However, <strong class="ph b">IF</strong> isn't actually such a great syntactic construct because
+the then-form and else-form are each restricted to being a single Lisp
+form. This means if you want to perform a sequence of actions in
+either clause, you need to wrap them in some other syntax. For
+instance, suppose in the middle of a spam-filtering program you wanted
+to both file a message as spam and update the spam database when a
+message is spam. You can't write this:</p><p class="p">尽管如此，<strong class="ph b">IF</strong> 事实上并不是什么伟大的句法构造，因为每个 <code class="ph codeph">then-form</code>
+和 <code class="ph codeph">else-form</code> 都被限制在必须是单一的 Lisp
+形式上。这意味着如果想在每个子句中执行一系列操作，则必须将其用其他一些语法形式进行封装。举个例子，假如在一个垃圾过滤程序中，当一个消息是垃圾时，你想要在将其标记为垃圾的同时更新垃圾数据库，那么你不能这样写：</p><pre class="pre codeblock lisp"><code>(if (spam-p current-message)
+    (file-in-spam-folder current-message)
+    (update-spam-database current-message))</code></pre><p class="p">because the call to <code class="ph codeph">update-spam-database</code> will be treated as the else
+clause, not as part of the then clause. Another special operator,
+<strong class="ph b">PROGN</strong>, executes any number of forms in order and returns the value of
+the last form. So you could get the desired behavior by writing the
+following:</p><p class="p">因为对 <code class="ph codeph">update-spam-database</code> 的调用将被作为 else
+子句来看待，而不是 then
+子句的一部分。另一个特殊操作符 <strong class="ph b">PROGN</strong>
+可以按顺序执行任意数量的形式并返回最后一个形式的值。因此可以通过写成下面这样来得到预想的行为：</p><pre class="pre codeblock lisp"><code>(if (spam-p current-message)
+    (progn
+      (file-in-spam-folder current-message)
+      (update-spam-database current-message)))</code></pre><p class="p">That's not too horrible. But given the number of times you'll likely
+have to use this idiom, it's not hard to imagine that you'd get tired
+of it after a while. "Why," you might ask yourself, "doesn't Lisp
+provide a way to say what I really want, namely, 'When x is true, do
+this, that, and the other thing'?" In other words, after a while you'd
+notice the pattern of an <strong class="ph b">IF</strong> plus a <strong class="ph b">PROGN</strong> and wish for a way to
+abstract away the details rather than writing them out every time.</p><p class="p">这样做并不算太坏。但假如不得不多次使用这样的写法，不难想象你将在一段时间以后开始厌倦它。你可能会自问：“为什么
+Lisp 没有提供一种方式来做我真正想做的事，也就是说，‘当 <code class="ph codeph">x</code>
+为真时，做这个、那个以及其他一些事情’？”
+换句话说，很快你将注意到这种由 <strong class="ph b">IF</strong> 加上 <strong class="ph b">PROGN</strong>
+所组成的模式，并且希望可以有一种方式来抽象掉所有细节而不是每次都将它们写出来。</p><p class="p">This is exactly what macros provide. In this case, Common Lisp comes
+with a standard macro, <strong class="ph b">WHEN</strong>, which lets you write this:</p><p class="p">这正是宏所能够提供的功能。在这个案例中，Common Lisp
+提供了一个标准宏 <strong class="ph b">WHEN</strong>，可以让你写成这样：</p><pre class="pre codeblock lisp"><code>(when (spam-p current-message)
+  (file-in-spam-folder current-message)
+  (update-spam-database current-message))</code></pre><p class="p">But if it wasn't built into the standard library, you could define
+<strong class="ph b">WHEN</strong> yourself with a macro such as this, using the backquote
+notation I discussed in Chapter 3:</p><p class="p">但如果它没有被内置到标准库中，你也可以像下面这样用一个宏来自己定义
+<strong class="ph b">WHEN</strong>，这里用到了第 3 章中讨论过的反引号：</p><pre class="pre codeblock lisp"><code>(defmacro when (condition &amp;rest body)
+  `(if ,condition (progn ,@body)))</code></pre><p class="p">A counterpart to the <strong class="ph b">WHEN</strong> macro is <strong class="ph b">UNLESS</strong>, which reverses the
+condition, evaluating its body forms only if the condition is
+false. In other words:</p><p class="p">与 <strong class="ph b">WHEN</strong> 宏同系列的另一个宏是
+<strong class="ph b">UNLESS</strong>，它取相反的条件，只有当条件为假时才求值其形式体。换句话说：</p><pre class="pre codeblock lisp"><code>(defmacro unless (condition &amp;rest body)
+  `(if (not ,condition) (progn ,@body)))</code></pre><p class="p">Admittedly, these are pretty trivial macros. There's no deep black
+magic here; they just abstract away a few language-level bookkeeping
+details, allowing you to express your true intent a bit more
+clearly. But their very triviality makes an important point: because
+the macro system is built right into the language, you can write
+trivial macros like <strong class="ph b">WHEN</strong> and <strong class="ph b">UNLESS</strong> that give you small but real
+gains in clarity that are then multiplied by the thousands of times
+you use them. In Chapters 24, 26, and 31 you'll see how macros can
+also be used on a larger scale, creating whole domain-specific
+embedded languages. But first let's finish our discussion of the
+standard control-construct macros.</p><p class="p">必须承认，这些都是相当简单的宏。这里没有什么高深的道理，它们只是抽象掉了一些语言层面约定俗成的细节，从而允许你更加清晰地表达你的真实意图。但是它们的极度简单性却产生了一个重要的观点：由于宏系统是直接构建在语言之中的，所以可以写出像
+<strong class="ph b">WHEN</strong> 和 <strong class="ph b">UNLESS</strong>
+这样简单的宏来获得虽小但却重要的清晰性，并随后通过不断地使用而无限放大。第
+24、26 和 31 章将展现宏是如何被更大规模地用于创建完整的特定领域的嵌入式语言。但首先来介绍一下标准控制构造宏。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap07/macros-standard-control-constructs.html">Macros: Standard Control Constructs（宏：标准控制结构）</a></div></div></nav></article></main></body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap13/beyond-lists.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="destructuring-bind"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>DESTRUCTURING-BIND</title></head><body id="destructuring-bind"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">DESTRUCTURING-BIND</h1><div class="body"><p class="p">One last tool for slicing and dicing lists that I need to cover since
+you'll need it in later chapters is the <strong class="ph b">DESTRUCTURING-BIND</strong> macro. This
+macro provides a way to destructure arbitrary lists, similar to the
+way macro parameter lists can take apart their argument list. The
+basic skeleton of a <strong class="ph b">DESTRUCTURING-BIND</strong> is as follows:</p><p class="p">最后一个我需要介绍的，同时也是你将在后续章节里使用的一个用于拆分列表的工具是
+<strong class="ph b">DESTRUCTURING-BIND</strong>
+宏。这个宏提供了一种解构（destructure）任意列表的方式，这类似于宏形参列表分拆它们的参数列表的方式。<strong class="ph b">DESTRUCTURING-BIND</strong>
+的基本骨架如下所示：</p><pre class="pre codeblock lisp"><code>(destructuring-bind (parameter*) list
+  body-form*)</code></pre><p class="p">The parameter list can include any of the types of parameters
+supported in macro parameter lists such as <code class="ph codeph">&amp;optional</code>, <code class="ph codeph">&amp;rest</code>, and <code class="ph codeph">&amp;key</code>
+parameters. And, as in macro parameter lists, any parameter can be
+replaced with a nested destructuring parameter list, which takes apart
+the list that would otherwise have been bound to the replaced
+parameter. The list form is evaluated once and should return a list,
+which is then destructured and the appropriate values are bound to the
+variables in the parameter list. Then the body-forms are evaluated in
+order with those bindings in effect. Some simple examples follow:</p><p class="p">该参数列表可以包含宏参数列表中支持的任何参数类型，比如 <code class="ph codeph">&amp;optional</code>、<code class="ph codeph">&amp;rest</code>
+和 <code class="ph codeph">&amp;key</code>
+参数。并且，如同在宏参数列表中一样，任何参数都可以被替换成一个嵌套的解构参数列表，从而将一个原本绑定在单个参数上的列表拆开。其中的
+<code class="ph codeph">list</code> 形式被求值一次并且应当返回一个列表，其随后被解构并且适当的值会被绑定到形参列表的对应变量中，然后那些
+<code class="ph codeph">body-form</code> 将在这些绑定的作用下被求值。一些简单的例子如下所示：</p><pre class="pre codeblock lisp"><code>(destructuring-bind (x y z) (list 1 2 3)
+  (list :x x :y y :z z)) ==&gt; (:X 1 :Y 2 :Z 3)
+
+(destructuring-bind (x y z) (list 1 (list 2 20) 3)
+  (list :x x :y y :z z)) ==&gt; (:X 1 :Y (2 20) :Z 3)
+
+(destructuring-bind (x (y1 y2) z) (list 1 (list 2 20) 3)
+  (list :x x :y1 y1 :y2 y2 :z z)) ==&gt; (:X 1 :Y1 2 :Y2 20 :Z 3)
+
+(destructuring-bind (x (y1 &amp;optional y2) z) (list 1 (list 2 20) 3)
+  (list :x x :y1 y1 :y2 y2 :z z)) ==&gt; (:X 1 :Y1 2 :Y2 20 :Z 3)
+
+(destructuring-bind (x (y1 &amp;optional y2) z) (list 1 (list 2) 3)
+  (list :x x :y1 y1 :y2 y2 :z z)) ==&gt; (:X 1 :Y1 2 :Y2 NIL :Z 3)
+
+(destructuring-bind (&amp;key x y z) (list :x 1 :y 2 :z 3)
+  (list :x x :y y :z z)) ==&gt; (:X 1 :Y 2 :Z 3)
+
+(destructuring-bind (&amp;key x y z) (list :z 1 :y 2 :x 3)
+  (list :x x :y y :z z)) ==&gt; (:X 3 :Y 2 :Z 1)</code></pre><p class="p">One kind of parameter you can use with <strong class="ph b">DESTRUCTURING-BIND</strong> and also in
+macro parameter lists, though I didn't mention it in Chapter 8, is a
+<code class="ph codeph">&amp;whole</code> parameter. If specified, it must be the first parameter in a
+parameter list, and it's bound to the whole list form. After a <code class="ph codeph">&amp;whole</code>
+parameter, other parameters can appear as usual and will extract
+specific parts of the list just as they would if the <code class="ph codeph">&amp;whole</code> parameter
+weren't there. An example of using <code class="ph codeph">&amp;whole</code> with <strong class="ph b">DESTRUCTURING-BIND</strong>
+looks like this:</p><p class="p">另外还有一种参数（尽管第 8 章并未介绍），它即可以用在
+<strong class="ph b">DESTRUCTRING-BIND</strong>
+中可以用在宏参数列表中，这就是
+<code class="ph codeph">&amp;whole</code>。如果被指定，它必须是参数列表中的第一个参数，并且它会被绑定到整个列表形式上。 在一个
+<code class="ph codeph">&amp;whole</code> 参数之后，其他参数可以像通常那样出现并且将像没有
+<code class="ph codeph">&amp;whole</code> 参数存在那样抽取出列表中的指定部分。一个将 <code class="ph codeph">&amp;whole</code> 与
+<strong class="ph b">DESTRUCTURING-BIND</strong> 同时使用的例子如下所示：</p><pre class="pre codeblock lisp"><code>(destructuring-bind (&amp;whole whole &amp;key x y z) (list :z 1 :y 2 :x 3)
+  (list :x x :y y :z z :whole whole))
+==&gt; (:X 3 :Y 2 :Z 1 :WHOLE (:Z 1 :Y 2 :X 3))</code></pre><p class="p">You'll use a <code class="ph codeph">&amp;whole</code> parameter in one of the macros that's part of the
+HTML generation library you'll develop in Chapter 31. However, I have
+a few more topics to cover before you can get to that. After two
+chapters on the rather Lispy topic of cons cells, you can now turn to
+the more prosaic matter of how to deal with files and filenames.</p><p class="p">你将在一个宏里使用 <code class="ph codeph">&amp;whole</code>
+参数，它是你将在第 31 章里开发的 HTML
+生成库的一部分。不过在那之前，我还要谈及更多的主题。在关于点对单元的两章相当
+Lisp 化的主题之后，下面将介绍如何处理文件和文件名这个相对乏味的问题。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap13/beyond-lists.html">Beyond Lists: Other Uses for Cons Cells（超越列表：点对单元的其他用法）</a></div></div></nav></article></main></body></html>

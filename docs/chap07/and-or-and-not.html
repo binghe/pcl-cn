@@ -1,0 +1,30 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap07/macros-standard-control-constructs.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="and-or-and-notandor-和-not"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>AND, OR, and NOT（AND、OR 和 NOT）</title></head><body id="and-or-and-notandor-和-not"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">AND, OR, and NOT（AND、OR 和 NOT）</h1><div class="body"><p class="p">When writing the conditions in <strong class="ph b">IF</strong>, <strong class="ph b">WHEN</strong>, <strong class="ph b">UNLESS</strong>, and <strong class="ph b">COND</strong> forms, three
+operators that will come in handy are the boolean logic operators,
+<strong class="ph b">AND</strong>, <strong class="ph b">OR</strong>, and <strong class="ph b">NOT</strong>.</p><p class="p">在使用 <strong class="ph b">IF</strong>、<strong class="ph b">WHEN</strong>、<strong class="ph b">UNLESS</strong> 和 <strong class="ph b">COND</strong>
+形式编写条件语句时，经常用到的三个操作符是布尔逻辑操作符 <strong class="ph b">AND</strong>、<strong class="ph b">OR</strong>
+和 <strong class="ph b">NOT</strong>。</p><p class="p"><strong class="ph b">NOT</strong> is a function so strictly speaking doesn't belong in this chapter,
+but it's closely tied to <strong class="ph b">AND</strong> and <strong class="ph b">OR</strong>. It takes a single argument and
+inverts its truth value, returning <strong class="ph b">T</strong> if the argument is <strong class="ph b">NIL</strong> and <strong class="ph b">NIL</strong>
+otherwise.</p><p class="p">严格来讲，<strong class="ph b">NOT</strong> 这个函数并不属于本章讨论范畴，但它跟 <strong class="ph b">AND</strong> 和 <strong class="ph b">OR</strong>
+紧密相关。它接受单一参数并对其真值取反，当参数为 <strong class="ph b">NIL</strong> 时返回 <strong class="ph b">T</strong>，否则返回 <strong class="ph b">NIL</strong>。</p><p class="p">AND and OR, however, are macros. They implement logical conjunction
+and disjunction of any number of subforms and are defined as macros so
+they can short-circuit. That is, they evaluate only as many of their
+subforms--in left-to-right order--as necessary to determine the
+overall truth value. Thus, AND stops and returns NIL as soon as one of
+its subforms evaluates to NIL. If all the subforms evaluate to
+non-NIL, it returns the value of the last subform. OR, on the other
+hand, stops as soon as one of its subforms evaluates to non-NIL and
+returns the resulting value. If none of the subforms evaluate to true,
+OR returns NIL. Here are some examples:</p><p class="p">而 <strong class="ph b">AND</strong> 和 <strong class="ph b">OR</strong>
+则是宏。它们实现了对任意数量子表达式的逻辑合取和析取操作，并被定义成宏以便支持
+“短路” 特性。也就是说，它们仅以从左到右的顺序对用于检测整体真值的必要数量的子表达式进行求值。这样，只要
+<strong class="ph b">AND</strong> 的一个子表达式求值为 <strong class="ph b">NIL</strong>，它就立即停止并返回
+<strong class="ph b">NIL</strong>。如果所有子表达式都求值到非 <strong class="ph b">NIL</strong>，那么它将返回最后一个子表达式的值。而对于
+<strong class="ph b">OR</strong> 来说只要一个子表达式求值到非
+<strong class="ph b">NIL</strong>，它就立即停止并返回当前子表达式的值。如果没有子表达式求值到真，<strong class="ph b">OR</strong>
+返回 <strong class="ph b">NIL</strong>。下面是一些例子：</p><pre class="pre codeblock lisp"><code>(not nil)             ==&gt; T
+(not (= 1 1))         ==&gt; NIL
+(and (= 1 2) (= 3 3)) ==&gt; NIL
+(or (= 1 2) (= 3 3))  ==&gt; T</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap07/macros-standard-control-constructs.html">Macros: Standard Control Constructs（宏：标准控制结构）</a></div></div></nav></article></main></body></html>

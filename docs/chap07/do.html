@@ -1,0 +1,92 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap07/macros-standard-control-constructs.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="dodo-宏"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>DO（DO 宏）</title></head><body id="dodo-宏"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">DO（DO 宏）</h1><div class="body"><p class="p">While <strong class="ph b">DOLIST</strong> and <strong class="ph b">DOTIMES</strong> are convenient and easy to use, they aren't
+flexible enough to use for all loops. For instance, what if you want
+to step multiple variables in parallel? Or use an arbitrary expression
+to test for the end of the loop? If neither <strong class="ph b">DOLIST</strong> nor <strong class="ph b">DOTIMES</strong> meet
+your needs, you still have access to the more general <strong class="ph b">DO</strong> loop.</p><p class="p">尽管 <strong class="ph b">DOLIST</strong> 和 <strong class="ph b">DOTIMES</strong>
+方便且易于使用，但却没有灵活到可用于所有循环。例如，如果想要并行循环多个变量该怎样做？或是使用任意表达式来测试循环的末尾呢？如果
+<strong class="ph b">DOLIST</strong> 和 <strong class="ph b">DOTIMES</strong> 都不能满足需求，那还可以用更通用的 <strong class="ph b">DO</strong> 循环。</p><p class="p">Where <strong class="ph b">DOLIST</strong> and <strong class="ph b">DOTIMES</strong> provide only one loop variable, <strong class="ph b">DO</strong> lets you
+bind any number of variables and gives you complete control over how
+they change on each step through the loop. You also get to define the
+test that determines when to end the loop and can provide a form to
+evaluate at the end of the loop to generate a return value for the <strong class="ph b">DO</strong>
+expression as a whole. The basic template looks like this:</p><p class="p">与 <strong class="ph b">DOLIST</strong> 和 <strong class="ph b">DOTIMES</strong> 只提供一个循环变量有所不同的是，<strong class="ph b">DO</strong>
+允许绑定任意数量的变量，也可以定义测试条件来决定何时终止循环，并可以提供一个形式，在循环结束时进行求值来为
+<strong class="ph b">DO</strong> 表达式整体生成一个返回值。基本模板如下所示：</p><pre class="pre codeblock lisp"><code>(do (variable-definition*)
+    (end-test-form result-form*)
+  statement*)</code></pre><p class="p">Each <code class="ph codeph">variable-definition</code> introduces a variable that will be in scope
+in the body of the loop. The full form of a single variable definition
+is a list containing three elements.</p><p class="p">每个 <code class="ph codeph">variable-definition</code>
+引入了一个将存在于循环体作用域之内的变量。单个变量定义的完整形式是一个含有三个元素的列表。</p><pre class="pre codeblock lisp"><code>(var init-form step-form)</code></pre><p class="p">The <code class="ph codeph">init-form</code> will be evaluated at the beginning of the loop and the
+resulting values bound to the variable <code class="ph codeph">var</code>. Before each subsequent
+iteration of the loop, the <code class="ph codeph">step-form</code> will be evaluated and the new
+value assigned to <code class="ph codeph">var</code>. The <code class="ph codeph">step-form</code> is optional; if it's left out,
+the variable will keep its value from iteration to iteration unless
+you explicitly assign it a new value in the loop body. As with the
+variable definitions in a <strong class="ph b">LET</strong>, if the <code class="ph codeph">init-form</code> is left out, the
+variable is bound to <strong class="ph b">NIL</strong>. Also as with <strong class="ph b">LET</strong>, you can use a plain
+variable name as shorthand for a list containing just the name.</p><p class="p">上述 <code class="ph codeph">init-form</code> 在循环开始时被求值并将结果值绑定到变量 <code class="ph codeph">var</code>
+上。在循环的每一个后续迭代开始之前，<code class="ph codeph">step-form</code> 将被求值并把新值分配给
+<code class="ph codeph">var</code>。<code class="ph codeph">step-form</code> 是可选的，如果它没有给出，那么变量将在迭代过程中保持其值不变，除非在循环体中显式地为其赋予新值。和
+<strong class="ph b">LET</strong> 中的变量定义一样，如果 <code class="ph codeph">init-form</code> 没有给出，那么变量将被绑定到
+<strong class="ph b">NIL</strong>。另外和 <strong class="ph b">LET</strong>
+的情形一样的是，你可以将一个只含有名字的列表简化成一个简单的变量名来使用。</p><p class="p">At the beginning of each iteration, after all the loop variables have
+been given their new values, the <code class="ph codeph">end-test-form</code> is evaluated. As long
+as it evaluates to <strong class="ph b">NIL</strong>, the iteration proceeds, evaluating the
+<code class="ph codeph">statement</code>s in order.</p><p class="p">在每次迭代开始时以及所有循环变量都被指定新值后，<code class="ph codeph">end-test-form</code>
+会被求值。只要其值为 <strong class="ph b">NIL</strong>，迭代过程就会继续，依次求值所有的 <code class="ph codeph">statement</code>。</p><p class="p">When the <code class="ph codeph">end-test-form</code> evaluates to true, the <code class="ph codeph">result-form</code>s are
+evaluated, and the value of the last result form is returned as the
+value of the <strong class="ph b">DO</strong> expression.</p><p class="p">当 <code class="ph codeph">end-test-form</code> 求值为真时，<code class="ph codeph">result-form</code>
+将被求值，且最后一个结果形式的值将被作为 <strong class="ph b">DO</strong> 表达式的值返回。</p><p class="p">At each step of the iteration the step forms for all the variables are
+evaluated before assigning any of the values to the variables. This
+means you can refer to any of the other loop variables in the step
+forms. That is, in a loop like this:</p><p class="p">在迭代的每一步里，所有变量的 <code class="ph codeph">step-form</code>
+将在分配任何值给变量之前被求值。这意味着可以在步长形式里引用其他任何循环变量。 比如在下列循环中：</p><pre class="pre codeblock lisp"><code>(do ((n 0 (1+ n))
+     (cur 0 next)
+     (next 1 (+ cur next)))
+    ((= 10 n) cur))</code></pre><p class="p">the step forms <code class="ph codeph">(1+ n)</code>, <code class="ph codeph">next</code>, and <code class="ph codeph">(+ cur next)</code> are all evaluated
+using the old values of <code class="ph codeph">n</code>, <code class="ph codeph">cur</code>, and <code class="ph codeph">next</code>. Only after all the step
+forms have been evaluated are the variables given their new
+values. (Mathematically inclined readers may notice that this is a
+particularly efficient way of computing the eleventh Fibonacci
+number.)</p><p class="p">其步长形式 <code class="ph codeph">(1+ n)</code>、<code class="ph codeph">next</code> 和 <code class="ph codeph">(+ cur next)</code> 均使用 <code class="ph codeph">n</code>、<code class="ph codeph">cur</code> 和
+<code class="ph codeph">next</code> 的旧值来求值。只有当所有步长形式都被求值以后，这些变量才被指定其新的值。（有数学天赋的读者可能会注意到，这其实是一种计算第
+11 个斐波那契数的特别有效的方式。）</p><p class="p">This example also illustrates another characteristic of <strong class="ph b">DO</strong>--because
+you can step multiple variables, you often don't need a body at
+all. Other times, you may leave out the result form, particularly if
+you're just using the loop as a control construct. This flexibility,
+however, is the reason that <strong class="ph b">DO</strong> expressions can be a bit cryptic. Where
+exactly do all the parentheses go? The best way to understand a <strong class="ph b">DO</strong>
+expression is to keep in mind the basic template.</p><p class="p">这个例子还阐述了 <strong class="ph b">DO</strong>
+的另一种特征——由于可以同时推进多个变量所以往往根本不需要一个循环体。其他时候，尤其在只是把循环用作控制构造时，则可能会省略结果形式。尽管如此，这种灵活性正是
+<strong class="ph b">DO</strong> 表达式有点儿晦涩难懂的原因。所有这些括号都该放在哪里？理解一个
+<strong class="ph b">DO</strong> 表达式的最佳方式是记住其基本模板：</p><pre class="pre codeblock lisp"><code>(do (variable-definition*)
+    (end-test-form result-form*)
+  statement*)</code></pre><p class="p">The six parentheses in that template are the only ones required by the
+<strong class="ph b">DO</strong> itself. You need one pair to enclose the variable declarations, one
+pair to enclose the end test and result forms, and one pair to enclose
+the whole expression. Other forms within the <strong class="ph b">DO</strong> may require their own
+parentheses--variable definitions are usually lists, for instance. And
+the test form is often a function call. But the skeleton of a <strong class="ph b">DO</strong> loop
+will always be the same. Here are some example <strong class="ph b">DO</strong> loops with the
+skeleton in bold:</p><p class="p">该模板中的六个括号是 <strong class="ph b">DO</strong>
+结构本身所必需的。一对括号来围住变量声明，一对用来围住终止测试形式和结果形式，以及一对用来围住整个表达式。<strong class="ph b">DO</strong>
+中的其他形式可能需要它们自己的括号——例如变量定义总是以列表形式存在，而测试形式则通常是一个函数调用。不过
+<strong class="ph b">DO</strong> 循环的框架将总是一致的。下面是一些框架用黑体表示的 <strong class="ph b">DO</strong> 循环的例子。</p><pre class="pre codeblock lisp"><code>(do ((i 0 (1+ i)))
+    ((&gt;= i 4))
+  (print i))</code></pre><p class="p">Notice that the result form has been omitted. This is, however, not a
+particularly idiomatic use of <strong class="ph b">DO</strong>, as this loop is much more simply
+written using <strong class="ph b">DOTIMES</strong>.</p><p class="p">注意到本例的结果被忽略了。不过这种用法对 <strong class="ph b">DO</strong>
+来说没有特别意义，因为用 <strong class="ph b">DOTIMES</strong> 来写这个循环会更简单。</p><pre class="pre codeblock lisp"><code>(dotimes (i 4) (print i))</code></pre><p class="p">As another example, here's the bodiless Fibonacci-computing loop:</p><p class="p">另一个例子是一个没有循环体的斐波那契数计算循环：</p><pre class="pre codeblock lisp"><code>(do ((n 0 (1+ n))
+     (cur 0 next)
+     (next 1 (+ cur next)))
+    ((= 10 n) cur))</code></pre><p class="p">Finally, the next loop demonstrates a <strong class="ph b">DO</strong> loop that binds no
+variables. It loops while the current time is less than the value of a
+global variable, printing "Waiting" once a minute. Note that even with
+no loop variables, you still need the empty variables list.</p><p class="p">最后，下面循环演示了一个不绑定变量的 <strong class="ph b">DO</strong>
+循环。在当前时间小于一个全局变量值的时候，它保持循环，每分钟打印一个
+“Waiting”。注意，就算没有循环变量，仍然需要有那个空变量列表。</p><pre class="pre codeblock lisp"><code>(do ()
+    ((&gt; (get-universal-time) *some-future-date*))
+  (format t "Waiting~%")
+  (sleep 60)) </code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap07/macros-standard-control-constructs.html">Macros: Standard Control Constructs（宏：标准控制结构）</a></div></div></nav></article></main></body></html>

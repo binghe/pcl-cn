@@ -1,0 +1,30 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="hash-table-iteration哈希表迭代"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Hash Table Iteration（哈希表迭代）</title></head><body id="hash-table-iteration哈希表迭代"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Hash Table Iteration（哈希表迭代）</h1><div class="body"><p class="p">Common Lisp provides a couple ways to iterate over the entries in a
+hash table. The simplest of these is via the function
+<strong class="ph b">MAPHASH</strong>. Analogous to the <strong class="ph b">MAP</strong> function, <strong class="ph b">MAPHASH</strong> takes a two-argument
+function and a hash table and invokes the function once for each
+key/value pair in the hash table. For instance, to print all the
+key/value pairs in a hash table, you could use <strong class="ph b">MAPHASH</strong> like this:</p><p class="p">Common Lisp
+提供了几种在哈希表项上迭代的方式。其中最简单的方式是通过函数
+<strong class="ph b">MAPHASH</strong>。和 <strong class="ph b">MAP</strong> 函数相似，<strong class="ph b">MAPHASH</strong>
+接受一个两参数函数和一个哈希表并在哈希表的每一个键值对上调用一次该函数。例如，为了打印哈希表中所有的键值对，你可以像这样来使用 <strong class="ph b">MAPHASH</strong>：</p><pre class="pre codeblock lisp"><code>(maphash #'(lambda (k v) (format t "~a =&gt; ~a~%" k v)) *h*)</code></pre><p class="p">The consequences of adding or removing elements from a hash table
+while iterating over it aren't specified (and are likely to be bad)
+with two exceptions: you can use <strong class="ph b">SETF</strong> with <strong class="ph b">GETHASH</strong> to change the value
+of the current entry, and you can use <strong class="ph b">REMHASH</strong> to remove the current
+entry. For instance, to remove all the entries whose value is less
+than ten, you could write this:</p><p class="p">在迭代一个哈希表的过程中，向其中添加或移除元素的后果没有被指定（并且可能会很坏），但却有两个例外：你可以将
+<strong class="ph b">SETF</strong> 与 <strong class="ph b">GETHASH</strong>
+一起使用来改变当前项的值，并且可以使用 <strong class="ph b">REMHASH</strong>
+来移除当前项。例如，为了移除所有其值小于 10 的项，你可以写成下面这样：</p><pre class="pre codeblock lisp"><code>(maphash #'(lambda (k v) (when (&lt; v 10) (remhash k *h*))) *h*)</code></pre><p class="p">The other way to iterate over a hash table is with the extended <strong class="ph b">LOOP</strong>
+macro, which I'll discuss in Chapter 22. The <strong class="ph b">LOOP</strong> equivalent of the
+first <strong class="ph b">MAPHASH</strong> expression would look like this:</p><p class="p">另一种在哈希表上迭代的方式是使用扩展的 <strong class="ph b">LOOP</strong> 宏，我将在第 22
+章里讨论它。第一个 <strong class="ph b">MAPHASH</strong> 表达式的等价 <strong class="ph b">LOOP</strong> 形式如下所示：</p><pre class="pre codeblock lisp"><code>(loop for k being the hash-keys in *h* using (hash-value v)
+  do (format t "~a =&gt; ~a~%" k v))</code></pre><p class="p">I could say a lot more about the nonlist collections supported by
+Common Lisp. For instance, I haven't discussed multidimensional
+arrays at all or the library of functions for manipulating bit
+arrays. However, what I've covered in this chapter should suffice
+for most of your general-purpose programming needs. Now it's finally
+time to look at Lisp's eponymous data structure: lists.</p><p class="p">关于 Common Lisp
+所支持的非列表集合，我还可以讲更多的内容。例如，多维数组以及处理位数组的函数库。但本章中涉及到的内容将满足多数通用编程场合的需要。现在，终于可以介绍列表这个让
+Lisp 因此得名的数据结构了。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

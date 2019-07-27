@@ -1,0 +1,98 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap03/a-simple-database.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="improving-the-user-interaction改进用户交互"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Improving the User Interaction（改进用户交互）</title></head><body id="improving-the-user-interaction改进用户交互"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Improving the User Interaction（改进用户交互）</h1><div class="body"><p class="p">While our <code class="ph codeph">add-record</code> function works fine for adding records, it's a
+bit Lispy for the casual user. And if they want to add a bunch of
+records, it's not very convenient. So you may want to write a function
+to prompt the user for information about a set of CDs. Right away you
+know you'll need some way to prompt the user for a piece of
+information and read it. So let's write that.</p><p class="p">尽管我们的 <code class="ph codeph">add-record</code>
+函数在添加记录方面做得很好，但对于普通用户来说却仍显得过于 Lisp
+化了。并且如果他们想要添加大量的记录，这种操作也并不是很方便。因此你可能想要写一个函数来提示用户输入一组
+CD 信息。这就意味着需要以某种方式来提示用户输入一条信息，然后读取它。下面让我们来写这个。</p><pre class="pre codeblock lisp"><code>(defun prompt-read (prompt)
+  (format *query-io* "~a: " prompt)
+  (force-output *query-io*)
+  (read-line *query-io*))</code></pre><p class="p">You use your old friend <strong class="ph b">FORMAT</strong> to emit a prompt. Note that there's no
+<code class="ph codeph">~%</code> in the format string, so the cursor will stay on the same line. The
+call to <strong class="ph b">FORCE-OUTPUT</strong> is necessary in some implementations to ensure
+that Lisp doesn't wait for a newline before it prints the prompt.</p><p class="p">你用老朋友 <strong class="ph b">FORMAT</strong>
+来产生一个提示。注意到格式字符串里并没有 <code class="ph codeph">~%</code>，因此光标将停留在同一行里。对
+<strong class="ph b">FORCE-OUTPUT</strong> 的调用在某些实现里是必需的，这是为了确保
+Lisp 在打印提示信息之前不会等待换行。</p><p class="p">Then you can read a single line of text with the aptly named <strong class="ph b">READ-LINE</strong>
+function. The variable <code class="ph codeph">*query-io*</code> is a global variable (which you can
+tell because of the <code class="ph codeph">*</code> naming convention for global variables) that
+contains the input stream connected to the terminal. The return value
+of prompt-read will be the value of the last form, the call to
+<strong class="ph b">READ-LINE</strong>, which returns the string it read (without the trailing
+newline.)</p><p class="p">然后就可以使用名副其实的 <strong class="ph b">READ-LINE</strong> 函数来读取单行文本了。变量 <code class="ph codeph">*query-io*</code>
+是一个含有关联到当前终端的输入流的全局变量（通过星号命名约定你也可以看出这点来）。<code class="ph codeph">prompt-read</code>
+的返回值将是其最后一个形式，即调用 <strong class="ph b">READ-LINE</strong>
+所得到的值，也就是它所读取的字符串（不包括结尾的换行）。</p><p class="p">You can combine your existing <code class="ph codeph">make-cd</code> function with <code class="ph codeph">prompt-read</code> to
+build a function that makes a new CD record from data it gets by
+prompting for each value in turn.</p><p class="p">你可以将已有的 <code class="ph codeph">make-cd</code> 函数跟 <code class="ph codeph">prompt-read</code>
+组合起来，从而构造出一个函数，可以从依次提示输入每个值得到的数据中建立新的
+CD 记录。</p><pre class="pre codeblock lisp"><code>(defun prompt-for-cd ()
+  (make-cd
+   (prompt-read "Title")
+   (prompt-read "Artist")
+   (prompt-read "Rating")
+   (prompt-read "Ripped [y/n]")))</code></pre><p class="p">That's almost right. Except prompt-read returns a string, which, while
+fine for the Title and Artist fields, isn't so great for the Rating
+and Ripped fields, which should be a number and a boolean. Depending
+on how sophisticated a user interface you want, you can go to
+arbitrary lengths to validate the data the user enters. For now
+let's lean toward the quick and dirty: you can wrap the prompt-read
+for the rating in a call to Lisp's <strong class="ph b">PARSE-INTEGER</strong> function, like this:</p><p class="p">这样已经差不多正确了。只是 <code class="ph codeph">prompt-read</code> 总是返回字符串，对于 Title
+和 Artist 字段来说可以，但对于 Rating 和 Ripped
+字段来说就不太好了，它们应该是数字和布尔值。花在验证用户输入数据上的努力可以是无止境的而这取决于所要实现的用户接口专业程度。目前我们倾向于一种快餐式办法，你可以将关于评级的那个
+<code class="ph codeph">prompt-read</code> 包装在一个 Lisp 的 <strong class="ph b">PARSE-INEGER</strong> 函数里，就像这样：</p><pre class="pre codeblock lisp"><code>(parse-integer (prompt-read "Rating"))</code></pre><p class="p">Unfortunately, the default behavior of <strong class="ph b">PARSE-INTEGER</strong> is to signal an
+error if it can't parse an integer out of the string or if there's any
+non-numeric junk in the string. However, it takes an optional keyword
+argument <code class="ph codeph">:junk-allowed</code>, which tells it to relax a bit.</p><p class="p">不幸的是，<strong class="ph b">PARSE-INTEGER</strong>
+的默认行为是当它无法从字符串中正确解析出整数，或者字符串里含有任何非数字的垃圾时直接报错。不过，它接受一个可选的关键字参数
+<code class="ph codeph">:junk-allowed</code>，可以让其适当地宽容一些。</p><pre class="pre codeblock lisp"><code>(parse-integer (prompt-read "Rating") :junk-allowed t)</code></pre><p class="p">But there's still one problem: if it can't find an integer amidst all
+the junk, <strong class="ph b">PARSE-INTEGER</strong> will return <strong class="ph b">NIL</strong> rather than a number. In
+keeping with the quick-and-dirty approach, you may just want to call
+that 0 and continue. Lisp's <strong class="ph b">OR</strong> macro is just the thing you need
+here. It's similar to the "short-circuiting" <code class="ph codeph">||</code> in Perl, Python, Java,
+and C; it takes a series of expressions, evaluates them one at a time,
+and returns the first non-nil value (or <strong class="ph b">NIL</strong> if they're all <strong class="ph b">NIL</strong>). So
+you can use the following:</p><p class="p">但还有一个问题：如果无法在所有垃圾里找出整数的话，<strong class="ph b">PARSE-INTEGER</strong> 将返回
+<strong class="ph b">NIL</strong> 而不是整数。为了保持这个快餐式的思路，你可以把这种情况当作 0
+来看待。Lisp 的 <strong class="ph b">OR</strong> 宏就是你在此时所需要的。它与 Perl、Python、Java
+以及 C 中的 “短路” 符号 <code class="ph codeph">||</code>
+很类似，它接受一系列表达式，依次对它们求值，然后返回第一个非空的值（或者空值，如果它们全部是空值的话）。所以可以使用下面这样的语句：</p><pre class="pre codeblock lisp"><code>(or (parse-integer (prompt-read "Rating") :junk-allowed t) 0)</code></pre><p class="p">to get a default value of 0.</p><p class="p">来得到一个缺省值 0。</p><p class="p">Fixing the code to prompt for Ripped is quite a bit simpler. You can
+just use the Common Lisp function <strong class="ph b">Y-OR-N-P</strong>.</p><p class="p">修复 Ripped 提示的代码就更容易了，只需使用 Common Lisp 的 <strong class="ph b">Y-OR-N-P</strong>
+函数：</p><pre class="pre codeblock lisp"><code>(y-or-n-p "Ripped [y/n]: ")</code></pre><p class="p">In fact, this will be the most robust part of prompt-for-cd, as
+<strong class="ph b">Y-OR-N-P</strong> will reprompt the user if they enter something that doesn't
+start with y, Y, n, or N.</p><p class="p">事实上，这将是 <code class="ph codeph">prompt-for-cd</code> 中最健壮的部分，因为 <strong class="ph b">Y-OR-N-P</strong>
+会在你输入了没有以 y、Y、n，或者 N 开始的内容时重新提示输入。</p><p class="p">Putting those pieces together you get a reasonably robust
+<code class="ph codeph">prompt-for-cd</code> function.</p><p class="p">将所有这些内容放在一起，就得到了一个相当健壮的 <code class="ph codeph">prompt-for-cd</code> 函数了。</p><pre class="pre codeblock lisp"><code>(defun prompt-for-cd ()
+  (make-cd
+   (prompt-read "Title")
+   (prompt-read "Artist")
+   (or (parse-integer (prompt-read "Rating") :junk-allowed t) 0)
+   (y-or-n-p "Ripped [y/n]: ")))</code></pre><p class="p">Finally, you can finish the "add a bunch of CDs" interface by wrapping
+<code class="ph codeph">prompt-for-cd</code> in a function that loops until the user is done. You
+can use the simple form of the <strong class="ph b">LOOP</strong> macro, which repeatedly executes a
+body of expressions until it's exited by a call to <strong class="ph b">RETURN</strong>. For
+example:</p><p class="p">最后可以将 <code class="ph codeph">prompt-for-cd</code> 包装在一个不停循环直到用户完成的函数里，以此来搞
+定这个 “添加大量 CD” 的接口。可以使用 <strong class="ph b">LOOP</strong>
+宏的一种简单形式，它不断执行一个表达式体，最后通过调用 <strong class="ph b">RETURN</strong> 来退出。例如：</p><pre class="pre codeblock lisp"><code>(defun add-cds ()
+  (loop (add-record (prompt-for-cd))
+      (if (not (y-or-n-p "Another? [y/n]: ")) (return))))</code></pre><p class="p">Now you can use <code class="ph codeph">add-cds</code> to add some more CDs to the database.</p><p class="p">现在可以使用 <code class="ph codeph">add-cds</code> 来添加更多 CD 到数据库里了。</p><pre class="pre codeblock"><code>CL-USER&gt; (add-cds)
+Title: Rockin' the Suburbs
+Artist: Ben Folds
+Rating: 6
+Ripped  [y/n]: y
+Another?  [y/n]: y
+Title: Give Us a Break
+Artist: Limpopo
+Rating: 10
+Ripped  [y/n]: y
+Another?  [y/n]: y
+Title: Lyle Lovett
+Artist: Lyle Lovett
+Rating: 9
+Ripped  [y/n]: y
+Another?  [y/n]: n
+NIL</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap03/a-simple-database.html">Practical: A Simple Database（实践：一个简单的数据库）</a></div></div></nav></article></main></body></html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="subsequence-manipulations操纵子序列"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Subsequence Manipulations（操纵子序列）</title></head><body id="subsequence-manipulations操纵子序列"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Subsequence Manipulations（操纵子序列）</h1><div class="body"><p class="p">Another set of functions allows you to manipulate subsequences of
+existing sequences. The most basic of these is <strong class="ph b">SUBSEQ</strong>, which extracts
+a subsequence starting at a particular index and continuing to a
+particular ending index or the end of the sequence. For instance:</p><p class="p">另一类函数允许你对已有序列的子序列进行操作。其中最基本的是
+<strong class="ph b">SUBSEQ</strong>，其解出序列中从一个特定索引开始并延续到一个特定终止索引或结尾处的子序列。例如：</p><pre class="pre codeblock lisp"><code>(subseq "foobarbaz" 3)   ==&gt; "barbaz"
+(subseq "foobarbaz" 3 6) ==&gt; "bar"</code></pre><p class="p"><strong class="ph b">SUBSEQ</strong> is also <strong class="ph b">SETF</strong>able, but it won't extend or shrink a
+sequence; if the new value and the subsequence to be replaced are
+different lengths, the shorter of the two determines how many
+characters are actually changed.</p><p class="p"><strong class="ph b">SUBSEQ</strong> 也支持
+<strong class="ph b">SETF</strong>，但不会扩大或缩小一个序列。如果新的值和将被替换的子序列具有不同的长度，那么两者中较短的那一个将决定有多少个字符被实际改变。</p><pre class="pre codeblock lisp"><code>(defparameter *x* (copy-seq "foobarbaz"))
+
+(setf (subseq *x* 3 6) "xxx")  ; subsequence and new value are same length
+*x* ==&gt; "fooxxxbaz"
+
+(setf (subseq *x* 3 6) "abcd") ; new value too long, extra character ignored.
+*x* ==&gt; "fooabcbaz"
+
+(setf (subseq *x* 3 6) "xx")   ; new value too short, only two characters changed
+*x* ==&gt; "fooxxcbaz"</code></pre><p class="p">You can use the <strong class="ph b">FILL</strong> function to set multiple elements of a
+sequence to a single value. The required arguments are a sequence and
+the value with which to fill it. By default every element of the
+sequence is set to the value; <code class="ph codeph">:start</code> and <code class="ph codeph">:end</code> keyword arguments can
+limit the effects to a given subsequence.</p><p class="p">你可以使用 <strong class="ph b">FILL</strong>
+函数来将一个序列的多个元素设置到单个值上。所需的参数是一个序列以及所填充的值。在默认情况下，该序列的每个元素都被设置到该值上。<code class="ph codeph">:start</code>
+和 <code class="ph codeph">:end</code> 关键字参数可以将效果限制在一个给定的子序列上。</p><p class="p">If you need to find a subsequence within a sequence, the <strong class="ph b">SEARCH</strong>
+function works like <strong class="ph b">POSITION</strong> except the first argument is a sequence
+rather than a single item.</p><p class="p">如果你需要在一个序列中查找一个子序列，<strong class="ph b">SEARCH</strong>
+函数可以像 <strong class="ph b">POSITION</strong> 那样工作，不过第一个参数是一个序列而不是一个单独的项。</p><pre class="pre codeblock lisp"><code>(position #\b "foobarbaz") ==&gt; 3
+(search "bar" "foobarbaz") ==&gt; 3</code></pre><p class="p">On the other hand, to find where two sequences with a common prefix
+first diverge, you can use the <strong class="ph b">MISMATCH</strong> function. It takes two
+sequences and returns the index of the first pair of mismatched
+elements.</p><p class="p">另一方面，为了找出两个带有相同前缀的序列首次分岔的位置，你可以使用
+<strong class="ph b">MISMATCH</strong> 函数。它接受两个序列并返回第一对不相匹配的元素的索引。</p><pre class="pre codeblock lisp"><code>(mismatch "foobarbaz" "foom") ==&gt; 3</code></pre><p class="p">It returns <strong class="ph b">NIL</strong> if the strings match. <strong class="ph b">MISMATCH</strong> also takes many of the
+standard keyword arguments: a <code class="ph codeph">:key</code> argument for specifying a function
+to use to extract the values to be compared; a <code class="ph codeph">:test</code> argument to
+specify the comparison function; and <code class="ph codeph">:start1</code>, <code class="ph codeph">:end1</code>, <code class="ph codeph">:start2</code>, and
+<code class="ph codeph">:end2</code> arguments to specify subsequences within the two sequences. And
+a <code class="ph codeph">:from-end</code> argument of <strong class="ph b">T</strong> specifies the sequences should be searched
+in reverse order, causing <strong class="ph b">MISMATCH</strong> to return the index, in the first
+sequence, where whatever common suffix the two sequences share begins.</p><p class="p">如果字符串匹配，它将返回 <strong class="ph b">NIL</strong>。<strong class="ph b">MISMATCH</strong>
+也接受许多标准关键字参数：<code class="ph codeph">:key</code>
+参数可以指定一个函数用来抽取出被比较的值；<code class="ph codeph">:test</code>
+参数用于指定比较函数；而 <code class="ph codeph">:start1</code>、<code class="ph codeph">:end1</code>、<code class="ph codeph">:start2</code> 和 <code class="ph codeph">:end2</code>
+参数可以指定两个序列中的子序列。另外，一个设置为 <strong class="ph b">T</strong>
+的 <code class="ph codeph">:from-end</code>
+参数可以指定以相反的顺序搜索序列，从而导致 <strong class="ph b">MISMATCH</strong>
+返回两个序列的相同后缀在第一个序列中开始位置的索引。</p><pre class="pre codeblock lisp"><code>(mismatch "foobar" "bar" :from-end t) ==&gt; 3</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

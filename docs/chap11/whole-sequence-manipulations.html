@@ -1,0 +1,29 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="whole-sequence-manipulations针对整个序列的操作"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Whole Sequence Manipulations（针对整个序列的操作）</title></head><body id="whole-sequence-manipulations针对整个序列的操作"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Whole Sequence Manipulations（针对整个序列的操作）</h1><div class="body"><p class="p">A handful of functions perform operations on a whole sequence (or
+sequences) at a time. These tend to be simpler than the other
+functions I've described so far. For instance, <strong class="ph b">COPY-SEQ</strong> and <strong class="ph b">REVERSE</strong>
+each take a single argument, a sequence, and each returns a new
+sequence of the same type. The sequence returned by <strong class="ph b">COPY-SEQ</strong> contains
+the same elements as its argument while the sequence returned by
+<strong class="ph b">REVERSE</strong> contains the same elements but in reverse order. Note that
+neither function copies the elements themselves--only the returned
+sequence is a new object.</p><p class="p">有一些函数可以一次在整个序列（或多个序列）上进行操作。这些函数比目前为止我已描述的其他函数简单一些。例如，<strong class="ph b">COPY-SEQ</strong>
+和 <strong class="ph b">REVERSE</strong> 都接受单一的序列参数并返回一个相同类型的新序列。<strong class="ph b">COPY-SEQ</strong>
+返回的序列包含与其参数相同的元素，而 <strong class="ph b">REVERSE</strong>
+返回的序列则含有顺序相反的相同元素。注意，这两个函数都不会复制元素本身，只有返回的序列是一个新对象。</p><p class="p">The <strong class="ph b">CONCATENATE</strong> function creates a new sequence containing the
+concatenation of any number of sequences. However, unlike <strong class="ph b">REVERSE</strong> and
+<strong class="ph b">COPY-SEQ</strong>, which simply return a sequence of the same type as their
+single argument, <strong class="ph b">CONCATENATE</strong> must be told explicitly what kind of
+sequence to produce in case the arguments are of different types. Its
+first argument is a type descriptor, like the <code class="ph codeph">:element-type</code> argument
+to <strong class="ph b">MAKE-ARRAY</strong>. In this case, the type descriptors you'll most likely
+use are the symbols <strong class="ph b">VECTOR</strong>, <strong class="ph b">LIST</strong>, or <strong class="ph b">STRING</strong>. For example:</p><p class="p">函数 <strong class="ph b">CONCATENATE</strong>
+创建一个将任意数量序列连接在一起的新序列。不过，跟 <strong class="ph b">REVERSE</strong> 和 <strong class="ph b">COPY-SEQ</strong>
+简单地返回与其单一参数相同类型序列有所不同的是，<strong class="ph b">CONCATENATE</strong>
+必须被显式指定产生何种类型的序列，因为其参数可能是不同类型的。它的第一个参数是类型描述符，就像是
+<strong class="ph b">MAKE-ARRAY</strong> 的 <code class="ph codeph">:element-type</code>
+参数那样。这里最常用到的类型描述符是符号 <strong class="ph b">VECTOR</strong>、<strong class="ph b">LIST</strong>
+和 <strong class="ph b">STRING</strong>。 例如：</p><pre class="pre codeblock lisp"><code>(concatenate 'vector #(1 2 3) '(4 5 6))    ==&gt; #(1 2 3 4 5 6)
+(concatenate 'list #(1 2 3) '(4 5 6))      ==&gt; (1 2 3 4 5 6)
+(concatenate 'string "abc" '(#\d #\e #\f)) ==&gt; "abcdef"</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap09/building-a-unit-test-framework.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="a-hierarchy-of-tests测试的层次体系"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>A Hierarchy of Tests（测试的层次体系）</title></head><body id="a-hierarchy-of-tests测试的层次体系"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">A Hierarchy of Tests（测试的层次体系）</h1><div class="body"><p class="p">Now that you've established test functions as first-class citizens,
+the question might arise, should test-arithmetic be a test function?
+As things stand, it doesn't really matter--if you did define it with
+deftest, its binding of <code class="ph codeph">*test-name*</code> would be shadowed by the bindings
+in <code class="ph codeph">test-+</code> and <code class="ph codeph">test-*</code> before any results are reported.</p><p class="p">由于所建立的测试函数，所以可能会产生一些问题，<code class="ph codeph">test-arithmetic</code>
+应该是一个测试函数吗？事实证明，这件事无关紧要——如果确实用 <code class="ph codeph">deftest</code>
+来定义它，那么它对 <code class="ph codeph">*test-name*</code>
+的绑定将在任何结果被汇报之前被 <code class="ph codeph">test-+</code> 和 <code class="ph codeph">test-*</code>
+中的绑定所覆盖。</p><p class="p">But now imagine you've got thousands of test cases to organize. The
+first level of organization is provided by test functions such as
+<code class="ph codeph">test-+</code> and <code class="ph codeph">test-*</code> that directly call <code class="ph codeph">check</code>. But with thousands of test
+cases, you'll likely need other levels of organization. Functions such
+as <code class="ph codeph">test-arithmetic</code> can group related test functions into test
+suites. Now suppose some low-level test functions are called from
+multiple test suites. It's not unheard of for a test case to pass in
+one context but fail in another. If that happens, you'll probably want
+to know more than just what low-level test function contains the test
+case.</p><p class="p">但是现在，想象你有上千个测试用例需要组织在一起。组织的第一层是由诸如 <code class="ph codeph">test-+</code>
+和 <code class="ph codeph">test-*</code> 这些能够直接调用 <code class="ph codeph">check</code>
+的测试函数所建立起来的，但在有数千个测试用例的情况下，你将需要其他层面的组织方式。诸如
+<code class="ph codeph">test-arithmetic</code>
+这样的函数可以将相关的测试函数组成测试套件。现在假设某些底层测试函数会被多个测试套件所调用。测试用例很有可能在一个上下文中可以通过而在另一个中失败。如果发生了这种事，你的想知道很可能就不仅仅是哪一个底层测试函数含有这个测试用例那么简单了。</p><p class="p">If you define the test suite functions such as <code class="ph codeph">test-arithmetic</code> with
+<code class="ph codeph">deftest</code> and make a small change to the <code class="ph codeph">*test-name*</code> bookkeeping, you
+can have results reported with a "fully qualified" path to the test
+case, something like this:</p><p class="p">如果用 <code class="ph codeph">deftest</code> 来定义诸如 <code class="ph codeph">test-arithmetic</code>
+这样的测试套件函数那么简单了，并且对其中的 <code class="ph codeph">*test-name*</code>
+作一个小改变，就可以用测试用例的 “全称”
+路径来报告结果，就像下面这样：</p><pre class="pre codeblock lisp"><code>pass ... (TEST-ARITHMETIC TEST-+): (= (+ 1 2) 3)</code></pre><p class="p">Because you've already abstracted the process of defining a test
+function, you can change the bookkeeping details without modifying the
+code of the test functions. To make <code class="ph codeph">*test-name*</code> hold a list of test
+function names instead of just the name of the most recently entered
+test function, you just need to change this binding form:</p><p class="p">因为已经抽象了定义测试函数的过程，所以就可以无需修改测试函数的代码从而改变相关的细节。为了使
+<code class="ph codeph">*test-name*</code> 保存一个测试函数名的列表而不只是最近进入的测试函数的名字，你需要将绑定形式</p><pre class="pre codeblock lisp"><code>(let ((*test-name* ',name))</code></pre><p class="p">to the following:</p><p class="p">变成：</p><pre class="pre codeblock lisp"><code>(let ((*test-name* (append *test-name* (list ',name))))</code></pre><p class="p">Since <strong class="ph b">APPEND</strong> returns a new list made up of the elements of its
+arguments, this version will bind <code class="ph codeph">*test-name*</code> to a list containing the
+old contents of <code class="ph codeph">*test-name*</code> with the new name tacked onto the end.
+When each test function returns, the old value of <code class="ph codeph">*test-name*</code> will be
+restored.</p><p class="p">由于 <strong class="ph b">APPEND</strong> 返回一个由其实参元素所构成的新列表，这个版本将把 <code class="ph codeph">*test-name*</code>
+绑定到一个含有追加其新的名字到结尾处的 <code class="ph codeph">*test-name*</code>
+的旧内容的列表。 当每一个测试函数返回时，<code class="ph codeph">*test-name*</code> 原有的值将被恢复。</p><p class="p">Now you can redefine <code class="ph codeph">test-arithmetic</code> with deftest instead of <strong class="ph b">DEFUN</strong>.</p><p class="p">现在你可以用 <code class="ph codeph">deftest</code> 代替 <strong class="ph b">DEFUN</strong> 来重新定义 <code class="ph codeph">test-arithmetic</code>。</p><pre class="pre codeblock lisp"><code>(deftest test-arithmetic ()
+  (combine-results
+   (test-+)
+   (test-*)))</code></pre><p class="p">The results now show exactly how you got to each test expression.</p><p class="p">现在的结果明确地显示了你是怎样到达每一个测试表达式的。</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (test-arithmetic)
+pass ... (TEST-ARITHMETIC TEST-+): (= (+ 1 2) 3)
+pass ... (TEST-ARITHMETIC TEST-+): (= (+ 1 2 3) 6)
+pass ... (TEST-ARITHMETIC TEST-+): (= (+ -1 -3) -4)
+pass ... (TEST-ARITHMETIC TEST-*): (= (* 2 2) 4)
+pass ... (TEST-ARITHMETIC TEST-*): (= (* 3 5) 15)
+T</code></pre><p class="p">As your test suite grows, you can add new layers of test functions; as
+long as they're defined with deftest, the results will be reported
+correctly. For instance, the following:</p><p class="p">随着你测试套件的增长，你可以添加新的测试函数层次。只要它们用 <code class="ph codeph">deftest</code>
+来定义，结果就会正确地输出。例如下面的定义：</p><pre class="pre codeblock lisp"><code>(deftest test-math ()
+  (test-arithmetic))</code></pre><p class="p">would generate these results:</p><p class="p">将生成这样的结果：</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (test-math)
+pass ... (TEST-MATH TEST-ARITHMETIC TEST-+): (= (+ 1 2) 3)
+pass ... (TEST-MATH TEST-ARITHMETIC TEST-+): (= (+ 1 2 3) 6)
+pass ... (TEST-MATH TEST-ARITHMETIC TEST-+): (= (+ -1 -3) -4)
+pass ... (TEST-MATH TEST-ARITHMETIC TEST-*): (= (* 2 2) 4)
+pass ... (TEST-MATH TEST-ARITHMETIC TEST-*): (= (* 3 5) 15)
+T</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap09/building-a-unit-test-framework.html">Practical: Building a Unit Test Framework（实践：构建一个单元测试框架）</a></div></div></nav></article></main></body></html>

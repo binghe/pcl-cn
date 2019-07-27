@@ -1,0 +1,93 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap02/tour-of-the-repl.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="hello-world-lisp-stylelisp-风格的-hello-world"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>"Hello, World," Lisp Style（Lisp 风格的 “Hello, World”）</title></head><body id="hello-world-lisp-stylelisp-风格的-hello-world"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">"Hello, World," Lisp Style（Lisp 风格的 “Hello, World”）</h1><div class="body"><p class="p">No programming book is complete without a "hello, world" program. As
+it turns out, it's trivially easy to get the REPL to print "hello,
+world."</p><p class="p">没有“hello，world”程序的编程书籍是不完整的。事实上，想让 REPL 打印出“hello, world”再简单不过了。</p><pre class="pre codeblock"><code>CL-USER&gt; "hello, world"
+"hello, world"</code></pre><p class="p">This works because strings, like numbers, have a literal syntax that's
+understood by the Lisp reader and are self-evaluating objects: Lisp
+reads the double-quoted string and instantiates a string object in
+memory that, when evaluated, evaluates to itself and is then printed
+in the same literal syntax. The quotation marks aren't part of the
+string object in memory--they're just the syntax that tells the reader
+to read a string. The printer puts them back on when it prints the
+string because it tries to print objects in the same syntax the reader
+understands.</p><p class="p">其工作原理是，因为字符串和数字一样，带有 Lisp
+读取器可以理解的字面语法并且是自求值对象：Lisp
+读取双引号里的字符串，求值的时候在内存里建立一个可以对自身求值的字符串对象，然后再以同样的语法打印出来。双引号本身不是在内存中的字符串对象的一部分——它们只是语法，用来告诉读取器读入一个字符串。而打印器之所以在打印字符串时带上它们,则是因为其试图以一种读取器可以理解的相同语法来打印对象。</p><p class="p">However, this may not really qualify as a "hello, world" program. It's
+more like the "hello, world" value.</p><p class="p">尽管如此，这还不能算是一个“hello, world”程序而更像是一个“hello, world”值。</p><p class="p">You can take a step toward a real program by writing some code that as
+a side effect prints the string "hello, world" to standard
+output. Common Lisp provides a couple ways to emit output, but the
+most flexible is the <strong class="ph b">FORMAT</strong> function. <strong class="ph b">FORMAT</strong> takes a variable number
+of arguments, but the only two required arguments are the place to
+send the output and a string. You'll see in the next chapter how the
+string can contain embedded directives that allow you to interpolate
+subsequent arguments into the string, àla <code class="ph codeph">printf</code> or Python's
+<code class="ph codeph">string-%</code>. As long as the string doesn't contain an <code class="ph codeph">~</code>, it will be
+emitted as-is. If you pass t as its first argument, it sends its
+output to standard output. So a <strong class="ph b">FORMAT</strong> expression that will print
+"hello, world" looks like this:</p><p class="p">向真正的程序迈进一步的方法是编写一段代码，其副作用可以将字符串“hello,
+world”打印到标准输出。Common Lisp 提供了许多产生输出的方法，但最灵活的是
+<strong class="ph b">FORMAT</strong> 函数。<strong class="ph b">FORMAT</strong>
+接收变长参数，但是只有两个必要的参数，分别代表着发送输出的位置以及字符串。在下一章里你将看到这个字符串是如何包含嵌入式指令，以便将其余的参数插入到字符串里的，就像
+<code class="ph codeph">printf</code> 或者 Python 的 <code class="ph codeph">string-%</code> 那
+样。只要字符串里不包含一个 <code class="ph codeph">~</code>，那么它就会被原样输出。如果将 <code class="ph codeph">t</code>
+作为第一个参数传入，那么它将会发送其输出到标准输出。因此，一个将输出“hello,
+world”的 <strong class="ph b">FORMAT</strong> 表达式应如下所示：</p><pre class="pre codeblock"><code>CL-USER&gt; (format t "hello, world")
+hello, world
+NIL</code></pre><p class="p">One thing to note about the result of the FORMAT expression is the NIL
+on the line after the "hello, world" output. That NIL is the result of
+evaluating the FORMAT expression, printed by the REPL. (NIL is Lisp's
+version of false and/or null. More on that in Chapter 4.) Unlike the
+other expressions we've seen so far, a FORMAT expression is more
+interesting for its side effect--printing to standard output in this
+case--than for its return value. But every expression in Lisp
+evaluates to some result.</p><p class="p">关于 <strong class="ph b">FORMAT</strong>
+表达式的结果，需要说明的一点是紧接着“hello, world”输出后面那行里的
+<strong class="ph b">NIL</strong>。那个 <strong class="ph b">NIL</strong> 是 REPL 输出的求值 <strong class="ph b">FORMAT</strong> 表达式的结果。（<strong class="ph b">NIL</strong>
+是 Lisp 版本的逻辑假和空值。更多内容见第 4
+章。）和目前我们所见到的其他表达式不同的是，<strong class="ph b">FORMAT</strong>
+表达式的副作用（在本例中是打印到标准输出）比其返回值更有意义。但
+Lisp 中的每个表达式都会求值出某些结果。</p><p class="p">However, it's still arguable whether you've yet written a true
+"program." But you're getting there. And you're seeing the bottom-up
+style of programming supported by the REPL: you can experiment with
+different approaches and build a solution from parts you've already
+tested. Now that you have a simple expression that does what you want,
+you just need to package it in a function. Functions are one of the
+basic program building blocks in Lisp and can be defined with a DEFUN
+expression such as this:</p><p class="p">尽管如此，你是否已经写出了一个真正的“程序”呢？恐怕仍有争议。不过你离目标越来越近了。而且你正在体会
+REPL 所带来的自底向上的编程风格：可以试验不同的方法，然后从已经测试过的部分里构建出一个解决方案来。现在你已经写出了一个简单的表达式来做你想要的事，剩下的就是将其打包成一个函数了。函数是
+Lisp 的基本程序构造单元，可以用类似下面这样的 <strong class="ph b">DEFUN</strong> 表达式来定义：</p><pre class="pre codeblock"><code>CL-USER&gt; (defun hello-world () (format t "hello, world"))
+HELLO-WORLD</code></pre><p class="p">The <code class="ph codeph">hello-world</code> after the <strong class="ph b">DEFUN</strong> is the name of the function. In
+Chapter 4 we'll look at exactly what characters can be used in a name,
+but for now suffice it to say that lots of characters, such as <code class="ph codeph">-</code>, that
+are illegal in names in other languages are legal in Common Lisp. It's
+standard Lisp style--not to mention more in line with normal English
+typography--to form compound names with hyphens, such as <code class="ph codeph">hello-world</code>,
+rather than with underscores, as in <code class="ph codeph">hello_world</code>, or with inner caps
+such as <code class="ph codeph">helloWorld</code>. The <code class="ph codeph">()</code>s after the name delimit the parameter list,
+which is empty in this case because the function takes no
+arguments. The rest is the body of the function.</p><p class="p"><strong class="ph b">DEFUN</strong> 后面的 <code class="ph codeph">hello-world</code> 是这个函数的名字。在第 4
+章里我们将看到究竟哪些字符可以在名字里使用，现在我们暂时假设包括 <code class="ph codeph">-</code>
+在内的很多在其他语言里非法的字符在 Common Lisp 里都是合法的。像
+<code class="ph codeph">hello-world</code> 这种用连字符而不是下划线（<code class="ph codeph">hello_world</code>）或是内部大写（<code class="ph codeph">helloWorld</code>）来形成复合词的方法，是标准的
+Lisp 风格——更不用提那接近正常英语的排版了。名字后面的 <code class="ph codeph">()</code> 是形参列表，
+在本例中为空是因为该函数不带参数。其余的部分是函数体。</p><p class="p">At one level, this expression, like all the others you've seen, is
+just another expression to be read, evaluated, and printed by the
+REPL. The return value in this case is the name of the function you
+just defined. But like the <strong class="ph b">FORMAT</strong> expression, this expression is
+more interesting for the side effects it has than for its return
+value. Unlike the <strong class="ph b">FORMAT</strong> expression, however, the side effects are
+invisible: when this expression is evaluated, a new function that
+takes no arguments and with the body <code class="ph codeph">(format t "hello, world")</code> is
+created and given the name <strong class="ph b">HELLO-WORLD</strong>.</p><p class="p">表面上看，这个表达式和你目前见到的所有其他表达式一样，只是另一个被 REPL
+读取、求值和打印的表达式。这里的返回值是你所定义的函数名。 但是和
+<strong class="ph b">FORMAT</strong> 表达式一样，这个表达式的副作用比其返回值更有用。但与
+<strong class="ph b">FORMAT</strong> 表达式所不同的是，它的副作用是不可见的：当这个表达式被求值的时候，一个不带参数且函数体为
+<code class="ph codeph">(format t "hello, world")</code> 的新函数会被创建出来并被命名为
+<strong class="ph b">HELLO-WORLD</strong>。</p><p class="p">Once you've defined the function, you can call it like this:</p><p class="p">一旦定义了这个函数，你就可以像这样来调用它：</p><pre class="pre codeblock"><code>CL-USER&gt; (hello-world)
+hello, world
+NIL</code></pre><p class="p">You can see that the output is just the same as when you evaluated the
+<strong class="ph b">FORMAT</strong> expression directly, including the <strong class="ph b">NIL</strong> value printed by the
+REPL. Functions in Common Lisp automatically return the value of the
+last expression evaluated.</p><p class="p">你将看到输出和直接对 <strong class="ph b">FORMAT</strong> 表达式求值时是一样的，包括 REPL 打印出的
+<strong class="ph b">NIL</strong> 值。Common Lisp 中的函数自动返回其最后求值的那个表达式的值。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap02/tour-of-the-repl.html">Lather, Rinse, Repeat: A Tour of the REPL（REPL 简介）</a></div></div></nav></article></main></body></html>

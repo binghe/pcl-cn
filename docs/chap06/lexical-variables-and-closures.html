@@ -1,0 +1,58 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap06/variables.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="lexical-variables-and-closures词法变量和闭包"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Lexical Variables and Closures（词法变量和闭包）</title></head><body id="lexical-variables-and-closures词法变量和闭包"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Lexical Variables and Closures（词法变量和闭包）</h1><div class="body"><p class="p">By default all binding forms in Common Lisp introduce lexically scoped
+variables. Lexically scoped variables can be referred to only by code
+that's textually within the binding form. Lexical scoping should be
+familiar to anyone who has programmed in Java, C, Perl, or Python
+since they all provide lexically scoped "local" variables. For that
+matter, Algol programmers should also feel right at home, as Algol
+first introduced lexical scoping in the 1960s.</p><p class="p">默认情况下，Common Lisp
+中所有的绑定形式都将引入词法作用域变量。词法作用域的变量只能由那些在文本上位于绑定形式之内的代码所引用。词法作用域应该被那些曾经使用
+Java、C、Perl 或者 Python
+来编程的人们所熟悉，因为它们都提供词法作用域的局部变量。如此说来，Algol
+程序员们也该对其感到自然才是，因为 Algol 在 20 世纪 60 年代首先引入了词法作用域。</p><p class="p">However, Common Lisp's lexical variables are lexical variables with a
+twist, at least compared to the original Algol model. The twist is
+provided by the combination of lexical scoping with nested
+functions. By the rules of lexical scoping, only code textually within
+the binding form can refer to a lexical variable. But what happens
+when an anonymous function contains a reference to a lexical variable
+from an enclosing scope? For instance, in this expression:</p><p class="p">尽管如此，但 Common Lisp
+的词法变量还是带有一些变化的，至少和最初的 Algol
+模型相比是这样。变化之处在于将词法作用域和嵌套函数一起使用时，按照词法作用域的规则，只有文本上位于绑定形式之内的代码可以指向一个词法变量。但是当一个匿名函数含有一个对来自封闭作用域之内词法变量的引用时，将会发生什么呢？例如，在下面的表达式中：</p><pre class="pre codeblock lisp"><code>(let ((count 0)) #'(lambda () (setf count (1+ count))))</code></pre><p class="p">the reference to count inside the LAMBDA form should be legal
+according to the rules of lexical scoping. Yet the anonymous function
+containing the reference will be returned as the value of the LET form
+and can be invoked, via FUNCALL, by code that's not in the scope of
+the LET. So what happens? As it turns out, when count is a lexical
+variable, it just works. The binding of count created when the flow of
+control entered the LET form will stick around for as long as needed,
+in this case for as long as someone holds onto a reference to the
+function object returned by the LET form. The anonymous function is
+called a closure because it "closes over" the binding created by the
+LET.</p><p class="p">根据词法作用域规则，<strong class="ph b">LAMBDA</strong> 形式中对 <code class="ph codeph">count</code>
+的引用应该是合法的，而这个含有引用的匿名函数将被作为 <strong class="ph b">LET</strong>
+形式的值返回，并可能会通过 <strong class="ph b">FUNCALL</strong> 被不在 <strong class="ph b">LET</strong>
+作用域之内的代码所调用。这样会发生什么呢？正如你将看到的那样，当 <code class="ph codeph">count</code>
+是一个词法变量时，情况一切正常。本例中，当控制流进入 <strong class="ph b">LET</strong> 形式时所创建的 <code class="ph codeph">count</code>
+绑定将被尽可能地保留下来，只要某处保持了一个对 <strong class="ph b">LET</strong>
+形式所返回的函数对象的引用即可。这个匿名函数被称为一个闭包，因为它 “封闭包装”
+了由 <strong class="ph b">LET</strong> 创建的绑定。</p><p class="p">The key thing to understand about closures is that it's the binding,
+not the value of the variable, that's captured. Thus, a closure can
+not only access the value of the variables it closes over but can also
+assign new values that will persist between calls to the closure. For
+instance, you can capture the closure created by the previous
+expression in a global variable like this:</p><p class="p">理解闭包的关键在于，被捕捉的是绑定而不是变量的值。因此，一个闭包不仅可以访问它所闭合的变量的值，还可以对其赋予可在闭包被调用时不断变化的新值。例如，可以像下面这样将前面的表达式所创建的闭包捕捉到一个全局变量里：</p><pre class="pre codeblock lisp"><code>(defparameter *fn* (let ((count 0)) #'(lambda () (setf count (1+ count)))))</code></pre><p class="p">Then each time you invoke it, the value of count will increase by one.</p><p class="p">然后每次当你调用它时，<code class="ph codeph">count</code> 的值将被加 1：</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (funcall *fn*)
+1
+CL-USER&gt; (funcall *fn*)
+2
+CL-USER&gt; (funcall *fn*)
+3</code></pre><p class="p">A single closure can close over many variable bindings simply by
+referring to them. Or multiple closures can capture the same
+binding. For instance, the following expression returns a list of
+three closures, one that increments the value of the closed over count
+binding, one that decrements it, and one that returns the current
+value:</p><p class="p">单一闭包可以简单地通过引用变量来闭合许多变量绑定，或是多个闭合可以捕捉相同的绑定。例如，下面的表达式返回由三个闭包所组成的列表，一个可以递增其所闭合的
+<code class="ph codeph">count</code> 绑定的值，另一个可以递减它，还有一个返回它的当前值。</p><pre class="pre codeblock lisp"><code>(let ((count 0))
+  (list
+   #'(lambda () (incf count))
+   #'(lambda () (decf count))
+   #'(lambda () count)))</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap06/variables.html">Variables（变量）</a></div></div></nav></article></main></body></html>

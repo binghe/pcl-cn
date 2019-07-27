@@ -1,0 +1,40 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="sorting-and-merging排序与合并"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Sorting and Merging（排序与合并）</title></head><body id="sorting-and-merging排序与合并"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Sorting and Merging（排序与合并）</h1><div class="body"><p class="p">The functions <strong class="ph b">SORT</strong> and <strong class="ph b">STABLE-SORT</strong> provide two ways of sorting
+a sequence. They both take a sequence and a two-argument predicate and
+return a sorted version of the sequence.</p><p class="p">函数 <strong class="ph b">SORT</strong> 和 <strong class="ph b">STABLE-SORT</strong>
+提供了两种序列排序方式。它们都接受一个序列和一个由两个实参组成的谓词并返回该序列排序后的版本。</p><pre class="pre codeblock lisp"><code>(sort (vector "foo" "bar" "baz") #'string&lt;) ==&gt; #("bar" "baz" "foo")</code></pre><p class="p">The difference is that <strong class="ph b">STABLE-SORT</strong> is guaranteed to not reorder any
+elements considered equivalent by the predicate while <strong class="ph b">SORT</strong> guarantees
+only that the result is sorted and may reorder equivalent elements.</p><p class="p">它们的区别在于，<strong class="ph b">STABLE-SORT</strong>
+可以保证不会重排任何被该谓词视为等价的元素，而 <strong class="ph b">SORT</strong>
+只保证结果是排序了的并可能重排等价元素。</p><p class="p">Both these functions are examples of what are called destructive
+functions. Destructive functions are allowed--typically for reasons of
+efficiency--to modify their arguments in more or less arbitrary
+ways. This has two implications: one, you should always do something
+with the return value of these functions (such as assign it to a
+variable or pass it to another function), and, two, unless you're done
+with the object you're passing to the destructive function, you should
+pass a copy instead. I'll say more about destructive functions in the
+next chapter.</p><p class="p">这两个函数都是所谓的破坏性（destructive）函数。通常出于效率的原因，破坏性函数都会或多或少地修改它们的参数。这有两层含义：第一，你应该总是对这些函数的返回值做一些事情（比如给它赋值一个变量或将它传递给另一个函数）；第二，除非你不再需要你传给破坏性函数的那个对象，否则你应该代替地传递一个副本。下一章里将会讨论更多有关破坏性函数的内容。</p><p class="p">Typically you won't care about the unsorted version of a sequence
+after you've sorted it, so it makes sense to allow <strong class="ph b">SORT</strong> and
+<strong class="ph b">STABLE-SORT</strong> to destroy the sequence in the course of sorting it. But
+it does mean you need to remember to write the following:</p><p class="p">通常在排序以后你不会再关心那个序列的未排序版本，因此在排序的过程中，允许
+<strong class="ph b">SORT</strong> 和 <strong class="ph b">STABLE-SORT</strong> 破坏序列是合理的。但这意味着需要记得像这样来写：</p><pre class="pre codeblock lisp"><code>(setf my-sequence (sort my-sequence #'string&lt;))</code></pre><p class="p">rather than just this:</p><p class="p">而不是这样：</p><pre class="pre codeblock lisp"><code>(sort my-sequence #'string&lt;)</code></pre><p class="p">Both these functions also take a keyword argument, <code class="ph codeph">:key</code>, which, like
+the <code class="ph codeph">:key</code> argument in other sequence functions, should be a function
+and will be used to extract the values to be passed to the sorting
+predicate in the place of the actual elements. The extracted keys are
+used only to determine the ordering of elements; the sequence returned
+will contain the actual elements of the argument sequence.</p><p class="p">这两个函数也接受关键字参数 <code class="ph codeph">:key</code>，它和其他序列函数的 <code class="ph codeph">:key</code>
+参数一样，应当是一个将被用来从序列元素中抽取出传给排序谓词的值的函数。被抽取出的关键字仅用于确定元素顺序，返回的序列将含有参数序列的实际元素。</p><p class="p">The <strong class="ph b">MERGE</strong> function takes two sequences and a predicate and returns a
+sequence produced by merging the two sequences, according to the
+predicate. It's related to the two sorting functions in that if each
+sequence is already sorted by the same predicate, then the sequence
+returned by <strong class="ph b">MERGE</strong> will also be sorted. Like the sorting functions,
+<strong class="ph b">MERGE</strong> takes a <code class="ph codeph">:key</code> argument. Like <strong class="ph b">CONCATENATE</strong>, and for the same
+reason, the first argument to <strong class="ph b">MERGE</strong> must be a type descriptor
+specifying the type of sequence to produce.</p><p class="p">函数 <strong class="ph b">MERGE</strong>
+接受两个序列和一个谓词并返回按照该谓词合并两个序列所产生的序列。它和两个排序函数之间的关系在于，如果每个序列已经被同样的谓词排序过了，那么由
+<strong class="ph b">MERGE</strong> 返回的序列也将是有序的。和排序函数一样，<strong class="ph b">MERGE</strong> 也接受一个
+<code class="ph codeph">:key</code> 参数。并且出于同样原因，和 <strong class="ph b">CONCATENATE</strong>
+一样，<strong class="ph b">MERGE</strong> 的第一个参数必须是用来指定所生成序列类型的类型描述符。</p><pre class="pre codeblock lisp"><code>(merge 'vector #(1 3 5) #(2 4 6) #'&lt;) ==&gt; #(1 2 3 4 5 6)
+(merge 'list #(1 3 5) #(2 4 6) #'&lt;)   ==&gt; (1 2 3 4 5 6)</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

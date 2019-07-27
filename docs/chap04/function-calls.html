@@ -1,0 +1,23 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap04/syntax-and-semantics.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="function-calls函数调用"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Function Calls（函数调用）</title></head><body id="function-calls函数调用"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Function Calls（函数调用）</h1><div class="body"><p class="p">The evaluation rule for function call forms is simple: evaluate the
+remaining elements of the list as Lisp forms and pass the resulting
+values to the named function. This rule obviously places some
+additional syntactic constraints on a function call form: all the
+elements of the list after the first must themselves be well-formed
+Lisp forms. In other words, the basic syntax of a function call form
+is as follows, where each of the arguments is itself a Lisp form:</p><p class="p">函数调用形式的求值规则很简单：对列表的其余元素作为 Lisp
+形式进行求值并将结果传递到命名函数中。这一规则明显的有着一些附加的句法限制在函数调用形式上：除第一个以外，所有的列表元素它们自身必须是一个形态良好的
+Lisp 形式。换句话说，函数调用形式的基本语法应如下所示，其中每个参数其本身也是一个
+Lisp 形式：</p><pre class="pre codeblock lisp"><code>(function-name argument*)</code></pre><p class="p">Thus, the following expression is evaluated by first evaluating 1,
+then evaluating 2, and then passing the resulting values to the <code class="ph codeph">+</code>
+function, which returns 3:</p><p class="p">这样，下面这个表达式在求值时将首先求值 1，再求值 2，然后将得到的值传给
+<code class="ph codeph">+</code> 函数，再返回 3:</p><pre class="pre codeblock lisp"><code>(+ 1 2)</code></pre><p class="p">A more complex expression such as the following is evaluated in
+similar fashion except that evaluating the arguments <code class="ph codeph">(+ 1 2)</code> and
+<code class="ph codeph">(- 3 4)</code> entails first evaluating their arguments and applying the
+appropriate functions to them:</p><p class="p">像下面这样更复杂的表达式也采用相似的求值方法，不过在求值参数 <code class="ph codeph">(+ 1 2)</code>
+和 <code class="ph codeph">(- 3 4)</code> 时需要先对它们的参数求值，然后再对它们应用相应的函数：</p><pre class="pre codeblock lisp"><code>(* (+ 1 2) (- 3 4))</code></pre><p class="p">Eventually, the values 3 and -1 are passed to the <code class="ph codeph">*</code> function, which
+returns -3.</p><p class="p">最后，值 3 和 -1 被传递到 <code class="ph codeph">*</code> 函数里，从而得到 -3。</p><p class="p">As these examples show, functions are used for many of the things that
+require special syntax in other languages. This helps keep Lisp's
+syntax regular.</p><p class="p">正如这些例子所显示的这样，许多其他语言中需要特殊语法来处理的事务在 Lisp
+中都可用函数来处理。Lisp 的这种设计对于保持其语法正则化很有帮助。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap04/syntax-and-semantics.html">Syntax and Semantics（语法和语义）</a></div></div></nav></article></main></body></html>

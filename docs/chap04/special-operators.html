@@ -1,0 +1,55 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap04/syntax-and-semantics.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="special-operators特别操作符"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Special Operators（特别操作符）</title></head><body id="special-operators特别操作符"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Special Operators（特别操作符）</h1><div class="body"><p class="p">That said, not all operations can be defined as functions. Because all
+the arguments to a function are evaluated before the function is
+called, there's no way to write a function that behaves like the IF
+operator you used in Chapter 3. To see why, consider this form:</p><p class="p">然而，并非所有的操作都可被定义成函数。由于一个函数的所有参数在函数被调用之前都将被求值，因此无法写出一个类似第 3
+章里用到的 <strong class="ph b">IF</strong> 操作符那样的函数。为了说明这点，可以假设有下面这种形式：</p><pre class="pre codeblock lisp"><code>(if x (format t "yes") (format t "no"))</code></pre><p class="p">If IF were a function, the evaluator would evaluate the argument
+expressions from left to right. The symbol <code class="ph codeph">x</code> would be evaluated as a
+variable yielding some value; then <code class="ph codeph">(format t "yes")</code> would be evaluated
+as a function call, yielding <strong class="ph b">NIL</strong> after printing "yes" to standard
+output. Then <code class="ph codeph">(format t "no")</code> would be evaluated, printing "no" and
+also yielding <strong class="ph b">NIL</strong>. Only after all three expressions were evaluated
+would the resulting values be passed to IF, too late for it to control
+which of the two <strong class="ph b">FORMAT</strong> expressions gets evaluated.</p><p class="p">如果 <strong class="ph b">IF</strong> 是一个函数，那么求值器将从左到右依次对其参数表达式求值。符号
+<code class="ph codeph">x</code> 将被作为产生某个值的变量来求值，然后 <code class="ph codeph">(format t "yes")</code>
+将被当成一个函数调用来求值，在向标准输出打印 “yes” 以后得到
+<strong class="ph b">NIL</strong>。接下来 <code class="ph codeph">(format t "no")</code> 将被求值，打印出 “no” 同时也得到
+<strong class="ph b">NIL</strong>。只有当所有三个表达式都被求值以后，它们的结果值才被传递给
+<strong class="ph b">IF</strong>，而这时已经无法控制两个 <strong class="ph b">FORMAT</strong> 表达式中的哪一个会被求值了。</p><p class="p">To solve this problem, Common Lisp defines a couple dozen so-called
+special operators, <strong class="ph b">IF</strong> being one, that do things that functions can't
+do. There are 25 in all, but only a small handful are used directly in
+day-to-day programming.</p><p class="p">为了解决这个问题，Common Lisp 定义了一些特别操作符，<strong class="ph b">IF</strong>
+就是其中之一，它们可以做到函数无法做到的事情。它们总共有 25
+个，但只有很少一部分直接用于日常编程。</p><p class="p">When the first element of a list is a symbol naming a special
+operator, the rest of the expressions are evaluated according to the
+rule for that operator.</p><p class="p">当列表的第一个元素是一个由特别操作符所命名的符号时，表达式的其余部分将按照该操作符的规则进行求值。</p><p class="p">The rule for <strong class="ph b">IF</strong> is pretty easy: evaluate the first expression. If it
+evaluates to non-<strong class="ph b">NIL</strong>, then evaluate the next expression and return its
+value. Otherwise, return the value of evaluating the third expression
+or <strong class="ph b">NIL</strong> if the third expression is omitted. In other words, the basic
+form of an IF expression is as follows:</p><p class="p"><strong class="ph b">IF</strong> 的规则相当简单：求值第一个表达式。如果得到非
+<strong class="ph b">NIL</strong>，那么求值下一个表达式并返回它的值。否则，返回第三个表达式的求值，或者
+<strong class="ph b">NIL</strong> 如果第三个表达式被省略的话，返回 <strong class="ph b">NIL</strong>。换句话说，一个
+<strong class="ph b">IF</strong> 表达式的基本形式是像下面这样：</p><pre class="pre codeblock lisp"><code>(if test-form then-form [ else-form ])</code></pre><p class="p">The <code class="ph codeph">test-form</code> will always be evaluated and then one or the other of
+the <code class="ph codeph">then-form</code> or <code class="ph codeph">else-form</code>.</p><p class="p">其中 <code class="ph codeph">test-form</code> 将总是被求值，然后要么是 <code class="ph codeph">then-form</code> 要么是 <code class="ph codeph">else-form</code>。</p><p class="p">An even simpler special operator is <strong class="ph b">QUOTE</strong>, which takes a single
+expression as its "argument" and simply returns it, unevaluated. For
+instance, the following evaluates to the list <code class="ph codeph">(+ 1 2)</code>, not the value
+3:</p><p class="p">一个更简单的特别操作符是 <strong class="ph b">QUOTE</strong>，它接受一个单一表达式作为其 “参数”
+并简单地返回它，不经求值。例如，下面的表达式求值得到列表 <code class="ph codeph">(+ 1 2)</code>，而不是值 3:</p><pre class="pre codeblock lisp"><code>(quote (+ 1 2))</code></pre><p class="p">There's nothing special about this list; you can manipulate it just
+like any list you could create with the <strong class="ph b">LIST</strong> function.</p><p class="p">这个列表没有什么特别的，你可以像用 <strong class="ph b">LIST</strong> 函数所创建的任何列表那样处理它。</p><p class="p"><strong class="ph b">QUOTE</strong> is used commonly enough that a special syntax for it is built
+into the reader. Instead of writing the following:</p><p class="p"><strong class="ph b">QUOTE</strong>
+被用得相当普遍，以至于读取中内置了一个它的特别语法形式。除了能像下面这样写之外：</p><pre class="pre codeblock lisp"><code>(quote (+ 1 2))</code></pre><p class="p">you can write this:</p><p class="p">你也可以这样写：</p><pre class="pre codeblock lisp"><code>'(+ 1 2)</code></pre><p class="p">This syntax is a small extension of the s-expression syntax understood
+by the reader. From the point of view of the evaluator, both those
+expressions will look the same: a list whose first element is the
+symbol <strong class="ph b">QUOTE</strong> and whose second element is the list <code class="ph codeph">(+ 1 2)</code>.</p><p class="p">该语法是读取器所理解的
+S-表达式语法的小扩展。从求值器的观点来看，这两个表达式看起来是一样的：一个首元素为符号
+<strong class="ph b">QUOTE</strong> 并且次元素是列表 <code class="ph codeph">(+ 1 2)</code> 的列表。</p><p class="p">In general, the special operators implement features of the language
+that require some special processing by the evaluator. For instance,
+several special operators manipulate the environment in which other
+forms will be evaluated. One of these, which I'll discuss in detail in
+Chapter 6, is <strong class="ph b">LET</strong>, which is used to create new variable bindings. The
+following form evaluates to 10 because the second x is evaluated in an
+environment where it's the name of a variable established by the <strong class="ph b">LET</strong>
+with the value 10:</p><p class="p">一般来说，特别操作符所实现的语言特性需要求值器作出某些特殊处理。例如，有些的操作符修改了其他形式将被求值环境。其中之一是
+<strong class="ph b">LET</strong>，也是我将在第 6 章详细讨论的，它用来创建新的变量绑定。下面的形式求值得到
+10，因为在第二个 <code class="ph codeph">x</code> 的求值环境中，它由 <strong class="ph b">LET</strong> 赋值为 10 的变量名：</p><pre class="pre codeblock lisp"><code>(let ((x 10)) x)</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap04/syntax-and-semantics.html">Syntax and Semantics（语法和语义）</a></div></div></nav></article></main></body></html>

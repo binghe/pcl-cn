@@ -1,0 +1,53 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap11/collections.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="sequence-mapping-functions序列映射函数"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Sequence Mapping Functions（序列映射函数）</title></head><body id="sequence-mapping-functions序列映射函数"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Sequence Mapping Functions（序列映射函数）</h1><div class="body"><p class="p">Finally, the last of the sequence functions are the generic mapping
+functions. <strong class="ph b">MAP</strong>, like the sequence predicate functions, takes a
+n-argument function and n sequences. But instead of a boolean value,
+<strong class="ph b">MAP</strong> returns a new sequence containing the result of applying the
+function to subsequent elements of the sequences. Like <strong class="ph b">CONCATENATE</strong> and
+<strong class="ph b">MERGE</strong>, <strong class="ph b">MAP</strong> needs to be told what kind of sequence to create.</p><p class="p">最终，序列函数的最后是通用映射函数。<strong class="ph b">MAP</strong>
+和序列谓词函数一样，接受一个带有 n
+个参数函数和 n 个序列。但并非返回布尔值，<strong class="ph b">MAP</strong>
+返回一个新序列，它由那些将函数应用在序列的相继元素上所得到的结果组成。与
+<strong class="ph b">CONCATENATE</strong> 和 <strong class="ph b">MERGE</strong> 相似，<strong class="ph b">MAP</strong> 需要被告知其所创建序列的类型。</p><pre class="pre codeblock lisp"><code>(map 'vector #'* #(1 2 3 4 5) #(10 9 8 7 6)) ==&gt; #(10 18 24 28 30)</code></pre><p class="p"><strong class="ph b">MAP-INTO</strong> is like <strong class="ph b">MAP</strong> except instead of producing a new
+sequence of a given type, it places the results into a sequence
+passed as the first argument. This sequence can be the same as one
+of the sequences providing values for the function. For instance, to
+sum several vectors--<code class="ph codeph">a</code>, <code class="ph codeph">b</code>, and <code class="ph codeph">c</code>--into one, you could write this:</p><p class="p"><strong class="ph b">MAP-INTO</strong> 和 <strong class="ph b">MAP</strong>
+相似，但它并不产生给定类型的新序列，而是将结果放置在一个作为第一个参数传递的序列中。这个序列可以和为函数提供值的序列中的一个相同。例如，为了将几个向量
+<code class="ph codeph">a</code>、<code class="ph codeph">b</code> 和 <code class="ph codeph">c</code> 相加到其中一个向量里，你可以写成这样：</p><pre class="pre codeblock lisp"><code>(map-into a #'+ a b c)</code></pre><p class="p">If the sequences are different lengths, <strong class="ph b">MAP-INTO</strong> affects only as many
+elements as are present in the shortest sequence, including the
+sequence being mapped into. However, if the sequence being mapped into
+is a vector with a fill pointer, the number of elements affected isn't
+limited by the fill pointer but rather by the actual size of the
+vector. After a call to <strong class="ph b">MAP-INTO</strong>, the fill pointer will be set to the
+number of elements mapped. <strong class="ph b">MAP-INTO</strong> won't, however, extend an
+adjustable vector.</p><p class="p">如果这些序列的长度不同，那么 <strong class="ph b">MAP-INTO</strong>
+将只影响那些与最短序列元素数量相当元素，其中也包括那个将被映射到的序列。不过，如果序列被映射到一个带有填充指针的向量里，受影响元素的数量将不限于填充指针而是该向量的实际大小。在一个对
+<strong class="ph b">MAP-INTO</strong>
+的调用之后，填充指针将被设置成被映射元素的数量。尽管如此，<strong class="ph b">MAP-INTO</strong>
+将不会扩展一个可调整大小的向量。</p><p class="p">The last sequence function is <strong class="ph b">REDUCE</strong>, which does another kind of
+mapping: it maps over a single sequence, applying a two-argument
+function first to the first two elements of the sequence and then to
+the value returned by the function and subsequent elements of the
+sequence. Thus, the following expression sums the numbers from one to
+ten:</p><p class="p">最后一个序列函数是
+<strong class="ph b">REDUCE</strong>，它可以做另一种类型的映射：映射在单个序列上，先将一个两参数函数应用到序列的最初两个元素上，再将函数返回的值和序列的后续元素继续用于该函数。这样，下面的表达式将对从
+1 到 10 的整数求和：</p><pre class="pre codeblock lisp"><code>(reduce #'+ #(1 2 3 4 5 6 7 8 9 10)) ==&gt; 55</code></pre><p class="p"><strong class="ph b">REDUCE</strong> is a surprisingly useful function--whenever you need to
+distill a sequence down to a single value, chances are you can write
+it with <strong class="ph b">REDUCE</strong>, and it will often be quite a concise way to express
+what you want. For instance, to find the maximum value in a sequence
+of numbers, you can write <code class="ph codeph">(reduce #'max numbers)</code>. <strong class="ph b">REDUCE</strong> also takes
+a full complement of keyword arguments (<code class="ph codeph">:key</code>, <code class="ph codeph">:from-end</code>, <code class="ph codeph">:start</code>, and
+<code class="ph codeph">:end</code>) and one unique to <strong class="ph b">REDUCE</strong> (<code class="ph codeph">:initial-value</code>). The latter
+specifies a value that's logically placed before the first element
+of the sequence (or after the last if you also specify a true
+<code class="ph codeph">:from-end</code> argument).</p><p class="p"><strong class="ph b">REDUCE</strong>
+函数非常有用，无论何时，当需要将一个序列提炼成一个单独的值时，你都有机会用
+<strong class="ph b">REDUCE</strong>
+来写它，而这通常都是一种相当简洁的表达意图的方法。例如，为了找出一个数字序列中的最大值，你可以写成
+<code class="ph codeph">(reduce #'max numbers)</code>。<strong class="ph b">REDUCE</strong>
+也接受完整的关键字参数（<code class="ph codeph">:key</code>、<code class="ph codeph">:from-end</code>、<code class="ph codeph">:start</code> 和 <code class="ph codeph">:end</code>）以及一个
+<strong class="ph b">REDUCE</strong> 专用的
+<code class="ph codeph">:intial-value</code>。后者可以指定一个值，在逻辑上被放置在序列的第一个元素之前（或是如果你同时指定了一个为真的
+<code class="ph codeph">:from-end</code> 参数，那么该值被放置在序列的最后一个元素之后）。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap11/collections.html">Collections（集合）</a></div></div></nav></article></main></body></html>

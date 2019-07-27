@@ -1,0 +1,136 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="numeric-literals字面数值"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Numeric Literals（字面数值）</title></head><body id="numeric-literals字面数值"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Numeric Literals（字面数值）</h1><div class="body"><p class="p">You can write numeric literals in a variety of ways; you saw a few
+examples in Chapter 4. However, it's important to keep in mind the
+division of labor between the Lisp reader and the Lisp evaluator--the
+reader is responsible for translating text into Lisp objects, and the
+Lisp evaluator then deals only with those objects. For a given number
+of a given type, there can be many different textual representations,
+all of which will be translated to the same object representation by
+the Lisp reader. For instance, you can write the integer 10 as <code class="ph codeph">10</code>,
+<code class="ph codeph">20/2</code>, <code class="ph codeph">#xA</code>, or any of a number of other ways, but the reader will
+translate all these to the same object. When numbers are printed back
+out--say, at the REPL--they're printed in a canonical textual syntax
+that may be different from the syntax used to enter the number. For
+example:</p><p class="p">可以用多种方式来书写字面数值，第4章已经介绍了一些例子。但你需要牢记
+Lisp 读取器和 Lisp 求值器之间的分工——读取器负责将文本转化成
+Lisp 对象，而 Lisp
+求值器只处理这些对象。对于一个给定类型的给定数字来说，它可以有多种不同的字面表示方式，所有这些都将被
+Lisp 读取器转化成相同的对象表示。例如，你可以将整数 10
+写成 <code class="ph codeph">10</code>、<code class="ph codeph">20/2</code>、<code class="ph codeph">#xA</code>
+或是其他形式的任何数字，但读取器将把所有这些转化成同一个对象。当数字被打印回来时，比如说在
+REPL 中，它们将以一种可能与输入该数字时不同的规范化文本语法被打印出来。例如：</p><pre class="pre codeblock lisp"><code>CL-USER&gt; 10
+10
+CL-USER&gt; 20/2
+10
+CL-USER&gt; #xa
+10</code></pre><p class="p">The syntax for integer values is an optional sign (<code class="ph codeph">+</code> or <code class="ph codeph">-</code>) followed by
+one or more digits. Ratios are written as an optional sign and a
+sequence of digits, representing the numerator, a slash (<code class="ph codeph">/</code>), and
+another sequence of digits representing the denominator. All rational
+numbers are "canonicalized" as they're read--that's why <code class="ph codeph">10</code> and <code class="ph codeph">20/2</code>
+are both read as the same number, as are <code class="ph codeph">3/4</code> and <code class="ph codeph">6/8</code>. Rationals are
+printed in "reduced" form--integer values are printed in integer
+syntax and ratios with the numerator and denominator reduced to lowest
+terms.</p><p class="p">整数的语法是可选的符号（<code class="ph codeph">+</code> 或
+<code class="ph codeph">-</code>）后接一个或多个数字。比值的写法则依次组合了一个可选符号、一个代表分子的数位序列、一个斜杠（<code class="ph codeph">/</code>）以及另一个代表分母的数位序列。所有的有理数在读取后都被
+“规范化”，这就是 <code class="ph codeph">10</code> 和 <code class="ph codeph">20/2</code> 都被读成同一个数字的原因，<code class="ph codeph">3/4</code> 和
+<code class="ph codeph">6/8</code> 也是这样，有理数以 “简化”
+形式打印，整数值以整数语法来打印，而比值被打印成分值和分母约分到最简的形式。</p><p class="p">It's also possible to write rationals in bases other than 10. If
+preceded by <code class="ph codeph">#B</code> or <code class="ph codeph">#b</code>, a rational literal is read as a binary number
+with 0 and 1 as the only legal digits. An <code class="ph codeph">#O</code> or <code class="ph codeph">#o</code> indicates an octal
+number (legal digits <code class="ph codeph">0-7</code>), and <code class="ph codeph">#X</code> or <code class="ph codeph">#x</code> indicates hexadecimal (legal
+digits <code class="ph codeph">0-F</code> or <code class="ph codeph">0-f</code>). You can write rationals in other bases from 2 to
+36 with <code class="ph codeph">#nR</code> where <code class="ph codeph">n</code> is the base (always written in
+decimal). Additional "digits" beyond 9 are taken from the letters <code class="ph codeph">A-Z</code>
+or <code class="ph codeph">a-z</code>. Note that these radix indicators apply to the whole
+rational--it's not possible to write a ratio with the numerator in one
+base and denominator in another. Also, you can write integer values,
+but not ratios, as decimal digits terminated with a decimal point.6
+Some examples of rationals, with their canonical, decimal
+representation are as follows:</p><p class="p">用 10 以外的进制来书写有理数也是可能的。如果前缀 <code class="ph codeph">#B</code> 或
+<code class="ph codeph">#b</code>，一个字面有理数将被作为二进制读取，其中 0 和 1
+是唯一的合法数字。前缀 <code class="ph codeph">#O</code> 或 <code class="ph codeph">#o</code> 代表一个八进制数（合法数字
+<code class="ph codeph">0-7</code>），而 <code class="ph codeph">#X</code> 或 <code class="ph codeph">#x</code> 则代表十六进制数（合法数字 <code class="ph codeph">0-F</code> 或
+<code class="ph codeph">o-f</code>）。你可以使用 <code class="ph codeph">#nR</code> 以 2 到 36 的其他进制书写有理数，其中
+<code class="ph codeph">n</code> 代表进制数（一定要以十进制书写）。超过 9 的附加 “数字” 从字母
+<code class="ph codeph">A-Z</code> 或 <code class="ph codeph">a-z</code> 中获取。注意，这些进制指示符将应用到整个有理数上——不可能以一种进制来书写比值的分值，而用另一种进制来书写分母。另外，你可以将整数而非比值写成以十进制小数点结尾的十进制数。下面是一些有理数的例子，带有它们对应的规范化十进制表示：</p><pre class="pre codeblock lisp"><code>123                            ==&gt; 123
++123                           ==&gt; 123
+-123                           ==&gt; -123
+123.                           ==&gt; 123
+2/3                            ==&gt; 2/3
+-2/3                           ==&gt; -2/3
+4/6                            ==&gt; 2/3
+6/3                            ==&gt; 2
+#b10101                        ==&gt; 21
+#b1010/1011                    ==&gt; 10/11
+#o777                          ==&gt; 511
+#xDADA                         ==&gt; 56026
+#36rABCDEFGHIJKLMNOPQRSTUVWXYZ ==&gt; 8337503854730415241050377135811259267835</code></pre><p class="p">You can also write floating-point numbers in a variety of ways. Unlike
+rational numbers, the syntax used to notate a floating-point number
+can affect the actual type of number read. Common Lisp defines four
+subtypes of floating-point number: short, single, double, and
+long. Each subtype can use a different number of bits in its
+representation, which means each subtype can represent values spanning
+a different range and with different precision. More bits gives a
+wider range and more precision.</p><p class="p">也可以用多种方式来书写浮点数。和有理数不同，表示浮点数的语法可以影响数字被读取的实际类型。Common
+Lisp
+定义了四种浮点数子类型：短型、单精度、双精度和长型。每一个子类型在其表示中可以使用不同数量的比特，这意味着每个子类型可以表示跨越不同范围和精度的值。更多的比特可以获得更宽的范围和更高的精度。</p><p class="p">The basic format for floating-point numbers is an optional sign
+followed by a nonempty sequence of decimal digits possibly with an
+embedded decimal point. This sequence can be followed by an exponent
+marker for "computerized scientific notation." The exponent marker
+consists of a single letter followed by an optional sign and a
+sequence of digits, which are interpreted as the power of ten by which
+the number before the exponent marker should be multiplied. The letter
+does double duty: it marks the beginning of the exponent and indicates
+what floating- point representation should be used for the number. The
+exponent markers s, f, d, l (and their uppercase equivalents) indicate
+short, single, double, and long floats, respectively. The letter e
+indicates that the default representation (initially single-float)
+should be used.</p><p class="p">浮点数的基本格式是一个可选符号后跟一个非空的十进制数字序列，同时可能带有一个嵌入的小数点。这个序列可能后接一个代表
+“计算机科学计数法”
+的指数标记。指数标记由单个字母后跟一个可选符号和一个数字序列组成，其代表
+10
+的指数用来跟指数标记前的数字相乘。该字母有两重作用：它标记了指数的开始并且指出该数字应当使用的浮点表示方式。指数标记
+s、f、d、l（以及它们等价的大写形式）分别代表短型、单精度、双精度以及长型浮点数。字母
+e 代表默认表示方式（单浮点数）。</p><p class="p">Numbers with no exponent marker are read in the default representation
+and must contain a decimal point followed by at least one digit to
+distinguish them from integers. The digits in a floating-point number
+are always treated as base 10 digits--the <code class="ph codeph">#B</code>, <code class="ph codeph">#X</code>, <code class="ph codeph">#O</code>, and <code class="ph codeph">#R</code> syntaxes
+work only with rationals. The following are some example
+floating-point numbers along with their canonical representation:</p><p class="p">没有指数标记的数字以默认表示来读取，并且必须含有一个小数点后面还至少有一个数字，以区别于整数。浮点数中的数字总是以十进制数字来表示——<code class="ph codeph">#B</code>、<code class="ph codeph">#X</code>、<code class="ph codeph">#O</code>
+和 <code class="ph codeph">#R</code> 语法只用在有理数上。下面是一些浮点数的例子，带有它们的规范表示形式：</p><pre class="pre codeblock lisp"><code>1.0      ==&gt; 1.0
+1e0      ==&gt; 1.0
+1d0      ==&gt; 1.0d0
+123.0    ==&gt; 123.0
+123e0    ==&gt; 123.0
+0.123    ==&gt; 0.123
+.123     ==&gt; 0.123
+123e-3   ==&gt; 0.123
+123E-3   ==&gt; 0.123
+0.123e20 ==&gt; 1.23e+19
+123d23   ==&gt; 1.23d+25</code></pre><p class="p">Finally, complex numbers are written in their own syntax, namely, <code class="ph codeph">#C</code>
+or <code class="ph codeph">#c</code> followed by a list of two real numbers representing the real and
+imaginary part of the complex number. There are actually five kinds of
+complex numbers because the real and imaginary parts must either both
+be rational or both be the same kind of floating-point number.</p><p class="p">最后，复数有它们自己的语法，也就是 <code class="ph codeph">#C</code> 或 <code class="ph codeph">#c</code>
+跟上一个由两个实数所组成的列表，分别代表实数的实部和虚部。事实上因为实部和虚部必须同为有理数或相同类型的浮点数，所以共有五种类型的复数。</p><p class="p">But you can write them however you want--if a complex is written with
+one rational and one floating-point part, the rational is converted to
+a float of the appropriate representation. Similarly, if the real and
+imaginary parts are both floats of different representations, the one
+in the smaller representation will be <em class="ph i">upgraded</em>.</p><p class="p">不过你可以随意书写它们。如果复数被写成由有理数和浮点数组成，该有理数将被转化成一个适当表示的浮点数。类似地，如果实部和虚部是不同表示法的浮点数，使用较小表示法的那一个将被升级。</p><p class="p">However, no complex numbers have a rational real component and a zero
+imaginary part--since such values are, mathematically speaking,
+rational, they're represented by the appropriate rational value. The
+same mathematical argument could be made for complex numbers with
+floating-point components, but for those complex types a number with a
+zero imaginary part is always a different object than the
+floating-point number representing the real component. Here are some
+examples of numbers written the complex number syntax:</p><p class="p">尽管如此，没有复数可以具有一个有理的实部和一个零的虚部，因为这样的值从数学上讲是有理的，所以它们将用对应的有理数值来表示。同样的数学论据对于由浮点数所组成的复数也是成立的，但其中那些带有零虚部的复数总是一个与代表实部的浮点数不同的对象。下面是一些以复数语法写成的数字的例子：</p><pre class="pre codeblock lisp"><code>#c(2      1)    ==&gt; #c(2 1)
+#c(2/3  3/4)    ==&gt; #c(2/3 3/4)
+#c(2    1.0)    ==&gt; #c(2.0 1.0)
+#c(2.0  1.0d0)  ==&gt; #c(2.0d0 1.0d0)
+#c(1/2  1.0)    ==&gt; #c(0.5 1.0)
+#c(3      0)    ==&gt; 3
+#c(3.0  0.0)    ==&gt; #c(3.0 0.0)
+#c(1/2    0)    ==&gt; 1/2
+#c(-6/3   0)    ==&gt; -2</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

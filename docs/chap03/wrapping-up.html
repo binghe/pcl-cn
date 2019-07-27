@@ -1,0 +1,23 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap03/a-simple-database.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="wrapping-up总结"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Wrapping Up（总结）</title></head><body id="wrapping-up总结"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Wrapping Up（总结）</h1><div class="body"><p class="p">Now, an interesting thing has happened. You removed duplication and
+made the code more efficient <em class="ph i">and</em> more general at the same time. That's
+often the way it goes with a well-chosen macro. This makes sense
+because a macro is just another mechanism for creating
+abstractions--abstraction at the syntactic level, and abstractions are
+by definition more concise ways of expressing underlying
+generalities. Now the only code in the mini-database that's specific
+to CDs and the fields in them is in the <code class="ph codeph">make-cd</code>, <code class="ph codeph">prompt-for-cd</code>, and
+<code class="ph codeph">add-cd</code> functions. In fact, our new <code class="ph codeph">where</code> macro would work with any
+plist-based database.</p><p class="p">现在，有趣的事情发生了。你不但去除了重复，而且还使得代码更有效且更通用了。这通常就是正确选用宏所达到的效果。这件事合乎逻辑，是因为宏只不过是另一种创建抽象的手法——词法层面的抽象，以及按照定义通过更简明地表达底层一般性的方式所得到的抽象。现在这个微型数据库的代码中只有
+<code class="ph codeph">make-cd</code>、<code class="ph codeph">prompt-for-cd</code> 以及 <code class="ph codeph">add-cd</code>
+函数是特定于 CD 及其字段的。事实上，新的 <code class="ph codeph">where</code> 宏可以用在任何基于
+plist 的数据库上。</p><p class="p">However, this is still far from being a complete database. You can
+probably think of plenty of features to add, such as supporting
+multiple tables or more elaborate queries. In Chapter 27 we'll build
+an MP3 database that incorporates some of those features.</p><p class="p">尽管如此，它距离一个完整的数据库仍很遥远。你可能会想到还有大量需要增加的特性，包括支持多表或是更复杂的查询。第
+27 章将建立一个具备这些特性的 MP3 数据库。</p><p class="p">The point of this chapter was to give you a quick introduction to just
+a handful of Lisp's features and show how they're used to write code
+that's a bit more interesting than "hello, world." In the next chapter
+we'll begin a more systematic overview of Lisp.</p><p class="p">本章的要点在于快速介绍少量 Lisp 特性，展示如何用它们编写出比 “hello,
+world” 更有趣一点儿的代码。在下一章里，我们将对 Lisp 做一个更加系统的概述。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap03/a-simple-database.html">Practical: A Simple Database（实践：一个简单的数据库）</a></div></div></nav></article></main></body></html>

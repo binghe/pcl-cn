@@ -1,0 +1,64 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap06/variables.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="other-ways-to-modify-places其他修改位置的方式"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Other Ways to Modify Places（其他修改位置的方式）</title></head><body id="other-ways-to-modify-places其他修改位置的方式"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Other Ways to Modify Places（其他修改位置的方式）</h1><div class="body"><p class="p">While all assignments can be expressed with <strong class="ph b">SETF</strong>, certain patterns
+involving assigning a new value based on the current value are
+sufficiently common to warrant their own operators. For instance,
+while you could increment a number with <strong class="ph b">SETF</strong>, like this:</p><p class="p">尽管所有的赋值都可以用 <strong class="ph b">SETF</strong>
+来表达，但有些固定模式（比如例基于当前值来赋予新值）由于经常使用，因此有它们自己的操作符。例如，尽管可以像这样使用
+<strong class="ph b">SETF</strong> 来递增一个数：</p><pre class="pre codeblock lisp"><code>(setf x (+ x 1))</code></pre><p class="p">or decrement it with this:</p><p class="p">或是像这样来递减它：</p><pre class="pre codeblock lisp"><code>(setf x (- x 1))</code></pre><p class="p">it's a bit tedious, compared to the C-style <code class="ph codeph">++x</code> and <code class="ph codeph">--x</code>. Instead, you
+can use the macros <strong class="ph b">INCF</strong> and <strong class="ph b">DECF</strong>, which increment and decrement a
+place by a certain amount that defaults to 1.</p><p class="p">但这跟 C 风格的 <code class="ph codeph">++x</code> 和 <code class="ph codeph">--x</code> 相比就显得很冗长了。相反，可以使用宏 <strong class="ph b">INCF</strong>
+和 <strong class="ph b">DECF</strong>，它们以默认为 1 的特定数量对一个位置的值进行递增和递减。</p><pre class="pre codeblock lisp"><code>(incf x)    === (setf x (+ x 1))
+(decf x)    === (setf x (- x 1))
+(incf x 10) === (setf x (+ x 10))</code></pre><p class="p"><strong class="ph b">INCF</strong> and <strong class="ph b">DECF</strong> are examples of a kind of macro called <em class="ph i">modify
+macros</em>. Modify macros are macros built on top of <strong class="ph b">SETF</strong> that modify
+places by assigning a new value based on the current value of the
+place. The main benefit of modify macros is that they're more concise
+than the same modification written out using <strong class="ph b">SETF</strong>. Additionally,
+modify macros are defined in a way that makes them safe to use with
+places where the place expression must be evaluated only once. A silly
+example is this expression, which increments the value of an arbitrary
+element of an array:</p><p class="p">类似 <strong class="ph b">INCF</strong> 和 <strong class="ph b">DECF</strong> 这种宏被称为_修改宏_（modify macro），修改宏是建立在
+<strong class="ph b">SETF</strong> 之上的宏，其基于作用位置上的当前值来赋予该位置一个新值，修改宏的
+主要好处是，它们比用
+<strong class="ph b">SETF</strong> 写出的同样修改语句更加简洁。另外，修改宏所定义的方式使其可以安全地用于那些表达式必须只被求值一次的位置。一个有趣的例子是下面这个表达式，其中的
+<strong class="ph b">INCF</strong> 会递增一个数组中任意元素的值：</p><pre class="pre codeblock lisp"><code>(incf (aref *array* (random (length *array*))))</code></pre><p class="p">A naive translation of that into a <strong class="ph b">SETF</strong> expression might look like
+this:</p><p class="p">如果将它就地转换成一个 <strong class="ph b">SETF</strong> 表达式可能看起来像这样：</p><pre class="pre codeblock lisp"><code>(setf (aref *array* (random (length *array*)))
+      (1+ (aref *array* (random (length *array*)))))</code></pre><p class="p">However, that doesn't work because the two calls to <strong class="ph b">RANDOM</strong> won't
+necessarily return the same value--this expression will likely
+grab the value of one element of the array, increment it, and
+then store it back as the new value of a different element. The
+<strong class="ph b">INCF</strong> expression, however, does the right thing because it knows
+how to take apart this expression:</p><p class="p">但这不会正常工作，因为两次对 <strong class="ph b">RANDOM</strong>
+的调用不一定能返回相同的值——该表达式将很可能抓取数组中一个元素的值，将其递增，然后将其作为新值保存到另一个不同的数组元素上。与之相比，上面的
+<strong class="ph b">INCF</strong> 表达式却能产生正确的行为，因为它知道如何处理这个表达式：</p><pre class="pre codeblock lisp"><code>(aref *array* (random (length *array*)))</code></pre><p class="p">to pull out the parts that could possibly have side effects to make
+sure they're evaluated only once. In this case, it would probably
+expand into something more or less equivalent to this:</p><p class="p">取出其中可能带有副作用的部分，从而确保它们仅被求值一次。在本例中，经展
+开后，它差不多会等价于以下形式。</p><pre class="pre codeblock lisp"><code>(let ((tmp (random (length *array*))))
+  (setf (aref *array* tmp) (1+ (aref *array* tmp))))</code></pre><p class="p">In general, modify macros are guaranteed to evaluate both their
+arguments and the subforms of the place form exactly once each, in
+left-to-right order.</p><p class="p">一般而言，修改宏可以保证以从左到右的顺序，对它们的参数和位置形式的子形式每个只求值一次。</p><p class="p">The macro <strong class="ph b">PUSH</strong>, which you used in the mini-database to add elements to
+the <code class="ph codeph">*db*</code> variable, is another modify macro. You'll take a closer look
+at how it and its counterparts <strong class="ph b">POP</strong> and <strong class="ph b">PUSHNEW</strong> work in Chapter 12 when
+I talk about how lists are represented in Lisp.</p><p class="p">第 3 章里那个微型数据库中曾用来向
+<code class="ph codeph">*db*</code> 变量添加元素的 <strong class="ph b">PUSH</strong> 宏则是另一个修改宏。第 12
+章在讲到如何在 Lisp 中表示列表时会详细地介绍它及其对应的 <strong class="ph b">POP</strong>
+和 <strong class="ph b">PUSHNEW</strong> 是如何工作的。</p><p class="p">Finally, two slightly esoteric but useful modify macros are <strong class="ph b">ROTATEF</strong>
+and <strong class="ph b">SHIFTF</strong>. <strong class="ph b">ROTATEF</strong> rotates values between places. For instance, if
+you have two variables, a and b, this call:</p><p class="p">最后有两个稍微有些难懂但很有用的修改宏，它们是 <strong class="ph b">ROTATEF</strong> 和 <strong class="ph b">SHIFTF</strong>。<strong class="ph b">ROTATEF</strong>
+在位置之前旋转它们的值。如果有两个变量 <code class="ph codeph">a</code> 和 <code class="ph codeph">b</code>，那么如下调用</p><pre class="pre codeblock lisp"><code>(rotatef a b)</code></pre><p class="p">swaps the values of the two variables and returns NIL. Since a and b
+are variables and you don't have to worry about side effects, the
+previous <strong class="ph b">ROTATEF</strong> expression is equivalent to this:</p><p class="p">将交换两个变量的值并返回NIL。由于 <code class="ph codeph">a</code> 和 <code class="ph codeph">b</code>
+是变量并且你不需要担心副作用，因此前面的 <strong class="ph b">ROTATEF</strong> 表达式等价于下面这个：</p><pre class="pre codeblock lisp"><code>(let ((tmp a)) (setf a b b tmp) nil)</code></pre><p class="p">With other kinds of places, the equivalent expression using <strong class="ph b">SETF</strong> would
+be quite a bit more complex.</p><p class="p">其他类型位置上的 <strong class="ph b">SETF</strong> 等价表达式可能会更加复杂一些。</p><p class="p"><strong class="ph b">SHIFTF</strong> is similar except instead of rotating values it shifts them to
+the left--the last argument provides a value that's moved to the
+second-to-last argument while the rest of the values are moved one to
+the left. The original value of the first argument is simply
+returned. Thus, the following:</p><p class="p"><strong class="ph b">SHIFTF</strong> 与之相似，除了它将值向左侧移动而不是旋转它们——最后一个参数提供了一个值用来移动到最数第二个参数上，而其他的值将向左移动一个，第一个参数
+的最初的值将被简单地返回。这样，下面的表达式</p><pre class="pre codeblock lisp"><code>(shiftf a b 10)</code></pre><p class="p">is equivalent--again, since you don't have to worry about side effects--to this:</p><p class="p">将等价于如下形式。同样，不必担心副作用：</p><pre class="pre codeblock lisp"><code>(let ((tmp a)) (setf a b b 10) tmp)</code></pre><p class="p">Both <strong class="ph b">ROTATEF</strong> and <strong class="ph b">SHIFTF</strong> can be used with any number of arguments and,
+like all modify macros, are guaranteed to evaluate them exactly once,
+in left to right order.</p><p class="p"><strong class="ph b">ROTATEF</strong> 和 <strong class="ph b">SHIFTF</strong>
+都可被用于任意多个参数，并且和所有的修改宏一样，它们可以保证以从左到右的顺序对每个参数仅求值一次。</p><p class="p">With the basics of Common Lisp's functions and variables under your
+belt, now you're ready to move onto the feature that continues to
+differentiate Lisp from other languages: macros.</p><p class="p">学完了 Common Lisp 函数和变量的基础知识以后，下面将开始介绍一个令
+Lisp 始终区别于其他语言的重要特性：宏。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap06/variables.html">Variables（变量）</a></div></div></nav></article></main></body></html>

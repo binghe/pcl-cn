@@ -1,0 +1,31 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap10/numbers-characters-strings.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="strings字符串"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Strings（字符串）</title></head><body id="strings字符串"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Strings（字符串）</h1><div class="body"><p class="p">As mentioned earlier, strings in Common Lisp are really a composite
+data type, namely, a one-dimensional array of
+characters. Consequently, I'll cover many of the things you can do
+with strings in the next chapter when I discuss the many functions for
+manipulating sequences, of which strings are just one type. But
+strings also have their own literal syntax and a library of functions
+for performing string-specific operations. I'll discuss these aspects
+of strings in this chapter and leave the others for Chapter 11.</p><p class="p">如前所述，Common Lisp
+中的字符串其实是一种复合数据类型，也即一个一维字符数组。因此，我将在下一章讨论用来处理序列的许多函数时将谈及许多字符串应用，因为字符串只不过是一种序列。但字符串也有其自己的字面语法和一个用来进行字符串特定操作的函数数库。本章将讨论字符串的这些方面并将其余部分留到第
+11 章再作介绍。</p><p class="p">As you've seen, literal strings are written enclosed in double
+quotes. You can include any character supported by the character set
+in a literal string except double quote (<code class="ph codeph">"</code>) and backslash (<code class="ph codeph">\</code>). And you
+can include these two as well if you escape them with a backslash. In
+fact, backslash always escapes the next character, whatever it is,
+though this isn't necessary for any character except for <code class="ph codeph">"</code> and
+itself. Table 10-2 shows how various literal strings will be read by
+the Lisp reader.</p><p class="p">正如你所看到的那样，字面字符串写在闭合的双引号里。你可以在一个字面字符串中包括任何字符集支持的字符，除了双引号（<code class="ph codeph">"</code>）和反斜杠（<code class="ph codeph">\</code>）。而如果你将它们用一个反斜杠转义的话也可以包括这两个字符。事实上，反斜杠总是转义其下一个字符，无论它是什么，尽管这对于除了 <code class="ph codeph">"</code>
+和它本身之外的其他字符并不必要。表 10-2
+显示了不同的字面字符串是如何被 Lisp 读取器读取的。</p><blockquote class="lq"><p class="p">Table 10-2. Literal Strings</p></blockquote><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead"><tr class="row"><th class="entry align-left" id="strings字符串__entry__1">Literal</th><th class="entry align-left" id="strings字符串__entry__2">Contents</th><th class="entry align-left" id="strings字符串__entry__3">Comment</th></tr></thead><tbody class="tbody"><tr class="row"><td class="entry align-left" headers="strings字符串__entry__1 "><code class="ph codeph">"foobar"</code></td><td class="entry align-left" headers="strings字符串__entry__2 ">foobar</td><td class="entry align-left" headers="strings字符串__entry__3 ">Plain string.</td></tr><tr class="row"><td class="entry align-left" headers="strings字符串__entry__1 "><code class="ph codeph">"foo\"bar"</code></td><td class="entry align-left" headers="strings字符串__entry__2 ">foo"bar</td><td class="entry align-left" headers="strings字符串__entry__3 ">The backslash escapes quote.</td></tr><tr class="row"><td class="entry align-left" headers="strings字符串__entry__1 "><code class="ph codeph">"foo\\bar"</code></td><td class="entry align-left" headers="strings字符串__entry__2 ">foo\bar</td><td class="entry align-left" headers="strings字符串__entry__3 ">The first backslash escapes second backslash.</td></tr><tr class="row"><td class="entry align-left" headers="strings字符串__entry__1 "><code class="ph codeph">"\"foobar\""</code></td><td class="entry align-left" headers="strings字符串__entry__2 ">"foobar"</td><td class="entry align-left" headers="strings字符串__entry__3 ">The backslashes escape quotes.</td></tr><tr class="row"><td class="entry align-left" headers="strings字符串__entry__1 "><code class="ph codeph">"foo\bar"</code></td><td class="entry align-left" headers="strings字符串__entry__2 ">foobar</td><td class="entry align-left" headers="strings字符串__entry__3 ">The backslash "escapes" b</td></tr></tbody></table><p class="p">Note that the REPL will ordinarily print strings in readable form,
+adding the enclosing quotation marks and any necessary escaping
+backslashes, so if you want to see the actual contents of a string,
+you need to use function such as <strong class="ph b">FORMAT</strong> designed to print
+human-readable output. For example, here's what you see if you type a
+string containing an embedded quotation mark at the REPL:</p><p class="p">注意，REPL
+将以可读的形式原样打印字符串，并带有外围的引号和任何必要的转义反斜杠。因此，如果想要看到一个字符串的实际内容，就要使用诸如FORMAT这种原本就是设计用于打印出可读性良好输出的函数。例如，下面是在
+REPL 中输入一个含有内嵌引号的字符串时所看到的输出：</p><pre class="pre codeblock lisp"><code>CL-USER&gt; "foo\"bar"
+"foo\"bar"</code></pre><p class="p"><strong class="ph b">FORMAT</strong>, on the other hand, will show you the actual string contents:</p><p class="p">另一方面，<strong class="ph b">FORMAT</strong> 将显示出实际的字符串内容：</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (format t "foo\"bar")
+foo"bar
+NIL</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap10/numbers-characters-strings.html">Numbers, Characters, and Strings（数字、字符和字符串）</a></div></div></nav></article></main></body></html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap08/macros-defining-your-own.html"><meta name="DC.relation" scheme="URI" content="../chap08/once-only.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="macro-writing-macros生成宏的宏"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Macro-Writing Macros（生成宏的宏）</title></head><body id="macro-writing-macros生成宏的宏"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Macro-Writing Macros（生成宏的宏）</h1><div class="body"><p class="p">Of course, there's no reason you should be able to take advantage of
+macros only when writing functions. The job of macros is to abstract
+away common syntactic patterns, and certain patterns come up again and
+again in writing macros that can also benefit from being abstracted
+away.</p><p class="p">当然，没有理由表明只有在编写函数的时候才能利用宏的优势。宏的作用是将常见的句法模式抽象掉，而反复出现在宏的编写中的特定模式同样也可受益于其抽象能力。</p><p class="p">In fact, you've already seen one such pattern--many macros will, like
+the last version of <code class="ph codeph">do-primes</code>, start with a <strong class="ph b">LET</strong> that introduces a few
+variables holding gensymed symbols to be used in the macro's
+expansion. Since this is such a common pattern, why not abstract it
+away with its own macro?</p><p class="p">事实上，你已经见过了这样一种模式。许多宏，例如最后版本的
+<code class="ph codeph">do-primes</code>，它们都以一个 <strong class="ph b">LET</strong>
+形式开始，后者引入了一些变量用来保存宏展开过程中用到的生成符号。由于这也是一个常见模式，那为什么不用一个宏来将其抽象掉呢？</p><p class="p">In this section you'll write a macro, <code class="ph codeph">with-gensyms</code>, that does just
+that. In other words, you'll write a macro-writing macro: a macro that
+generates code that generates code. While complex macro-writing macros
+can be a bit confusing until you get used to keeping the various
+levels of code clear in your mind, <code class="ph codeph">with-gensyms</code> is fairly
+straightforward and will serve as a useful but not too strenuous
+mental limbering exercise.</p><p class="p">本节将编写一个宏
+<code class="ph codeph">with-gensyms</code>，它刚好做到这点。换句话说，你将编写一个用来编写宏的宏：一个宏用来生成代码，其代码又生成另外的代码。尽管在你习惯于在头脑中牢记不同层次的代码之前，可能会对复杂的编写宏的宏有一点困惑，但
+<code class="ph codeph">with-gensyms</code> 是相当简单的，而且还当作可以一个有用但又不会过于浪费脑筋的练习。</p><p class="p">You want to be able to write something like this:</p><p class="p">所写的宏应当类似于下面这种形式：</p><pre class="pre codeblock lisp"><code>(defmacro do-primes ((var start end) &amp;body body)
+  (with-gensyms (ending-value-name)
+    `(do ((,var (next-prime ,start) (next-prime (1+ ,var)))
+          (,ending-value-name ,end))
+         ((&gt; ,var ,ending-value-name))
+       ,@body)))</code></pre><p class="p">and have it be equivalent to the previous version of <code class="ph codeph">do-primes</code>. In
+other words, the <code class="ph codeph">with-gensyms</code> needs to expand into a <strong class="ph b">LET</strong> that binds
+each named variable, <code class="ph codeph">ending-value-name</code> in this case, to a gensymed
+symbol. That's easy enough to write with a simple backquote template.</p><p class="p">并且还需要让其等价于之前版本的 <code class="ph codeph">do-primes</code>。换句话说，<code class="ph codeph">with-gensyms</code>
+需要展开成一个 <strong class="ph b">LET</strong>，它会把每一个命名的变量（在本例中是
+<code class="ph codeph">ending-value-name</code>）都绑定到一个生成符号上。很容易就可以写出一个简单的反引用模板。</p><pre class="pre codeblock lisp"><code>(defmacro with-gensyms ((&amp;rest names) &amp;body body)
+  `(let ,(loop for n in names collect `(,n (gensym)))
+     ,@body))</code></pre><p class="p">Note how you can use a comma to interpolate the value of the <strong class="ph b">LOOP</strong>
+expression. The loop generates a list of binding forms where each
+binding form consists of a list containing one of the names given to
+<code class="ph codeph">with-gensyms</code> and the literal code <code class="ph codeph">(gensym)</code>. You can test what code the
+<strong class="ph b">LOOP</strong> expression would generate at the REPL by replacing <code class="ph codeph">names</code> with a
+list of symbols.</p><p class="p">注意你是怎样用一个逗号来插入 <strong class="ph b">LOOP</strong>
+表达式的值的。这个循环生成了一个绑定形式的列表，其中每个绑定形式由一个含有
+<code class="ph codeph">with-gensyms</code> 中的一个给定名字和字面代码 <code class="ph codeph">(gensym)</code>
+的列表所构成。你可以通过将 <code class="ph codeph">names</code> 替换成一个符号的列表，从而在 REPL
+中测试 <strong class="ph b">LOOP</strong> 表达式生成的代码。</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (loop for n in '(a b c) collect `(,n (gensym)))
+((A (GENSYM)) (B (GENSYM)) (C (GENSYM)))</code></pre><p class="p">After the list of binding forms, the body argument to <code class="ph codeph">with-gensyms</code> is
+spliced in as the body of the <strong class="ph b">LET</strong>. Thus, in the code you wrap in a
+<code class="ph codeph">with-gensyms</code> you can refer to any of the variables named in the list
+of variables passed to <code class="ph codeph">with-gensyms</code>.</p><p class="p">在绑定形式的列表之后，<code class="ph codeph">with-gensyms</code>
+的主体参数被嵌入到LET的主体之中。这样，被封装在一个 <code class="ph codeph">with-gensyms</code>
+中的代码将可以引用任何传递给 <code class="ph codeph">with-gensyms</code> 的变量列表中所命名的变量。</p><p class="p">If you macro-expand the <code class="ph codeph">with-gensyms</code> form in the new definition of
+do-primes, you should see something like this:</p><p class="p">如果在新的 <code class="ph codeph">do-primes</code> 定义中对 <code class="ph codeph">with-gensyms</code>
+形式进行宏展开，就将看到下面这样的结果：</p><pre class="pre codeblock lisp"><code>(let ((ending-value-name (gensym)))
+  `(do ((,var (next-prime ,start) (next-prime (1+ ,var)))
+        (,ending-value-name ,end))
+       ((&gt; ,var ,ending-value-name))
+     ,@body))</code></pre><p class="p">Looks good. While this macro is fairly trivial, it's important to keep
+clear about when the different macros are expanded: when you compile
+the <strong class="ph b">DEFMACRO</strong> of <code class="ph codeph">do-primes</code>, the <code class="ph codeph">with-gensyms</code> form is expanded into the
+code just shown and compiled. Thus, the compiled version of <code class="ph codeph">do-primes</code>
+is just the same as if you had written the outer <strong class="ph b">LET</strong> by hand. When you
+compile a function that uses <code class="ph codeph">do-primes</code>, the code generated by
+<code class="ph codeph">with-gensyms</code> runs generating the <code class="ph codeph">do-primes</code> expansion, but <code class="ph codeph">with-gensyms</code>
+itself isn't needed to compile a <code class="ph codeph">do-primes</code> form since it has already
+been expanded, back when <code class="ph codeph">do-primes</code> was compiled.</p><p class="p">看起来不错。尽管这个宏相对简单，但重要的是要清楚地了解不同的宏是分别在何时被展开的：当你编译关于
+<code class="ph codeph">do-primes</code> 的 <strong class="ph b">DEFMACRO</strong> 时，<code class="ph codeph">with-gensyms</code>
+形式就被展开成刚刚看到的代码并被编译了。这样，<code class="ph codeph">do-primes</code>
+的编译版本就已经跟你手写外层的 <strong class="ph b">LET</strong> 时一样了。当编译一个使用了
+<code class="ph codeph">do-primes</code> 的函数时，由 <code class="ph codeph">with-gensyms</code> 生成的代码将会运行用来生成
+<code class="ph codeph">do-primes</code> 的展开式，但 <code class="ph codeph">with-gensyms</code>
+宏本身在编译一个 <code class="ph codeph">do-primes</code>
+形式时并不会被用到，因为在 <code class="ph codeph">do-primes</code> 被编译时，它早已经被展开了。</p></div><nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="../chap08/once-only.html">Another classic macro-writing MACRO: ONCE-ONLY（另一个经典的用于编写宏的宏：ONCE-ONLY）</a></strong><br></li></ul><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap08/macros-defining-your-own.html">Macros: Defining Your Own（定义你自己的宏）</a></div></div></nav></article></main></body></html>

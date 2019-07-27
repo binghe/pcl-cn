@@ -1,0 +1,224 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="concept"><meta name="DC.relation" scheme="URI" content="../chap06/variables.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="variable-basics"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Variable Basics（变量的基础知识）</title></head><body id="variable-basics"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1">Variable Basics（变量的基础知识）</h1>
+  <div class="body conbody">
+    <p class="p">As in other languages, in Common Lisp variables are named places that
+    can hold a value. However, in Common Lisp, variables aren't typed the
+    way they are in languages such as Java or C++. That is, you don't need
+    to declare the type of object that each variable can hold. Instead, a
+    variable can hold values of any type and the values carry type
+    information that can be used to check types at runtime. Thus, Common
+    Lisp is dynamically typed--type errors are detected dynamically. For
+    instance, if you pass something other than a number to the <code class="ph codeph">+</code> function,
+    Common Lisp will signal a type error. On the other hand, Common Lisp
+    is a strongly typed language in the sense that all type errors will be
+    detected--there's no way to treat an object as an instance of a class
+    that it's not.</p>
+
+    <p class="p">和其他语言一样，Common Lisp 中的变量是一些可以保存值的具名位置。但在 Common
+Lisp 中，变量并非像在 Java 和 C++
+ 等语言中那样带有确定的类型，也就是说不需要为每一个变量声明其可以保存对象的类型。相反，一个变量可以保存任何类型的值，并且这些值带有可用于运行期类型检查的类型信息。因此，Common
+Lisp 是动态类型的——类型错误会被动态地检测到。举个例子，假如这些值某个并非数字的对象传给了
+<code class="ph codeph">+</code> 函数，那么 Common Lisp 将会报类型错误。而另一方面，Common
+Lisp 是一种强类型语言，因为所有的类型错误都将被检测到——无法将一个对象作为其不属于的类型的实例来对待。</p>
+
+    <p class="p">All values in Common Lisp are, conceptually at least, references to
+    objects. Consequently, assigning a variable a new value changes what
+    object the variable refers to but has no effect on the previously
+    referenced object. However, if a variable holds a reference to a
+    mutable object, you can use that reference to modify the object, and
+    the modification will be visible to any code that has a reference to
+    the same object.</p>
+
+    <p class="p">至少从概念上来说，Common Lisp
+中所有的值都是对象的引用。 因此，将一个变量赋予新值就会改变该变量所指向的对象，而对之前被引用的对象却没有影响。尽管如此，如果一个变量保存了对一个可变对象的引用，那么就可以用该引用来修改此对象，而这种改动将应用于任何带有相同对象引用的代码。
+    </p>
+    
+    <p class="p">One way to introduce new variables you've already used is to define
+    function parameters. As you saw in the previous chapter, when you
+    define a function with <strong class="ph b">DEFUN</strong>, the parameter list defines the variables
+    that will hold the function's arguments when it's called. For example,
+    this function defines three variables--<code class="ph codeph">x</code>,
+    <code class="ph codeph">y</code>, and <code class="ph codeph">z</code>--to hold its arguments.</p>
+
+    <div class="p">而另一种已经用到的引入新变量的方式是定义函数形参。正如前一章所示，在用
+    <strong class="ph b">DEFUN</strong>
+    来定义函数时，形参列表定义了当函数被调用时用来保存实参的变量，例如，下列函数定义了三个变量
+    <code class="ph codeph">x</code>、<code class="ph codeph">y</code> 和 <code class="ph codeph">z</code>，用来保存其实参：
+<pre class="pre codeblock"><code>(defun foo (x y z) (+ x y z))
+</code></pre></div>
+
+    <p class="p">Each time a function is called, Lisp creates new bindings to hold the
+    arguments passed by the function's caller. A binding is the runtime
+    manifestation of a variable. A single variable--the thing you can
+    point to in the program's source code--can have many different
+    bindings during a run of the program. A single variable can even have
+    multiple bindings at the same time; parameters to a recursive
+    function, for example, are rebound for each call to the function.</p>
+
+    <p class="p">每当函数被调用时，Lisp
+    就会创建新的绑定来保存由函数调用者所传递的实参。绑定代表了变量在运行期的存在。单个变量即可以在程序源代码中所指出的那种东西。在程序运行过程中可以有多个不同的绑定，单个变量甚至可以同时带有多重绑定，例如，一个递归函数的形参会在每一次函数调用中被重新绑定。
+    </p>
+
+    <p class="p">As with all Common Lisp variables, function parameters hold object
+    references. Thus, you can assign a new value to a function parameter
+    within the body of the function, and it will not affect the bindings
+    created for another call to the same function. But if the object
+    passed to a function is mutable and you change it in the function, the
+    changes will be visible to the caller since both the caller and the
+    callee will be referencing the same object.</p>
+
+    <p class="p">和所有 Common Lisp
+    变量一样，函数形参也可以保存对象引用。 因此，可以在函数体内为一个函数形参赋予新值，而这却并不会影响到同样函数的    另一个调用所创建的绑定。但如果改变了传递给函数的可变对象，则这些改    动将会被调用者看到，因为无论调用者还是被调用者都在引用同一个对象。
+    </p>
+
+    <p class="p">Another form that introduces new variables is the <strong class="ph b">LET</strong> special
+    operator. The skeleton of a <strong class="ph b">LET</strong> form looks like this:</p>
+
+    <div class="p">引入新变量的另一种方式是使用 <strong class="ph b">LET</strong> 特别操作符。下面就是一个 <strong class="ph b">LET</strong> 形式的结构：
+<pre class="pre codeblock"><code>(let (variable*)
+  body-form*)
+</code></pre>
+    where each variable is a variable initialization form. Each
+    initialization form is either a list containing a variable name and an
+    initial value form or--as a shorthand for initializing the variable to
+    <strong class="ph b">NIL</strong>--a plain variable name. The following <strong class="ph b">LET</strong> form, for example, binds
+    the three variables <code class="ph codeph">x</code>, <code class="ph codeph">y</code>,
+    and <code class="ph codeph">z</code> with initial values 10, 20, and <strong class="ph b">NIL</strong>:</div>
+
+    <div class="p">其中每一个
+    <code class="ph codeph">variable</code>都是一个变量的初始化形式。每一个初始化形式要么是一个含有变量名和初值形式的列表，要么就是一个简单的变量名——作为将变量初始化到 <strong class="ph b">NIL</strong>
+    的简略写法。例如，下面的 <strong class="ph b">LET</strong> 形式会将三个变量 <code class="ph codeph">x</code>、<code class="ph codeph">y</code> 和
+    <code class="ph codeph">z</code> 绑定到初始值 10、20 和 <strong class="ph b">NIL</strong> 上：
+<pre class="pre codeblock"><code>(let ((x 10) (y 20) z)
+  ...)
+</code></pre></div>
+
+    <p class="p">When the <strong class="ph b">LET</strong> form is evaluated, all the initial value forms are first
+    evaluated. Then new bindings are created and initialized to the
+    appropriate initial values before the body forms are executed. Within
+    the body of the <strong class="ph b">LET</strong>, the variable names refer to the newly created
+    bindings. After the <strong class="ph b">LET</strong>, the names refer to whatever, if anything,
+    they referred to before the LET.</p>
+
+    <p class="p">当这个 <strong class="ph b">LET</strong>
+    形式被求值时，所有的初始值形式都将首先被求值，然后创建出新的绑定，并在形式体被执行之前这些绑定将初始化到适当的初始值上。在
+    <strong class="ph b">LET</strong> 形式体中，变量名将引用新创建的绑定。在
+    <strong class="ph b">LET</strong> 形式体执行结束后，这些变量名将重新引用在执行 <strong class="ph b">LET</strong>
+    之前它们所引用的内容，如果有的话。</p>
+    
+    <p class="p">The value of the last expression in the body is returned as the value
+    of the <strong class="ph b">LET</strong> expression. Like function parameters, variables introduced
+    with <strong class="ph b">LET</strong> are rebound each time the <strong class="ph b">LET</strong> is entered.</p>
+
+    <p class="p">形式体中最后一个表达式的值将作为 <strong class="ph b">LET</strong>
+    表达式的值返回。和函数形参一样，由 <strong class="ph b">LET</strong> 所引入的变量将在每次进入 <strong class="ph b">LET</strong> 时被重新绑定。</p>
+    
+    <p class="p">The scope of function parameters and <strong class="ph b">LET</strong> variables--the area of the
+    program where the variable name can be used to refer to the variable's
+    binding--is delimited by the form that introduces the variable. This
+    form--the function definition or the <strong class="ph b">LET</strong>--is called the binding
+    form. As you'll see in a bit, the two types of variables--lexical and
+    dynamic--use two slightly different scoping mechanisms, but in both
+    cases the scope is delimited by the binding form.</p>
+
+    <p class="p">函数形参和 <strong class="ph b">LET</strong>
+    变量的作用域（变量名可被用来引用该绑定的程序区域）被限定在引入该变量的形式之内，该形式即函数定义或
+    <strong class="ph b">LET</strong>，被称为绑定形式。你很快将看到，词法变量和动态变量使用两种略有不同的作用域机制，但两者的其作用域都被界定在绑定形式之内。</p>
+
+    <p class="p">If you nest binding forms that introduce variables with the same name,
+    then the bindings of the innermost variable shadows the outer
+    bindings. For instance, when the following function is called, a
+    binding is created for the parameter x to hold the function's
+    argument. Then the first <strong class="ph b">LET</strong> creates a new binding with the initial
+    value 2, and the inner <strong class="ph b">LET</strong> creates yet another binding, this one with
+    the initial value 3. The bars on the right mark the scope of each
+    binding.</p>
+
+    <p class="p">如果嵌套了引入同名变量的绑定形式，那么最内层的变量绑定将覆盖外层的绑定。例如，在调用下面的函数时，将创建一个形参
+    <code class="ph codeph">x</code> 的绑定来保存函数的参数。第一个 <strong class="ph b">LET</strong>
+    创建了一个带有初始值 2 的新绑定，而内层的 <strong class="ph b">LET</strong>
+    创建了另外一个绑定，其初始值为 3。右边的竖线标记出了每一个绑定的作用域。
+    </p>
+    
+<pre class="pre codeblock"><code>(defun foo (x)
+  (format t "Parameter: ~a~%" x)      ; |&lt;------ x is argument 
+  (let ((x 2))                        ; |
+    (format t "Outer LET: ~a~%" x)    ; | |&lt;---- x is 2
+    (let ((x 3))                      ; | |
+      (format t "Inner LET: ~a~%" x)) ; | | |&lt;-- x is 3
+    (format t "Outer LET: ~a~%" x))   ; | |
+  (format t "Parameter: ~a~%" x))     ; |
+</code></pre>
+
+    <p class="p">Each reference to <code class="ph codeph">x</code> will refer to the binding with the smallest
+    enclosing scope. Once control leaves the scope of one binding form,
+    the binding from the immediately enclosing scope is unshadowed and <code class="ph codeph">x</code>
+    refers to it instead. Thus, calling foo results in this
+    output:</p>
+
+    <div class="p">每一次对 <code class="ph codeph">x</code>
+    的引用都将指向最小封闭作用域中的绑定。一旦程序控制离开了一个绑定形式的作用域，其最近的闭合作用域中的绑定就被解除覆盖，并且
+    <code class="ph codeph">x</code> 将转而指向它。因此，调用 <code class="ph codeph">foo</code> 将得到这样的输出：
+<pre class="pre codeblock"><code>CL-USER&gt; (foo 1)
+Parameter: 1
+Outer LET: 2
+Inner LET: 3
+Outer LET: 2
+Parameter: 1
+NIL
+</code></pre></div>
+    
+    <p class="p">In future chapters I'll discuss other constructs that also serve as
+    binding forms--any construct that introduces a new variable name
+    that's usable only within the construct is a binding form.</p>
+
+    <p class="p">后面的章节将讨论其他可作为绑定形式使用的程序构造，其特点在于所引入的新变量名只能用于该构造。</p>
+    
+    <p class="p">For instance, in Chapter 7 you'll meet the <strong class="ph b">DOTIMES</strong> loop, a basic
+    counting loop. It introduces a variable that holds the value of a
+    counter that's incremented each time through the loop. The following
+    loop, for example, which prints the numbers from 0 to 9, binds the
+    variable <code class="ph codeph">x</code>:</p>
+
+    <div class="p">例如，你将在第 7 章里遇到 <strong class="ph b">DOTIMES</strong>
+    循环，一种基本的计数循环。它引入了一个变量用来保存每次通过循环时递增的计数器的值。例如下面这个可以打印从 0 到 9
+    的数字循环，它绑定了变量 <code class="ph codeph">x</code>：
+<pre class="pre codeblock"><code>(dotimes (x 10) (format t "~d " x))
+</code></pre></div>
+
+    <p class="p">Another binding form is a variant of <strong class="ph b">LET</strong>, <strong class="ph b">LET*</strong>.
+    The difference is that
+    in a <strong class="ph b">LET</strong>, the variable names can be used only in the body of the
+    <strong class="ph b">LET</strong>--the part of the <strong class="ph b">LET</strong> after the variables list--but in a <strong class="ph b">LET*</strong>, the
+    initial value forms for each variable can refer to variables
+    introduced earlier in the variables list. Thus, you can write the
+    following:</p>
+
+    <div class="p">另一个绑定形式是 <strong class="ph b">LET</strong> 的变种：<strong class="ph b">LET*</strong>。两者的区别在于，在一个
+    <strong class="ph b">LET</strong> 中，被绑定的变量名只能被用在 <strong class="ph b">LET</strong> 的形式体之内——<strong class="ph b">LET</strong>
+    形式中变量列表之后的那部分；但在一个 <strong class="ph b">LET*</strong>
+    中，每个变量的初始值形式，都可以引用到那些在变量列表中早先引入的变量。因此可以写成下面这样：
+<pre class="pre codeblock"><code>(let* ((x 10)
+       (y (+ x 10)))
+  (list x y))
+</code></pre>
+but not this:</div>
+
+<div class="p">但却不能这样写：
+<pre class="pre codeblock"><code>(let ((x 10)
+      (y (+ x 10)))
+  (list x y))
+</code></pre></div>
+
+    <p class="p">However, you could achieve the same result with nested <strong class="ph b">LET</strong>s.</p>
+
+    <div class="p">不过也可以通过嵌套的 <strong class="ph b">LET</strong> 来达到相同的效果：
+<pre class="pre codeblock"><code>(let ((x 10))
+  (let ((y (+ x 10)))
+    (list x y)))
+</code></pre></div>
+
+  </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap06/variables.html">Variables（变量）</a></div></div></nav></article></main></body></html>

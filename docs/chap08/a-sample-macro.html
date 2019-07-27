@@ -1,0 +1,35 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap08/macros-defining-your-own.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="a-sample-macro-do-primes一个示例宏do-primes"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>A Sample Macro: do-primes（一个示例宏：do-primes）</title></head><body id="a-sample-macro-do-primes一个示例宏do-primes"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">A Sample Macro: <code class="ph codeph">do-primes</code>（一个示例宏：<code class="ph codeph">do-primes</code>）</h1><div class="body"><p class="p">To see how this three-step process works, you'll write a macro
+<code class="ph codeph">do-primes</code> that provides a looping construct similar to <strong class="ph b">DOTIMES</strong> and
+<strong class="ph b">DOLIST</strong> except that instead of iterating over integers or elements of a
+list, it iterates over successive prime numbers. This isn't meant to
+be an example of a particularly useful macro--it's just a vehicle for
+demonstrating the process.</p><p class="p">为了观察这三步过程是怎样发挥作用的，下面将编写一个叫做 <code class="ph codeph">do-primes</code>
+的宏，它提供了一个类似 DOTIMES 和 DOLIST
+的循环结构，只是它并非迭代在整数或者一个列表的元素上，而是迭代在相继的素数上。这并非意味着这是一个特别有用的宏，只是为了演示宏的定义过程罢了。</p><p class="p">First, you'll need two utility functions, one to test whether a given
+number is prime and another that returns the next prime number greater
+or equal to its argument. In both cases you can use a simple, but
+inefficient, brute-force approach.</p><p class="p">首先你需要两个工具函数：一个用来测试给定的数是否为素数，另一个用来返回大于或等于其实参的下一个素数。这两种情况都可以使用简单而低效的暴力手法来解决。</p><pre class="pre codeblock lisp"><code>(defun primep (number)
+  (when (&gt; number 1)
+    (loop for fac from 2 to (isqrt number) never (zerop (mod number fac)))))
+
+(defun next-prime (number)
+  (loop for n from number when (primep n) return n))</code></pre><p class="p">Now you can write the macro. Following the procedure outlined
+previously, you need at least one example of a call to the macro and
+the code into which it should expand. Suppose you start with the idea
+that you want to be able to write this:</p><p class="p">现在就可以写这个宏了。按照前面所概括的过程，至少需要一个宏调用示例以及它应当展开成的代码。假设开始时想通过如下代码：</p><pre class="pre codeblock lisp"><code>(do-primes (p 0 19)
+  (format t "~d " p))</code></pre><p class="p">to express a loop that executes the body once each for each prime
+number greater or equal to 0 and less than or equal to 19, with the
+variable p holding the prime number. It makes sense to model this
+macro on the form of the standard <strong class="ph b">DOLIST</strong> and <strong class="ph b">DOTIMES</strong> macros; macros
+that follow the pattern of existing macros are easier to understand
+and use than macros that introduce gratuitously novel syntax.</p><p class="p">来表达一个循环，在每个大于等于 0 并小于等于 19
+的素数上分别依次执行循环体，并以变量 <code class="ph codeph">p</code> 保存当前素数。仿照标准
+<strong class="ph b">DOLIST</strong> 和 <strong class="ph b">DOTIMES</strong>
+宏来定义是合理的。按照已有宏的模式操作的宏比那些引入了无谓的新颖语法的宏更易于理解和使用。</p><p class="p">Without the <code class="ph codeph">do-primes</code> macro, you could write such a loop with <strong class="ph b">DO</strong> (and
+the two utility functions defined previously) like this:</p><p class="p">如果没有 <code class="ph codeph">do-primes</code> 宏，你可以用
+<strong class="ph b">DO</strong>（和前面定义的两个工具函数）来写出下面这个循环：</p><pre class="pre codeblock lisp"><code>(do ((p (next-prime 0) (next-prime (1+ p))))
+    ((&gt; p 19))
+  (format t "~d " p))</code></pre><p class="p">Now you're ready to start writing the macro code that will translate
+from the former to the latter.</p><p class="p">现在就可以开始编写将前者转化成后者的代码了。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap08/macros-defining-your-own.html">Macros: Defining Your Own（定义你自己的宏）</a></div></div></nav></article></main></body></html>

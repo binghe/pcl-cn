@@ -1,0 +1,19 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap14/files-and-file-io.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="bulk-reads批量读取"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Bulk Reads（批量读取）</title></head><body id="bulk-reads批量读取"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Bulk Reads（批量读取）</h1><div class="body"><p class="p">One last reading function, <strong class="ph b">READ-SEQUENCE</strong>, works with both character
+and binary streams. You pass it a sequence (typically a vector) and a
+stream, and it attempts to fill the sequence with data from the
+stream. It returns the index of the first element of the sequence that
+wasn't filled or the length of the sequence if it was able to
+completely fill it. You can also pass <code class="ph codeph">:start</code> and <code class="ph codeph">:end</code> keyword
+arguments to specify a subsequence that should be filled instead. The
+sequence argument must be a type that can hold elements of the
+stream's element type. Since most operating systems support some form
+of block I/O, <strong class="ph b">READ-SEQUENCE</strong> is likely to be quite a bit more efficient
+than filling a sequence by repeatedly calling <strong class="ph b">READ-BYTE</strong> or <strong class="ph b">READ-CHAR</strong>.</p><p class="p">最后一个读取函数 <strong class="ph b">READ-SEQUENCE</strong>
+可同时工作在字符和二进制流上。你传递给它一个序列（通常是一个向量）和一个流，然后它会尝试用来自流的数据填充该序列。它返回序列中第一个没有被填充的元素的索引，或是在完全填充的情况下返回该序列的长度。你也可以传递
+<code class="ph codeph">:start</code> 和 <code class="ph codeph">:end</code>
+关键字参数来指定一个应当被代替填充的子序列。该序列参数的元素类型必须足
+以保存带有该流元素类型的元素。由于多数操作系统支持某种形式的块
+I/O，<strong class="ph b">READ-SEQUENCE</strong> 通常比重复调用
+<strong class="ph b">READ-BYTE</strong> 或 <strong class="ph b">READ-CHAR</strong> 来填充一个序列更加高效。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap14/files-and-file-io.html">Files and File I/O（文件和文件 I/O）</a></div></div></nav></article></main></body></html>
