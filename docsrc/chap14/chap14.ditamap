@@ -8,6 +8,9 @@
     <topicref href="bulk-reads.md" format="markdown" />
     <topicref href="file-output.md" format="markdown" />
     <topicref href="closing-files.md" format="markdown" />
+    <topicref href="filenames.md" format="markdown">
+      <topicref href="how-we-got-here.md" format="markdown" />
+    </topicref>
   </topicref>
 </map>
 
