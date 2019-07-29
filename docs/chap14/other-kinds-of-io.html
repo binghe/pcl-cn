@@ -1,0 +1,95 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap14/files-and-file-io.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="other-kinds-of-io其他-io-类型"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Other Kinds of I/O（其他 I/O 类型）</title></head><body id="other-kinds-of-io其他-io-类型"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Other Kinds of I/O（其他 I/O 类型）</h1><div class="body"><p class="p">In addition to file streams, Common Lisp supports other kinds of
+streams, which can also be used with the various reading, writing, and
+printing I/O functions. For instance, you can read data from, or write
+data to, a string using <strong class="ph b">STRING-STREAM</strong>s, which you can create with the
+functions <strong class="ph b">MAKE-STRING-INPUT-STREAM</strong> and <strong class="ph b">MAKE-STRING-OUTPUT-STREAM</strong>.</p><p class="p">除了文件流以外，Common Lisp
+还支持其他类型的流，它们也可被用于各种读、写和打印 I/O
+函数。例如，你可以使用 <strong class="ph b">STRING-STREAM</strong>
+从一个字符串中读取或写入数据，你可以使用函数 <strong class="ph b">MAKE-STRING-INPUT-STREAM</strong>
+和 <strong class="ph b">MAKE-STRING-OUTPUT-STREAM</strong> 来创建 <strong class="ph b">STRING-STREAM</strong>。</p><p class="p"><strong class="ph b">MAKE-STRING-INPUT-STREAM</strong> takes a string and optional start and end
+indices to bound the area of the string from which data should be read
+and returns a character stream that you can pass to any of the
+character-based input functions such as <strong class="ph b">READ-CHAR</strong>, <strong class="ph b">READ-LINE</strong>, or
+<strong class="ph b">READ</strong>. For example, if you have a string containing a floating-point
+literal in Common Lisp's syntax, you can convert it to a float like
+this:</p><p class="p"><strong class="ph b">MAKE-STRING-INPUT-STREAM</strong>
+接受一个字符串以及可选的开始和结尾指示符来鉴定字符串中数据应被读取的区域，然后返回一个可被传递到任何诸如
+<strong class="ph b">READ-CHAR</strong>、<strong class="ph b">READ-LINE</strong> 或 <strong class="ph b">READ</strong>
+这些基于字符的输入函数中的字符流。例如，如果你有一个含有 Common
+Lisp 语法的字面浮点数的字符串，那么你可以像下面这样将它转化成一个浮点数：</p><pre class="pre codeblock lisp"><code>(let ((s (make-string-input-stream "1.23")))
+  (unwind-protect (read s)
+    (close s)))</code></pre><p class="p">Similarly, <strong class="ph b">MAKE-STRING-OUTPUT-STREAM</strong> creates a stream you can use with
+<strong class="ph b">FORMAT</strong>, <strong class="ph b">PRINT</strong>, <strong class="ph b">WRITE-CHAR</strong>, <strong class="ph b">WRITE-LINE</strong>, and so on. It takes no
+arguments. Whatever you write, a string output stream will be
+accumulated into a string that can then be obtained with the function
+<strong class="ph b">GET-OUTPUT-STREAM-STRING</strong>. Each time you call <strong class="ph b">GET-OUTPUT-STREAM-STRING</strong>,
+the stream's internal string is cleared so you can reuse an existing
+string output stream.</p><p class="p">类似地，<strong class="ph b">MAKE-STRING-OUTPUT-STREAM</strong> 创建一个流，其可被用于
+<strong class="ph b">FORMAT</strong>、<strong class="ph b">PRINT</strong>、<strong class="ph b">WRITE-CHAR</strong> 以及 <strong class="ph b">WRITE-LINE</strong>
+等。它不接受参数。无论你写了什么，字符串输出流都将被累积到字符串中，你随后可以通过函数
+<strong class="ph b">GET-OUTPUT-STREAM-STRING</strong>
+来获取该字符串。每次当你调用 <strong class="ph b">GET-OUTPUT-STREAM-STRING</strong>
+时，该流的内部字符串会被清空，因此就可以重用一个已有的字符串输出流。</p><p class="p">However, you'll rarely use these functions directly, because the
+macros <strong class="ph b">WITH-INPUT-FROM-STRING</strong> and <strong class="ph b">WITH-OUTPUT-TO-STRING</strong> provide a more
+convenient interface. <strong class="ph b">WITH-INPUT-FROM-STRING</strong> is similar to
+<strong class="ph b">WITH-OPEN-FILE</strong>--it creates a string input stream from a given string
+and then executes the forms in its body with the stream bound to the
+variable you provide. For instance, instead of the LET form with the
+explicit <strong class="ph b">UNWIND-PROTECT</strong>, you'd probably write this:</p><p class="p">不过你将很少直接使用这些函数，因为宏 <strong class="ph b">WITH-INPUT-FROM-STRING</strong>
+和 <strong class="ph b">WITH-OUTPUT-TO-STRING</strong>
+提供了一个更加便利的接口。<strong class="ph b">WITH-INPUT-FROM-STRING</strong> 和
+<strong class="ph b">WITH-OPEN-FILE</strong>
+相似，它从给定字符串中创建字符串输入流，并在该流绑定到你提供的变量的情况下执行它的主体的形式。例如，与其使用
+<strong class="ph b">LET</strong> 形式并带有显式的 <strong class="ph b">UNWIND-PROTECT</strong>，你可以这样来写：</p><pre class="pre codeblock lisp"><code>(with-input-from-string (s "1.23")
+  (read s))</code></pre><p class="p">The <strong class="ph b">WITH-OUTPUT-TO-STRING</strong> macro is similar: it binds a newly created
+string output stream to a variable you name and then executes its
+body. After all the body forms have been executed,
+<strong class="ph b">WITH-OUTPUT-TO-STRING</strong> returns the value that would be returned by
+<strong class="ph b">GET-OUTPUT-STREAM-STRING</strong>.</p><p class="p"><strong class="ph b">WITH-OUTPUT-TO-STRING</strong>
+与之相似：它把新创建的字符串输出流绑定到你所命名的变量上，然后执行它的主体。在所有主体形式都被执行以后，<strong class="ph b">WITH-OUTPUT-TO-STRING</strong>
+返回由 <strong class="ph b">GET-OUTPUT-STREAM-STRING</strong> 所返回的值。</p><pre class="pre codeblock lisp"><code>CL-USER&gt; (with-output-to-string (out)
+            (format out "hello, world ")
+            (format out "~s" (list 1 2 3)))
+"hello, world (1 2 3)"</code></pre><p class="p">The other kinds of streams defined in the language standard provide
+various kinds of stream "plumbing," allowing you to plug together
+streams in almost any configuration. A <strong class="ph b">BROADCAST-STREAM</strong> is an output
+stream that sends any data written to it to a set of output streams
+provided as arguments to its constructor function,
+<strong class="ph b">MAKE-BROADCAST-STREAM</strong>. Conversely, a <strong class="ph b">CONCATENATED-STREAM</strong> is an input
+stream that takes its input from a set of input streams, moving from
+stream to stream as it hits the end of each
+stream. <strong class="ph b">CONCATENATED-STREAM</strong>s are constructed with the function
+<strong class="ph b">MAKE-CONCATENATED-STREAM</strong>, which takes any number of input streams as
+arguments.</p><p class="p">语言标准中定义的其他流提供了多种形式的流拼接技术，它允许你以几乎任何配置将流拼接在一起。<strong class="ph b">BROADCAST-STREAM</strong>
+是一个输出流，它将向其写入的任何数据发送到一组输出流上，这些流是作为参数提供给它的构造函数
+<strong class="ph b">MAKE-BROADCAST-STREAM</strong>
+的。与之相反的，<strong class="ph b">CONCATENATED-STREAM</strong>
+是一个输入流，它从一组输入流中接收其输入，在每个流的结尾处它从一个流移动到另一个。你可以使用函数
+<strong class="ph b">MAKE-CONCATENATED-STREAM</strong> 来构造
+<strong class="ph b">CONCATENATED-STREAM</strong>，其接受任何数量的输入流作为参数。</p><p class="p">Two kinds of bidirectional streams that can plug together streams in a
+couple ways are <strong class="ph b">TWO-WAY-STREAM</strong> and <strong class="ph b">ECHO-STREAM</strong>. Their constructor
+functions, <strong class="ph b">MAKE-TWO-WAY-STREAM</strong> and <strong class="ph b">MAKE-ECHO-STREAM</strong>, both take two
+arguments, an input stream and an output stream, and return a stream
+of the appropriate type, which you can use with both input and output
+functions.</p><p class="p">两种可以将流以多种方式拼接在一起的双向流是 <strong class="ph b">TWO-WAY-STREAM</strong> 和 <strong class="ph b">ECHO-STREAM</strong>。
+它们的构造函数 <strong class="ph b">MAKE-TWO-WAY-STREAM</strong> 和 <strong class="ph b">MAKE-ECHO-STREAM</strong>
+都接受两个参数，一个输入流和一个输出流，并返回一个适当类型的可同时用于输入和输出函数的流。</p><p class="p">In a <strong class="ph b">TWO-WAY-STREAM</strong> every read you perform will return data read from
+the underlying input stream, and every write will send data to the
+underlying output stream. An <strong class="ph b">ECHO-STREAM</strong> works essentially the same
+way except that all the data read from the underlying input stream is
+also echoed to the output stream. Thus, the output stream of an
+<strong class="ph b">ECHO-STREAM</strong> stream will contain a transcript of both sides of the
+conversation.</p><p class="p">在 <strong class="ph b">TWO-WAY-STREAM</strong>
+中，你所做的每一次读取都会返回从底层输入流中读取的数据，而每次写入将把数据发送到底层的输出流上。除了所有从底层输入流中读取的数据也被回显到输出流中之外，<strong class="ph b">ECHO-STREAM</strong>
+本质上以相同的方式工作。这样，<strong class="ph b">ECHO-STREAM</strong> 中的输出流将含有会话双方的一个副本。</p><p class="p">Using these five kinds of streams, you can build almost any topology
+of stream plumbing you want.</p><p class="p">使用这五种流，你可以构造出几乎任何你想要的流拼接拓扑结构。</p><p class="p">Finally, although the Common Lisp standard doesn't say anything about
+networking APIs, most implementations support socket programming and
+typically implement sockets as another kind of stream, so you can use
+all the regular I/O functions with them.</p><p class="p">最后，尽管 Common Lisp 标准并没有涉及有关网络 API
+的内容，但多数实现都支持 socket 编程并且通常将
+socket 实现成另一种类型的流，因此你可以使用正规 I/O 函数来操作它们。</p><p class="p">Now you're ready to move on to building a library that smoothes over
+some of the differences between how the basic pathname functions
+behave in different Common Lisp implementations.</p><p class="p">现在，你已准备好开始构建一个库来消除不同 Common Lisp
+实现在基本路径名函数行为上的一些区别了。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap14/files-and-file-io.html">Files and File I/O（文件和文件 I/O）</a></div></div></nav></article></main></body></html>

@@ -13,5 +13,8 @@
     </topicref>
     <topicref href="how-pathnames-represent-filenames.md" format="markdown" />
     <topicref href="constructing-new-pathnames.md" format="markdown" />
+    <topicref href="two-representations.md" format="markdown" />
+    <topicref href="interacting-with-the-file-system.md" format="markdown" />
+    <topicref href="other-kinds-of-io.md" format="markdown" />
   </topicref>
 </map>
