@@ -3,5 +3,9 @@
 
 <map>
   <topicref href="a-portable-pathname-library.md" format="markdown">
+    <topicref href="the-api.md" format="markdown" />
+    <topicref href="read-time-conditionalization.md" format="markdown">
+      <topicref href="packing-the-library.md" format="markdown" />
+    </topicref>
   </topicref>
 </map>

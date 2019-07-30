@@ -1,0 +1,15 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap15/a-portable-pathname-library.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="the-api应用程序接口"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>The API（应用程序接口）</title></head><body id="the-api应用程序接口"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">The API（应用程序接口）</h1><div class="body"><p class="p">The basic operations the library will support will be getting a list
+of files in a directory and determining whether a file or directory
+with a given name exists. You'll also write a function for recursively
+walking a directory hierarchy, calling a given function for each
+pathname in the tree.</p><p class="p">该库支持的基本操作是获取目录中的文件列表，并检测给定名字的文件或目录是否存在。你也将编写函数用于递归遍历目录层次，并在目录树的每个路径名上调用给定的函数。</p><p class="p">In theory, these directory listing and file existence operations are
+already provided by the standard functions <strong class="ph b">DIRECTORY</strong> and
+<strong class="ph b">PROBE-FILE</strong>. However, as you'll see, there are enough different ways to
+implement these functions--all within the bounds of valid
+interpretations of the language standard--that you'll want to write
+new functions that provide a consistent behavior across
+implementations.</p><p class="p">从理论上来讲，这些列目录和测试文件存在性的操作已经由标准函数 <strong class="ph b">DIRECTORY</strong>
+和 <strong class="ph b">PROBE-FILE</strong>
+提供了。不过正如你将看到的那样，会有许多不同的方式来实现这些函数──所有这些均属于语言标准的有效解释，因此你希望编写新的函数，以在不同实现间提供一致的行为。</p></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap15/a-portable-pathname-library.html">Practical: A Portable Pathname Library（实践：可移植路径名库）</a></div></div></nav></article></main></body></html>
