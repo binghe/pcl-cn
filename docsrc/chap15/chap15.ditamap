@@ -7,5 +7,6 @@
     <topicref href="read-time-conditionalization.md" format="markdown">
       <topicref href="packing-the-library.md" format="markdown" />
     </topicref>
+    <topicref href="listing-a-directory.md" format="markdown" />
   </topicref>
 </map>
