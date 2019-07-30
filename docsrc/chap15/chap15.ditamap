@@ -8,5 +8,7 @@
       <topicref href="packing-the-library.md" format="markdown" />
     </topicref>
     <topicref href="listing-a-directory.md" format="markdown" />
+    <topicref href="testing-a-files-existence.md" format="markdown" />
+    <topicref href="walking-a-directory-tree.md" format="markdown" />
   </topicref>
 </map>

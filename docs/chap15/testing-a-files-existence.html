@@ -1,0 +1,89 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap15/a-portable-pathname-library.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="testing-a-files-existence测试文件存在"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>Testing a File's Existence（测试文件存在）</title></head><body id="testing-a-files-existence测试文件存在"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">Testing a File's Existence（测试文件存在）</h1><div class="body"><p class="p">To replace <strong class="ph b">PROBE-FILE</strong>, you can define a function called
+<code class="ph codeph">file-exists-p</code>. It should accept a pathname and return an equivalent
+pathname if the file exists and <strong class="ph b">NIL</strong> if it doesn't. It should be able
+to accept the name of a directory in either directory or file form but
+should always return a directory form pathname if the file exists and
+is a directory. This will allow you to use <code class="ph codeph">file-exists-p</code>, along with
+<code class="ph codeph">directory-pathname-p</code>, to test whether an arbitrary name is the name of
+a file or directory.</p><p class="p">为了替换 <strong class="ph b">PROBE-FILE</strong>，你可以定义一个称为 <code class="ph codeph">file-exists-p</code>
+的函数。它应当接受一个路径名，并在其代表的文件存在时返回一个等价的路径名，否则返回
+<strong class="ph b">NIL</strong>。
+它应当可以接受目录形式或文件形式的目录名，但如果该文件存在并且是一个目录，那么它应当总是返回目录形式的路径名。这将允许你使用
+<code class="ph codeph">file-exists-p</code> 和
+<code class="ph codeph">directory-pathname-p</code>
+来测试任意一个名字是文件名还是目录名。</p><p class="p">In theory, <code class="ph codeph">file-exists-p</code> is quite similar to the standard function
+<strong class="ph b">PROBE-FILE</strong>; indeed, in several implementations--SBCL, LispWorks, and
+OpenMCL--<strong class="ph b">PROBE-FILE</strong> already gives you the behavior you want for
+<code class="ph codeph">file-exists-p</code>. But not all implementations of <strong class="ph b">PROBE-FILE</strong> behave quite
+the same.</p><p class="p">从理论上讲，<code class="ph codeph">file-exists-p</code> 和标准函数 <strong class="ph b">PROBE-FILE</strong>
+非常相似。确实，在一些实现，即 SBCL、LispWorks 和 OpenMCL
+里，<strong class="ph b">PROBE-FILE</strong> 已经提供了 <code class="ph codeph">file-exists-p</code>
+的行为，但并非所有实现的 <strong class="ph b">PROBE-FILE</strong> 都具有相同的行为。</p><p class="p">Allegro and CMUCL's <strong class="ph b">PROBE-FILE</strong> functions are close to what you
+need--they will accept the name of a directory in either form but,
+instead of returning a directory form name, simply return the name in
+the same form as the argument it was passed. Luckily, if passed the
+name of a nondirectory in directory form, they return <strong class="ph b">NIL</strong>. So with
+those implementations you can get the behavior you want by first
+passing the name to <strong class="ph b">PROBE-FILE</strong> in directory form--if the file exists
+and is a directory, it will return the directory form name. If that
+call returns NIL, then you try again with a file form name.</p><p class="p">Allegro 和 CMUCL 的 <strong class="ph b">PROBE-FILE</strong>
+函数接近于你想要的行为──接受任何形式的目录名但不会返回目录形式的路径名，而只是简单地返回传给它的参数。幸运的是，如果以目录形式传递给它一个非目录的名字，它会返回
+<strong class="ph b">NIL</strong>。因此对于这些实现，为了得到想要的行为，你可以首先以目录形式将名字传给
+<strong class="ph b">PROBE-FILE</strong> 如果文件存在并且是一个目录，它将返回目录形式的名字。如果该调用返回
+<strong class="ph b">NIL</strong>，那么你可以用文件形式的名字再试一次。</p><p class="p">CLISP, on the other hand, once again has its own way of doing
+things. Its <strong class="ph b">PROBE-FILE</strong> immediately signals an error if passed a name
+in directory form, regardless of whether a file or directory exists
+with that name. It also signals an error if passed a name in file form
+that's actually the name of a directory. For testing whether a
+directory exists, CLISP provides its own function: <code class="ph codeph">probe-directory</code> (in
+the <code class="ph codeph">ext</code> package). This is almost the mirror image of <strong class="ph b">PROBE-FILE</strong>: it
+signals an error if passed a name in file form or if passed a name in
+directory form that happens to name a file. The only difference is it
+returns <strong class="ph b">T</strong> rather than a pathname when the named directory exists.</p><p class="p">另一方面，<strong class="ph b">CLISP</strong> 再一次有其自己的做事方式。它的 <strong class="ph b">PROBE-FILE</strong>
+将在传递目录形式的名字时立即报错，无论该名字所代表的文件或目录是否存在。它也会在以文件形式传递一个名字且该名字实际上是一个目录的名字时报错。为了测试一个目录是否存在，CLISP
+提供了它自己的函数 <code class="ph codeph">probe-directory</code>（在 <code class="ph codeph">ext</code>
+包中）。这几乎就是 <strong class="ph b">PROBE-FILE</strong>
+的镜像：它将在传递文件形式的名字，或者目录形式的名字而刚好该名字是一个文件时报错。唯一的区别在于，当命名的目录存在时，它返回
+<strong class="ph b">T</strong> 而不是一个路径名。</p><p class="p">But even in CLISP you can implement the desired semantics by wrapping
+the calls to <strong class="ph b">PROBE-FILE</strong> and probe-directory in <strong class="ph b">IGNORE-ERRORS</strong>.</p><p class="p">但就算在 CLISP 中，你也可以通过将对 <strong class="ph b">PROBE-FILE</strong>
+和 <code class="ph codeph">probe-directory</code> 的调用包装在 <strong class="ph b">IGNORE-ERRORS</strong>
+中来实现想要的语义。</p><pre class="pre codeblock lisp"><code>(defun file-exists-p (pathname)
+  #+(or sbcl lispworks openmcl)
+  (probe-file pathname)
+
+  #+(or allegro cmu)
+  (or (probe-file (pathname-as-directory pathname))
+      (probe-file pathname))
+
+  #+clisp
+  (or (ignore-errors
+        (probe-file (pathname-as-file pathname)))
+      (ignore-errors
+        (let ((directory-form (pathname-as-directory pathname)))
+          (when (ext:probe-directory directory-form)
+            directory-form))))
+
+  #-(or sbcl cmu lispworks openmcl allegro clisp)
+  (error "file-exists-p not implemented"))</code></pre><p class="p">The function <code class="ph codeph">pathname-as-file</code> that you need for the CLISP
+implementation of <code class="ph codeph">file-exists-p</code> is the inverse of the previously
+defined <code class="ph codeph">pathname-as-directory</code>, returning a pathname that's the file
+form equivalent of its argument. This function, despite being needed
+here only by CLISP, is generally useful, so define it for all
+implementations and make it part of the library.</p><p class="p">CLISP 版本的 <code class="ph codeph">file-exists-p</code> 用到的函数 <code class="ph codeph">pathname-as-file</code>，是前面定义的
+<code class="ph codeph">pathname-as-directory</code>
+的逆函数，它返回等价于其参数的文件形式的路径名。尽管该函数只有 CLISP
+用到，但它通常很有用，因此我们为所有实现定义它并使其成为该库的一部分。</p><pre class="pre codeblock lisp"><code>(defun pathname-as-file (name)
+  (let ((pathname (pathname name)))
+    (when (wild-pathname-p pathname)
+      (error "Can't reliably convert wild pathnames."))
+    (if (directory-pathname-p name)
+      (let* ((directory (pathname-directory pathname))
+             (name-and-type (pathname (first (last directory)))))
+        (make-pathname
+         :directory (butlast directory)
+         :name (pathname-name name-and-type)
+         :type (pathname-type name-and-type)
+         :defaults pathname))
+      pathname)))</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap15/a-portable-pathname-library.html">Practical: A Portable Pathname Library（实践：可移植路径名库）</a></div></div></nav></article></main></body></html>
