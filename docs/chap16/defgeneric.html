@@ -1,0 +1,34 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2019"><meta name="DC.rights.owner" content="(C) Copyright 2019"><meta name="DC.type" content="topic"><meta name="DC.relation" scheme="URI" content="../chap16/object-reorientation.html"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="defgeneric"><link rel="stylesheet" type="text/css" href="../commonltr.css"><title>DEFGENERIC</title></head><body id="defgeneric"><main role="main"><article role="article" aria-labelledby="ariaid-title1"><h1 class="title topictitle1" id="ariaid-title1">DEFGENERIC</h1><div class="body"><p class="p">To give you a feel for these macros and the various facilities they
+support, I'll show you some code you might write as part of a banking
+application--or, rather, a toy banking application; the point is to
+look at a few language features, not to learn how to really write
+banking software. For instance, this code doesn't even pretend to deal
+with such issues as multiple currencies let alone audit trails and
+transactional integrity.</p><p class="p">为了给你一个关于这些宏和它们所支持的不同功能的大致印象，我将向你展示一些可能作为一个银行应用，或者说，一个相当幼稚的银行应用的一部分来编写的代码。重点在于观察一些语言特性而不是学习如何实际编写银行软件。例如，这些代码甚至并不打算处理像多种货币、审查跟踪以及事务集成这样的问题。</p><p class="p">Because I'm not going to discuss how to define new classes until the
+next chapter, for now you can just assume that certain classes already
+exist: for starters, assume there's a class <code class="ph codeph">bank-account</code> and that it
+has two subclasses, <code class="ph codeph">checking-account</code> and <code class="ph codeph">savings-account</code>. The class
+hierarchy looks like this:</p><p class="p">由于我不准备在下一章之前讨论如何定义新的类，因此目前你可以假设特定的类已经存在了。假设你已有一个
+<code class="ph codeph">bank-account</code> 类以及它的两个子类 <code class="ph codeph">checking-account</code> 和
+<code class="ph codeph">savings-account</code>。类层次关系如下所示：</p><br><img class="image" src="account-hierarchy.png" alt="account hierarchy"><br><p class="p">The first generic function will be <code class="ph codeph">withdraw</code>, which decreases the
+account balance by a specified amount. If the balance is less than the
+amount, it should signal an error and leave the balance unchanged. You
+can start by defining the generic function with <strong class="ph b">DEFGENERIC</strong>.</p><p class="p">第一个广义函数将是
+<code class="ph codeph">withdraw</code>，它将帐户余额减少指定数量。如果余额小于提款量，它将报错并保持余额不变。你可以从通过
+<strong class="ph b">DEFGENERIC</strong> 定义该广义函数开始。</p><p class="p">The basic form of <strong class="ph b">DEFGENERIC</strong> is similar to <strong class="ph b">DEFUN</strong> except with no
+body. The parameter list of <strong class="ph b">DEFGENERIC</strong> specifies the parameters that
+must be accepted by all the methods that will be defined on the
+generic function. In the place of the body, a <strong class="ph b">DEFGENERIC</strong> can contain
+various options. One option you should always include is
+<code class="ph codeph">:documentation</code>, which you use to provide a string describing the
+purpose of the generic function. Because a generic function is purely
+abstract, it's important to be clear to both users and implementers
+what it's for. Thus, you might define <code class="ph codeph">withdraw</code> like this:</p><p class="p"><strong class="ph b">DEFGENERIC</strong> 的基本形式与 <strong class="ph b">DEFUN</strong>
+相似，只是没有函数体。<strong class="ph b">DEFGENERIC</strong>
+的形参列表指定了那些定义在该广义函数上的所有方法都必须接受的参数。在函数体的位置上， <strong class="ph b">DEFGENERIC</strong>
+可能含有不同的选项。一个你应当总是带有的选项是
+<code class="ph codeph">:documentation</code>，它提供了一个用来描述该广义函数用途的字符串。由于广义函数是纯抽象的，让用户和实现者了解它的用途将是重要的。因此，你可以像下面这样定义 <code class="ph codeph">withdraw</code>：</p><pre class="pre codeblock lisp"><code>(defgeneric withdraw (account amount)
+  (:documentation "Withdraw the specified amount from the account.
+Signal an error if the current balance is less than amount."))</code></pre></div><nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../chap16/object-reorientation.html">Object Reorientation: Generic Functions（重新审视面向对象：广义函数）</a></div></div></nav></article></main></body></html>
