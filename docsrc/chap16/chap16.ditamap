@@ -3,6 +3,7 @@
 
 <map>
   <topicref href="object-reorientation.md" format="markdown">
-    <!--<topicref href="the-api.md" format="markdown" /> -->
+    <topicref href="generic-functions-and-classes.md" format="markdown" />
+    <topicref href="generic-functions-and-methods.md" format="markdown" />
   </topicref>
 </map>

@@ -1,9 +1,5 @@
 # Practical Common Lisp (中英文对照版)
 
-Copyright© 2003-2005, Peter Seibel
-
-Copyright© 2010-2011,2019, Chun Tian
-
 预编译的 HTML 版在这里：[https://binghe.github.io/pcl-cn/]
 
 ## Requirements for building ebooks from (textual) sources
@@ -51,3 +47,11 @@ Copyright© 2010-2011,2019, Chun Tian
 
 - Source Code for _Practical Common Lisp_ (2005) [https://github.com/Apress/practical-common-lisp]
 - Source Code for _Practical Common Lisp_ (2011) [https://github.com/Apress/practical-common-lisp-
+
+## Copyrights
+
+```
+Copyright(c) 2010-2011,2019  Chun Tian (binghe)
+
+Copyright(c) 2003-2005  Peter Seibel
+```
