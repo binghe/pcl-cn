@@ -7,5 +7,6 @@
     <topicref href="generic-functions-and-methods.md" format="markdown" />
     <topicref href="defgeneric.md" format="markdown" />
     <topicref href="defmethod.md" format="markdown" />
+    <topicref href="method-combination.md" format="markdown" />
   </topicref>
 </map>

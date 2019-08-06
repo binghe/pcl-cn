@@ -1,4 +1,4 @@
-# DEFGENERIC
+# DEFGENERIC（定义广义函数）
 
 To give you a feel for these macros and the various facilities they
 support, I'll show you some code you might write as part of a banking

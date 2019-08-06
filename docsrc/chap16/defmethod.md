@@ -1,4 +1,4 @@
-# DEFMETHOD
+# DEFMETHOD（定义方法）
 
 Now you're ready to use **DEFMETHOD** to define methods that implement
 withdraw.
