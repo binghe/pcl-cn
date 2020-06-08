@@ -56,6 +56,6 @@ be well prepared to continue exploring the language on your own. While
 everyone's road to Lisp is different, I hope this book will help
 smooth the way for you. So, let's begin.
 
-读完本书后，你将熟悉该语言的所有最重要的特性以及它们是如何组织在一起的，而是你已经用
-Common Lisp 写出了一些非凡的程序，并且可以凭借自身力量继续探索该语言的了。尽管每个人的
+读完本书后，你将熟悉该语言的所有最重要的特性以及它们是如何组织在一起的，你已经用
+Common Lisp 写出了一些非凡的程序，并且可以凭借自身力量继续探索该语言了。尽管每个人的
 Lisp 之路都有所不同，但我还是希望本书可以帮助你少走些弯路。那么，让我们就此上路吧。
